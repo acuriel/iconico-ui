@@ -16,7 +16,7 @@ import Tabs from "../../components/CustomTabs/CustomTabs";
 
 import { addDays } from "../../helpers/utils";
 import Chat from "../../components/Chat/Chat";
-import Providers from "../../components/Chat/Providers.js";
+import Providers from "../../components/Chat/Providers";
 
 
 function ConsultationDetails(props) {
@@ -82,7 +82,7 @@ function ConsultationDetails(props) {
           {
             tabName: "Conversaciones",
             tabIcon: Comment,
-            tabContent: <Chat currentElement={currentConsultation} />
+            tabContent: <Chat currentElement={currentConsultation} getEndpoint={apiService.getConsultationConv} postEndpoint={apiService.addMessage}/>
           },
           {
             tabName: "Proveedores",

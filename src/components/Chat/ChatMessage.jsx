@@ -1,7 +1,7 @@
 import React from "react";
 import { authService } from "../../services";
 
-import Button from "components/CustomButtons/Button.js";
+import Button from "components/CustomButtons/Button";
 import Reply from "@material-ui/icons/Reply";
 import RemoveRedEye from "@material-ui/icons/RemoveRedEye";
 

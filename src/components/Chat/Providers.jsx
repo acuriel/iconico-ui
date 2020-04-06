@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import {apiService} from "services";
-import ProviderChat from "./ProviderChat.js";
+import {apiService, authService} from "../../services";
 
 import "react-chat-elements/dist/main.css";
 
@@ -10,13 +9,13 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import Badge from "components/Badge/Badge.js";
-import Accordion from "components/Accordion/Accordion.js";
-import GridContainer from "components/Grid/GridContainer.js";
+import Accordion from "components/Accordion/Accordion";
+import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
+import CardHeader from "components/Card/CardHeader";
 import CardIcon from "components/Card/CardIcon";
-import Button from "components/CustomButtons/Button.js";
+import Button from "components/CustomButtons/Button";
 
 import Done from "@material-ui/icons/Done";
 import Add from "@material-ui/icons/Add";
@@ -24,10 +23,12 @@ import QueryBuilder from "@material-ui/icons/QueryBuilder";
 import Warning from "@material-ui/icons/Warning";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
-import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.js";
+import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle";
 
 import CardBody from "components/Card/CardBody";
 import { Link } from "react-router-dom";
+import Chat from "./Chat";
+import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 const useStyles = makeStyles(styles);
 const useefStyles = makeStyles(efstyles);
@@ -48,6 +49,7 @@ const groupByUser = elems =>
   });
 
 const statusToColor = { 0: "danger", 1: "warning", 2: "success" };
+const statusToIcon = { 0: <Warning/>, 1: <QueryBuilder/>, 2: <Done/> };
 
 export default function Providers({ currentElement, ...props }) {
   const classes = useStyles();
@@ -71,7 +73,7 @@ export default function Providers({ currentElement, ...props }) {
   };
   const myExternals = () =>
     currentConsExternals.filter(
-      ext => ext.Author.UserName === apiService.currentUser().userName
+      ext => ext.Author.UserName === authService.currentUserValue.userName
     );
 
   const addExternal = () => {
@@ -167,13 +169,19 @@ export default function Providers({ currentElement, ...props }) {
           <GridItem xs={4} key={ext.id}>
             <Card>
               <CardHeader color={statusToColor[ext.Status]} icon>
+                <CustomizedMenus options={[
+                  {icon:Done, text:"Resuelto", handler: () => {}},
+                  {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
+                  {icon:Warning, text:"Sin solucion", handler: () => {}}
+                ]}/>
                 <CardIcon color={statusToColor[ext.Status]}>
-                  <Warning />
+                  {statusToIcon[ext.Status]}
                 </CardIcon>
                 <h4 className={classes.cardIconTitle}>
                   {" "}
                   <b>{ext.Receiver.UserName}</b>
                 </h4>
+                
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
                 {readable ? (
@@ -182,8 +190,8 @@ export default function Providers({ currentElement, ...props }) {
                     color="info"
                     onClick={() => setSelectedExternal(ext)}
                   >
-                    Ver mas
-                  </Button>
+                  Discusion
+                </Button>
                 ) : (
                   "Sin acceso"
                 )}
@@ -209,10 +217,15 @@ export default function Providers({ currentElement, ...props }) {
       <Button simple color="info" onClick={() => setSelectedExternal(null)}>
         Volver
       </Button>
-      <ProviderChat
+      <Chat 
+        currentElement={currentConsultation} 
+        currentExternal={selectedExternal}
+        getEndpoint={apiService.getExternalConversation} 
+        postEndpoint={apiService.addExternalMessage}/>
+      {/* <ProviderChat
         currentElement={currentConsultation}
         currentExternal={selectedExternal}
-      />
+      /> */}
     </div>
   ) : (
     <div>
@@ -225,12 +238,12 @@ export default function Providers({ currentElement, ...props }) {
               title: "Atendidos por " + group.user,
               content: renderProvidersChats(
                 group.externals,
-                group.user === apiService.currentUser().userName
+                group.user === authService.currentUserValue.userName
               )
             };
           })
           .sort((a, b) =>
-            a.user === apiService.currentUser().userName ? 1 : -1
+            a.user === authService.currentUserValue.userName ? 1 : -1
           )}
       />
     </div>

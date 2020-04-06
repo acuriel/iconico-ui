@@ -14,14 +14,14 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Assignment from "@material-ui/icons/Assignment";
 
 // core components
-import CustomInput from "../../components/CustomInput/CustomInput.js";
-import Button from "../../components/CustomButtons/Button.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardIcon from "../../components/Card/CardIcon.js";
-import CardBody from "../../components/Card/CardBody.js";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import GridItem from "../../components/Grid/GridItem.js";
+import CustomInput from "../../components/CustomInput/CustomInput";
+import Button from "../../components/CustomButtons/Button";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardIcon from "../../components/Card/CardIcon";
+import CardBody from "../../components/Card/CardBody";
+import GridContainer from "../../components/Grid/GridContainer";
+import GridItem from "../../components/Grid/GridItem";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
 import saStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";

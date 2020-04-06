@@ -7,9 +7,9 @@ import Conversation from './Conversation'
 import { animateScroll } from "react-scroll";
 
 import { makeStyles } from "@material-ui/core/styles";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
-import ImageUpload from "components/CustomUpload/ImageUpload.js";
+import CustomInput from "components/CustomInput/CustomInput";
+import Button from "components/CustomButtons/Button";
+import ImageUpload from "components/CustomUpload/ImageUpload";
 
 // @material-ui/core components
 import Send from "@material-ui/icons/Send";
@@ -26,33 +26,37 @@ const scrollToBottom = () => {
   });
 };
 
-const useConversation = consultationId => {
+const useConversation = (consultationId, getEndpoint, externalData=undefined) => {
   const [conv, setConv] = useState([]);
   useEffect(() => {
-    apiService.getConsultationConv(consultationId).then(res => {
+    (externalData 
+      ? getEndpoint(
+        consultationId, 
+        externalData.Author._id, 
+        externalData.Receiver._id) 
+      : getEndpoint(consultationId)
+      ).then(res => {
       setConv(res.data);
-      // scrollToBottom();
+      scrollToBottom();
       sessionStorage.setItem("chat_count", res.data.length);
     });
-  }, [conv, consultationId]);
+  }, []);
   return [conv, setConv];
 };
 
-export default function Chat({ currentElement, noEditing, ...props }) {
-  const [consultation, setConsultation] = useState(currentElement);
+export default function Chat({ currentElement, currentExternal, noEditing, getEndpoint, postEndpoint, ...props }) {
   const [text, setText] = useState("");
   const [comMsg, setComMsg] = useState(null);
-  const [intMem, setIntMem] = useState([]);
   const inputRef = useRef();
-  const [conv, setConv] = useConversation(currentElement._id);
+  const [conv, setConv] = useConversation(currentElement._id, getEndpoint, currentExternal);
   const [showAttaching, setShowAttaching] = useState(false);
   const [attachedFile, setAttachedFile] = useState(undefined);
 
   const liveChat = (consultationId, setConv) => {
     return new Promise((resolve, reject) => {
       try {
-        apiService.getConsultationConv(consultationId).then(res => {
-          if (res.data.length !== sessionStorage.getItem("chat_count")) {
+        getEndpoint(consultationId).then(res => {
+          if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
             sessionStorage.setItem("chat_count", res.data.length);
             setConv(res.data);
             scrollToBottom();
@@ -67,7 +71,6 @@ export default function Chat({ currentElement, noEditing, ...props }) {
   };
 
   useEffect(() => {
-    apiService.getAllInternalMembers().then(res => setIntMem(res.data));
     liveChat(currentElement._id, setConv);
   }, []);
   
@@ -75,11 +78,12 @@ export default function Chat({ currentElement, noEditing, ...props }) {
     let newConv = {
       _idConsulta: currentElement._id,
       Author: { UserName: authService.currentUserValue.userName },
+      Mentions: currentExternal ? [currentExternal.Receiver] : [],
       ThisCommentAnswersTo: comMsg,
       CommentText: inputRef.current.value
   };
   const send = () =>
-    apiService.addMessage(newConv).then(() => {
+    postEndpoint(newConv).then(() => {
       setText("");
       inputRef.current.value = "";
       setConv([...conv, newConv]);
