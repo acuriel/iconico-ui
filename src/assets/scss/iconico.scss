@@ -1,0 +1,124 @@
+.MuiPaper-root.MuiExpansionPanel-root {
+    background-color: transparent;
+}
+.badge-region{
+    span:first-child{
+        margin-left: 15px;
+    }
+    span{
+        background-color: $brand-info;
+        border-radius: 5px;
+        padding: 2px 4px;
+        color: white;
+        font-size: .8em;
+        margin-left: 7px;
+
+        svg{
+            color: white;
+        }
+    }
+}
+
+.bubble-msg{
+    max-width: 450px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+    background-color: #dedede;
+
+    span{
+        padding-bottom: 50px;
+        font-weight: bold;
+    }
+    .bubble-msg{
+        max-width: 300px;
+        background-color: #eee;
+        margin: 0 10px 10px 10px;
+        color: black;
+    }
+    .float-right-btn{
+        float: right;
+        cursor: pointer;
+        margin-top: -20px;
+    }
+}
+
+.chat-conversation{
+    height: 500px;
+    overflow-y:scroll;
+    
+    .chat-image{
+        width: 380px;
+    }
+    .image-cover{
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        float: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        transition: 0.3s;
+
+        svg{
+            visibility: hidden;
+            transition: 0.2s;
+
+        }
+        &:hover{
+            visibility: visible;
+            background: #000000bb;
+            svg{
+                visibility: visible;
+                font-size: 2em;
+                color: white;
+            }
+        }
+        
+    }
+    .bubble-msg.current-user {
+        display: block;
+        margin-left: auto;
+        margin-right: 20px;
+        background-color: $brand-success;
+        color: white;
+    }
+}
+
+.spinner{
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    & > div {
+        margin-left: -50px;
+        margin-top: -50px;
+    }
+}
+
+.chat-text-box{
+    display: flex;
+    align-items: center;
+
+
+    button{
+        width: 75px;
+        height: 75px;
+        padding: 5px;
+    }
+}
+
+.external-members-list{
+    span{
+        margin: 0 5px;
+    }
+    .add-external{
+        display: inline-block;
+    }
+}
