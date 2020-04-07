@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import {apiService} from "../../services";
+import {apiService, authService} from "../../services";
+import { addDays } from "../../helpers/utils";
 
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,14 +12,15 @@ import Info from "@material-ui/icons/Info";
 import Assignment from "@material-ui/icons/Assignment";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 // core components
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
+import GridItem from "components/Grid/GridItem";
+import GridContainer from "components/Grid/GridContainer";
+import Table from "components/Table/Table";
+import Card from "components/Card/Card";
+import CardHeader from "components/Card/CardHeader";
+import CardIcon from "components/Card/CardIcon";
+import CardBody from "components/Card/CardBody";
+import CardFooter from "components/Card/CardFooter";
+import GanttChart from "../../components/Charts/Gantt";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
 
@@ -26,13 +28,13 @@ const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [lastConsultations, setLastConsultations] = useState([]);
+  const [allConsultations, setAllConsultations] = useState([]);
   const [activeCons, setActiveCons] = useState(0);
   useEffect(() => {
     apiService
       .getAllConsultations()
       .then(res => {
-        setLastConsultations(res.data.slice(0, 5));
+        setAllConsultations(res.data);
         setActiveCons(res.data.length);
       })
       .catch(err => console.log(err));
@@ -93,6 +95,18 @@ export default function Dashboard() {
         </GridItem>
       </GridContainer>
       <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <GanttChart
+            elements={allConsultations}
+            getElementTitle={ c => c.Tittle}
+            getStartDate={ c => new Date(c.IssuedOn)}
+            getEndDate={ c => addDays(new Date(c.IssuedOn), c.ExpiresIn)}
+            currentUser={authService.currentUserValue}
+            getAuthorUser={c => c.Author.UserName}
+           />
+        </GridItem>
+      </GridContainer>
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <Card>
             <CardHeader color="info">
@@ -134,7 +148,7 @@ export default function Dashboard() {
             </CardBody>
           </Card>
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }
