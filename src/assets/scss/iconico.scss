@@ -125,11 +125,22 @@
 
 table.iconico-gantt{
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 20px;
 
     tr.active{
         & td:first-child{
             border-left: 5px solid #1BBED3;
+        }
+    }
+    
+    th{
+        overflow: visible;
+        text-overflow: ellipsis;
+        max-width: 20px;
+
+        &.time-mark{
+            border-left: 1px solid #000;
         }
     }
 
@@ -144,8 +155,20 @@ table.iconico-gantt{
             width: 10em;
         }
 
-        &.filled {
-            background-color: #1BBED3;
+        &.done {
+            background-color: $brand-success;
         }
+        &.in-progress {
+            background-color: $brand-danger;
+        }
+        &.todo {
+            background-color: $brand-warning;
+        }
+    }
+}
+
+.grantt-header{
+    .MuiGrid-item > button{
+        margin-top: 20px;
     }
 }

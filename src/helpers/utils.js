@@ -4,6 +4,9 @@ const addDays = (date, days) => {
   return result;
 };
 
+const dateToString = date => date.toISOString().substring(0, 10)
+
 module.exports = {
-  addDays
+  addDays,
+  dateToString
 };
