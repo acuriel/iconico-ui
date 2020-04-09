@@ -9,8 +9,13 @@ const dateToString = date => `${date.getDate()} ${MONTHS[date.getMonth()]} ${dat
 
 const dateToStringShort = date =>  `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 
+const getWidth = () => window.innerWidth 
+  || document.documentElement.clientWidth 
+  || document.body.clientWidth;
+
 module.exports = {
   addDays,
   dateToString,
-  dateToStringShort
+  dateToStringShort,
+  getWidth
 };

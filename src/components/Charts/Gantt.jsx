@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { addDays, dateToStringShort } from "../../helpers/utils";
+import React, { useState, useEffect } from "react";
+import { addDays, dateToStringShort, getWidth } from "../../helpers/utils";
 import { Link } from "react-router-dom";
 
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
@@ -57,9 +57,29 @@ const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,
   )
 }
 
+
+
+
 export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, currentUser, getAuthorUser, ...props}) {
   const [rowDays, setRowDays] = useState(31);
   const [focusDate, setFocusDate] = useState(Date.now())
+  const [width, setWidth] = useState(getWidth())
+
+  useEffect(() => {
+    const resizeListener = () => {
+      const temp = Math.floor(getWidth() / 100);
+      if(temp % 5 == 0){
+        setRowDays(temp*2);
+        console.log((temp));
+      }
+      console.log(getWidth());
+      setWidth(getWidth());
+    }
+    window.addEventListener('resize', resizeListener)
+    return () => {
+      window.removeEventListener('resize', resizeListener)
+    }
+  }, [])
 
   return (
     <div>
@@ -96,8 +116,13 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
       <table className="iconico-gantt">
         <thead>
           <tr>
-            <th></th>
-            {[...Array(rowDays).keys()].map(key=> key % 5 === 0 ? <th className='time-mark'><div>{dateToStringShort(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</div></th>:<th></th>)}
+            <th key={0}></th>
+            {[...Array(rowDays).keys()].map(key=> 
+              key % 5 === 0 
+              ? <th className='time-mark' key={key + 1}>
+                <div>{dateToStringShort(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</div>
+              </th>
+              : <th key={key + 1}/>)}
           </tr>
         </thead>
         <tbody>
