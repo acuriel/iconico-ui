@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {apiService, authService} from "../../services";
-import { addDays, dateToString } from "../../helpers/utils";
+import { addDays, dateToString, getNameInitials, getRandomBackground, BGS } from "../../helpers/utils";
+import Avatar from '@material-ui/core/Avatar';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,8 +23,18 @@ import styles from "assets/jss/material-dashboard-pro-react/views/buttonsStyle.j
 
 const useStyles = makeStyles(styles);
 
+const avatarStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+}));
 
-function getAccordion(consultations) {
+function CounsultationListAccordion({consultations, ...props}) {
+  const avatarClasses = avatarStyles();
+
   return (
     <Accordion
       style={{backgroundColor:"transparent !important"}}
@@ -58,6 +70,30 @@ function getAccordion(consultations) {
                 {dateToString(date)} -{" "}
                 {dateToString(addDays(date, c.ExpiresIn))}
               </div>
+              <div>
+                Miembros Internos
+                <AvatarGroup max={3}>
+                  {c.InternalMembers.map((m, k) => 
+                  <Avatar 
+                    key={k}
+                    title={m.UserName} 
+                    alt={m.UserName}
+                    className={BGS[k % BGS.length]}
+                  >{getNameInitials(m.UserName)}</Avatar>)}
+                </AvatarGroup>
+              </div>
+              {/* <div>
+                Miembros Externos
+                <AvatarGroup max={3}>
+                  {c.ExternalMembers.map((m, k) => 
+                  <Avatar 
+                    key={k}
+                    title={m.Receiver.UserName} 
+                    alt={m.Receiver.UserName}
+                    className={BGS[k % BGS.length]}
+                  >{getNameInitials(m.Receiver.UserName)}</Avatar>)}
+                </AvatarGroup>
+              </div> */}
               <p style={{ marginTop: "15px" }}>{c.Description}</p>
             </div>
           )
@@ -88,7 +124,7 @@ export default function ConsultationList() {
     return elems.length === 0 ? (
       <p>No existen consultas</p>
     ) : (
-      getAccordion(elems)
+      <CounsultationListAccordion consultations={elems} />
     );
   };
 

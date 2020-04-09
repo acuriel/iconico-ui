@@ -13,9 +13,24 @@ const getWidth = () => window.innerWidth
   || document.documentElement.clientWidth 
   || document.body.clientWidth;
 
+const getNameInitials = name => {
+  const words = name.toUpperCase().split(' ');
+  return words.length > 1 ? `${words[0][0]}${words[1][0]}`:`${words[0][0]}`
+}
+
+const BGS = ['bg-success', 'bg-danger', 'bg-warning', 'bg-primary', 'bg-info', 'bg-rose'];
+
+const getRandomBackground = () => BGS[Math.floor(Math.random() * 10) % BGS.length ];
+
+const getUniformBackground = count => [...Array(count).keys()].map(i => BGS[i % BGS.length ]);
+
 module.exports = {
   addDays,
   dateToString,
   dateToStringShort,
-  getWidth
+  getWidth,
+  getNameInitials,
+  getRandomBackground,
+  getUniformBackground,
+  BGS
 };

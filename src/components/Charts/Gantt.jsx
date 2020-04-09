@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { addDays, dateToStringShort, getWidth } from "../../helpers/utils";
 import { Link } from "react-router-dom";
-
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
 import IconButton from '@material-ui/core/IconButton';
 import 'date-fns';
@@ -56,9 +55,6 @@ const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,
     </tr>
   )
 }
-
-
-
 
 export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, currentUser, getAuthorUser, ...props}) {
   const [rowDays, setRowDays] = useState(31);
