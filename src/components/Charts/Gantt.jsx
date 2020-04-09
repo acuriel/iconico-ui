@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { addDays, dateToString } from "../../helpers/utils";
+import { addDays, dateToStringShort } from "../../helpers/utils";
+import { Link } from "react-router-dom";
 
 import { NavigateBefore, NavigateNext } from "@material-ui/icons";
 import IconButton from '@material-ui/core/IconButton';
@@ -18,17 +19,6 @@ const getIntervalDates = (focusDay, rowDays) => [
   addDays(focusDay, Math.floor(rowDays/2))
 ]
 
-const useIntervalState = (rowDays, focusDate=Date.now()) => {
-  const [rowDaysState, setRowDaysState] = useState(rowDays);
-  const [focusDateState, setFocusDateState] = useState(focusDate)
-
-  const setState = (newRowDays=rowDays, newFocusDate=focusDate) => {
-    setRowDaysState(newRowDays);
-    setFocusDateState(newFocusDate);
-  }
-
-  return [rowDaysState, focusDateState]
-}
 
 const elementInsideInterval = (elem, getStartDate, getEndDate, focusDate, rowDays) => {
   const elemStart = getStartDate(elem);
@@ -38,7 +28,9 @@ const elementInsideInterval = (elem, getStartDate, getEndDate, focusDate, rowDay
 }
 
 
-const dayInsideInterval = (date, start, end) => start <= date && date <= end
+const dayInsideInterval = (date, start, end) => start <= date && date <= addDays(end, 1)
+
+const dayMarker = row => row % 5 === 0
 
 const getColorState = (startDate, endDate, focusDay=undefined) => {
   focusDay = focusDay || Date.now();
@@ -50,13 +42,15 @@ const getColorState = (startDate, endDate, focusDay=undefined) => {
 const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,intervalStart, rowDays, ...props}) => {
   return (
     <tr className={isCurrentUser ? "active" : undefined}>
-      <td key={0} >{getElementTitle(element)}</td>
+      <td key={0} title={getElementTitle(element)} >
+        <Link to={"/admin/consulta/" + element._id}>{getElementTitle(element)}</Link>
+      </td>
       {[...Array(rowDays).keys()].map(d => {
         return (
-          <td 
-            key={d + 1} 
-            className={dayInsideInterval(addDays(intervalStart, d), startDate, endDate) ? getColorState(startDate, endDate) : undefined}>
-              <div/>
+          <td  className={dayMarker(d) ? ' time-mark':''}
+            key={d + 1}
+            title={dateToStringShort(addDays(intervalStart, d))}>
+              <div className={(dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate) ? getColorState(startDate, endDate) : '')}/>
           </td>
         )})}
     </tr>
@@ -102,8 +96,8 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
       <table className="iconico-gantt">
         <thead>
           <tr>
-            <th>Consultas</th>
-            {[...Array(rowDays).keys()].map(key=> key % 5 === 1 ? <th className='time-mark'>{dateToString(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</th>:<th></th>)}
+            <th></th>
+            {[...Array(rowDays).keys()].map(key=> key % 5 === 0 ? <th className='time-mark'><div>{dateToStringShort(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</div></th>:<th></th>)}
           </tr>
         </thead>
         <tbody>

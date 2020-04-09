@@ -14,7 +14,7 @@ import CalendarToday from "@material-ui/icons/CalendarToday";
 // core components
 import Tabs from "../../components/CustomTabs/CustomTabs";
 
-import { addDays } from "../../helpers/utils";
+import { addDays, dateToString } from "../../helpers/utils";
 import Chat from "../../components/Chat/Chat";
 import Providers from "../../components/Chat/Providers";
 
@@ -52,10 +52,8 @@ function ConsultationDetails(props) {
               marginLeft: "20px"
             }}
           />{" "}
-          {date.toISOString().substring(0, 10)} -{" "}
-          {addDays(date, currentConsultation.ExpiresIn)
-            .toISOString()
-            .substring(0, 10)}
+          {dateToString(date)} -{" "}
+          {dateToString(addDays(date, currentConsultation.ExpiresIn))}
         </div>
         <p style={{ marginTop: "15px", marginBottom: "50px" }}>
           {currentConsultation.Description}

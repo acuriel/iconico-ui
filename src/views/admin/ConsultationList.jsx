@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {apiService, authService} from "../../services";
+import { addDays, dateToString } from "../../helpers/utils";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -22,11 +23,6 @@ const useStyles = makeStyles(styles);
 
 
 function getAccordion(consultations) {
-  const addDays = (date, days) => {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  };
   return (
     <Accordion
       style={{backgroundColor:"transparent !important"}}
@@ -59,10 +55,8 @@ function getAccordion(consultations) {
                     marginLeft: "20px"
                   }}
                 />{" "}
-                {date.toISOString().substring(0, 10)} -{" "}
-                {addDays(date, c.ExpiresIn)
-                  .toISOString()
-                  .substring(0, 10)}
+                {dateToString(date)} -{" "}
+                {dateToString(addDays(date, c.ExpiresIn))}
               </div>
               <p style={{ marginTop: "15px" }}>{c.Description}</p>
             </div>
