@@ -63,17 +63,14 @@ const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,
 export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, currentUser, getAuthorUser, ...props}) {
   const [rowDays, setRowDays] = useState(31);
   const [focusDate, setFocusDate] = useState(Date.now())
-  const [width, setWidth] = useState(getWidth())
 
   useEffect(() => {
     const resizeListener = () => {
       const temp = Math.floor(getWidth() / 100);
-      if(temp % 5 == 0){
+      if(temp % 5 === 0){
         setRowDays(temp*2);
         console.log((temp));
       }
-      console.log(getWidth());
-      setWidth(getWidth());
     }
     window.addEventListener('resize', resizeListener)
     return () => {
