@@ -13,13 +13,14 @@ export const authService = {
     login,
     logout,
     currentUser: currentUserSubject.asObservable(),
-    get currentUserValue () { return currentUserSubject.value }
+    get currentUserValue () { return currentUserSubject.value },
+    isInternal
 };
 
-async function login(username, password) {
+async function login(email, password) {
   const res = await baseService.post(
     API_LOGIN_URL, 
-    `grant_type=password&username=${username}&password=${password}`,
+    `grant_type=password&username=${email}&password=${password}`,
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -28,6 +29,13 @@ async function login(username, password) {
   );
   localStorage.setItem(LS_KEY, JSON.stringify(res.data));
   currentUserSubject.next(res.data);
+}
+
+function isInternal(user=undefined){
+  user = user || currentUserSubject.value;
+  const mail = user.hasOwnProperty('userName') ? user.userName : user.UserEmail
+  const domain = mail.indexOf('@') > -1 ? mail.split('@')[1] : "";
+  return  domain === "iconico.es"
 }
 
 function logout() {

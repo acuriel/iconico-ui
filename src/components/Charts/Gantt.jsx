@@ -65,7 +65,6 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
       const temp = Math.floor(getWidth() / 100);
       if(temp % 5 === 0){
         setRowDays(temp*2);
-        console.log((temp));
       }
     }
     window.addEventListener('resize', resizeListener)

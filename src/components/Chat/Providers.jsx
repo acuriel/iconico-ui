@@ -75,6 +75,11 @@ export default function Providers({ currentElement, ...props }) {
     currentConsExternals.filter(
       ext => ext.Author.UserName === authService.currentUserValue.userName
     );
+  
+  const myInternals = () =>
+    currentConsExternals.filter(
+      ext => ext.Receiver.UserName === authService.currentUserValue.userName
+  );
 
   const addExternal = () => {
     apiService
@@ -165,8 +170,8 @@ export default function Providers({ currentElement, ...props }) {
   const renderProvidersChats = (externals, readable = false) => {
     return (
       <GridContainer>
-        {externals.map(ext => (
-          <GridItem xs={4} key={ext.id}>
+        {externals.map((ext, key) => (
+          <GridItem xs={4} key={key}>
             <Card>
               <CardHeader color={statusToColor[ext.Status]} icon>
                 <CustomizedMenus options={[
@@ -212,6 +217,63 @@ export default function Providers({ currentElement, ...props }) {
     loadMyExternals();
   }, []);
 
+  const renderInternalProvidersSection = () =>{
+    return (
+      <div>
+        {renderMembers()}
+        <Accordion
+          active={0}
+          collapses={groupedExternal
+            .map(group => {
+              return {
+                title: "Atendidos por " + group.user,
+                content: renderProvidersChats(
+                  group.externals,
+                  group.user === authService.currentUserValue.userName
+                )
+              };
+            })
+            .sort((a, b) =>
+              a.user === authService.currentUserValue.userName ? 1 : -1
+            )}
+        />
+      </div>
+    )
+  }
+
+  const renderExternalChats = () => {
+    return (
+      <GridContainer>
+        {myInternals().map((ext, key) => (
+          <GridItem xs={4} key={key}>
+            <Card>
+              <CardHeader color={statusToColor[ext.Status]} icon>
+                <CardIcon color={statusToColor[ext.Status]}>
+                  {statusToIcon[ext.Status]}
+                </CardIcon>
+                <h4 className={classes.cardIconTitle}>
+                  {" "}
+                  <b>{ext.Author.UserName}</b>
+                </h4>
+                
+              </CardHeader>
+              <CardBody style={{ textAlign: "right" }}>
+                <Button
+                  simple
+                  color="info"
+                  onClick={() => setSelectedExternal(ext)}
+                >
+                  Discusion
+                </Button>
+ 
+              </CardBody>
+            </Card>
+          </GridItem>
+        ))}
+      </GridContainer>
+    );
+  };
+
   return selectedExternal ? (
     <div>
       <Button simple color="info" onClick={() => setSelectedExternal(null)}>
@@ -222,30 +284,6 @@ export default function Providers({ currentElement, ...props }) {
         currentExternal={selectedExternal}
         getEndpoint={apiService.getExternalConversation} 
         postEndpoint={apiService.addExternalMessage}/>
-      {/* <ProviderChat
-        currentElement={currentConsultation}
-        currentExternal={selectedExternal}
-      /> */}
     </div>
-  ) : (
-    <div>
-      {renderMembers()}
-      <Accordion
-        active={0}
-        collapses={groupedExternal
-          .map(group => {
-            return {
-              title: "Atendidos por " + group.user,
-              content: renderProvidersChats(
-                group.externals,
-                group.user === authService.currentUserValue.userName
-              )
-            };
-          })
-          .sort((a, b) =>
-            a.user === authService.currentUserValue.userName ? 1 : -1
-          )}
-      />
-    </div>
-  );
+  ) : (authService.isInternal() ? renderInternalProvidersSection() : renderExternalChats())
 }

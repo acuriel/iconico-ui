@@ -7,8 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 // @material-ui/icons
-import Face from "@material-ui/icons/Face";
-// import Email from "@material-ui/icons/Email";
+// import Face from "@material-ui/icons/Face";
+import Email from "@material-ui/icons/Email";
 import VpnKey from "@material-ui/icons/VpnKey";
 
 // core components
@@ -30,7 +30,6 @@ export default function LoginPage(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const login = () => {
-    console.log("Login");
     authService
       .login(email, password)
       .then(res => {
@@ -64,7 +63,7 @@ export default function LoginPage(props) {
                   inputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Face className={classes.inputAdornmentIcon} />
+                        <Email className={classes.inputAdornmentIcon} />
                       </InputAdornment>
                     ),
                     onChange: e => setEmail(e.target.value)

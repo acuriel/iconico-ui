@@ -11,8 +11,8 @@ const API_EXCM_URL = "api/ExternalComments/";
 baseService.interceptors.request.use(
   config => {
     const token = JSON.parse(localStorage.getItem('iconicoUser'))
-    
-    if(token){
+
+    if (token) {
       config.headers['Authorization'] = 'Bearer ' + token.access_token
     }
     // config.headers['Content-Type'] = 'application/json';
@@ -23,7 +23,7 @@ baseService.interceptors.request.use(
 
 const getAllConsultations = () => baseService.get(API_CONS_URL);
 
-const getConsultationById = consultationId =>  baseService.get(`${API_CONS_URL}${consultationId}`);
+const getConsultationById = consultationId => baseService.get(`${API_CONS_URL}${consultationId}`);
 
 const getConsultationConv = consultationId => baseService.get(`${API_CHAT_URL}GetConversation/${consultationId}`);
 
@@ -47,8 +47,9 @@ const getAllExternalMembers = () => baseService.get(API_AEXM_URL);
 
 const addExternalToConsultation = ext => baseService.post(API_EMEM_URL, ext);
 
-const getExternalConversation = (consultationId, authorId, receptorId) =>
-  baseService.get(`${API_EXCM_URL}GetConversation/${consultationId}/${authorId}/${receptorId}`);
+const getExternalConversation = (consultationId, authorId, receptorId) => {
+  return baseService.get(`${API_EXCM_URL}GetConversation/${consultationId}/${authorId}/${receptorId}`);
+}
 
 const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 

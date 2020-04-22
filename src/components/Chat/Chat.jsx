@@ -51,11 +51,16 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   const [conv, setConv] = useConversation(currentElement._id, getEndpoint, currentExternal);
   const [showAttaching, setShowAttaching] = useState(false);
   const [attachedFile, setAttachedFile] = useState(undefined);
-
   const liveChat = (consultationId, setConv) => {
     return new Promise((resolve, reject) => {
       try {
-        getEndpoint(consultationId).then(res => {
+        (currentExternal 
+          ? getEndpoint(
+            consultationId, 
+            currentExternal.Author._id, 
+            currentExternal.Receiver._id) 
+          : getEndpoint(consultationId)
+          ).then(res => {
           if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
             sessionStorage.setItem("chat_count", res.data.length);
             setConv(res.data);
@@ -64,7 +69,6 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
         });
         return resolve;
       } catch (error) {
-        console.log("Error loading conversation: " + error);
         return reject(error);
       }
     }).then(setTimeout(() => liveChat(consultationId, setConv), 3000));
@@ -78,7 +82,12 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
     let newConv = {
       _idConsulta: currentElement._id,
       Author: { UserName: authService.currentUserValue.userName },
-      Mentions: currentExternal ? [currentExternal.Receiver] : [],
+      Mentions: currentExternal 
+        ? (
+          currentExternal.Receiver.UserEmail === authService.currentUserValue.userName 
+            ? [currentExternal.Author] 
+            : [currentExternal.Receiver]
+          ) : [],
       ThisCommentAnswersTo: comMsg,
       CommentText: inputRef.current.value
   };

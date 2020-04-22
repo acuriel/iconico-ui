@@ -41,7 +41,6 @@ export default function CustomizedMenus({options}) {
       <IconButton
         aria-controls="customized-menu"
         aria-haspopup="true"
-        color="simple"
         size="small"
         onClick={handleClick}
       >
@@ -54,9 +53,9 @@ export default function CustomizedMenus({options}) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {options.map(op => {
+        {options.map((op, key) => {
           return (
-            <MenuItem onClick={op.handler}>
+            <MenuItem onClick={op.handler} key={key}>
               <ListItemIcon>
                 <op.icon fontSize="small" />
               </ListItemIcon>

@@ -113,7 +113,6 @@ export default function ConsultationList() {
       .getAllConsultations()
       .then(res => {
         const data = res.data;
-        console.log(data);
         setConsultations(data);
         setLoading(false);
       })

@@ -26,7 +26,6 @@ function ConsultationDetails(props) {
     // eslint-disable-next-line react/prop-types
     apiService.getConsultationById(props.match.params.id).then(res => {
       let data = res.data;
-      console.log(data);
       setCurrentConsultation(data);
       setLoading(false);
     });
@@ -75,29 +74,36 @@ function ConsultationDetails(props) {
           {
             tabName: "Detalles",
             tabIcon: Assignment,
-            tabContent: details()
+            tabContent: details(),
+            limited: false
           },
           {
-            tabName: "Conversaciones",
+            tabName: "Chat",
             tabIcon: Comment,
-            tabContent: <Chat currentElement={currentConsultation} getEndpoint={apiService.getConsultationConv} postEndpoint={apiService.addMessage}/>
+            tabContent: <Chat currentElement={currentConsultation} 
+              getEndpoint={apiService.getConsultationConv} 
+              postEndpoint={apiService.addMessage}/>,
+            limited: true
           },
           {
             tabName: "Proveedores",
             tabIcon: People,
-            tabContent: <Providers currentElement={currentConsultation} />
+            tabContent: <Providers currentElement={currentConsultation} />,
+            limited: false
           },
           {
-            tabName: "Highlites",
+            tabName: "Highlights",
             tabIcon: Code,
-            tabContent: <p>Seccion en construccion</p>
+            tabContent: <p>Seccion en construccion</p>,
+            limited: true
           },
           {
             tabName: "Verdades",
             tabIcon: PlaylistAddCheck,
-            tabContent: <p>Seccion en construccion</p>
+            tabContent: <p>Seccion en construccion</p>,
+            limited: true
           }
-        ]}
+        ].filter(tab => authService.isInternal() || !tab.limited)}
       />
     </div>
   );

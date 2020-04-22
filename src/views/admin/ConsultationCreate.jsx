@@ -81,7 +81,6 @@ export default function ConsultationCreate(props) {
       setExpireInputState("error");
       allValid = false;
     }
-    console.log(allValid);
     if (allValid) {
       apiService
         .addNewConsultation(newConsultation)
@@ -100,7 +99,6 @@ export default function ConsultationCreate(props) {
           );
         })
         .catch(res => {
-          console.log(res.response);
           setAlert(
             <SweetAlert
               error
@@ -196,7 +194,6 @@ export default function ConsultationCreate(props) {
                     multiple
                     value={newConsultation.InternalMembers}
                     onChange={e => {
-                      console.log(e.target.value);
                       setConsultation({
                         ...newConsultation,
                         InternalMembers: e.target.value
