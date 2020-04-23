@@ -28,6 +28,7 @@ const getConsultationById = consultationId => baseService.get(`${API_CONS_URL}${
 const getConsultationConv = consultationId => baseService.get(`${API_CHAT_URL}GetConversation/${consultationId}`);
 
 const addMessage = msg => baseService.post(API_CHAT_URL, msg);
+
 const uploadImage = file => {
   const data = new FormData();
   data.append("image", file);
@@ -35,6 +36,8 @@ const uploadImage = file => {
 };
 
 const addNewConsultation = consultation => baseService.post(API_CONS_URL, consultation);
+
+const endConsultation = consultation => baseService.put(`${API_CONS_URL}${consultation._id}`, consultation);
 
 const getAllInternalMembers = () => baseService.get(API_IMEM_URL);
 
@@ -56,6 +59,7 @@ const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 export const apiService = {
   getAllConsultations,
   getConsultationById,
+  endConsultation,
   addNewConsultation,
   getConsultationConv,
   addMessage,
