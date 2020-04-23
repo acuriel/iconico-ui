@@ -7,11 +7,14 @@ import PropTypes from "prop-types";
 // material-ui components
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
+import Button from "@material-ui/core/Button";
 import Tab from "@material-ui/core/Tab";
 // core components
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-import CardHeader from "components/Card/CardHeader.js";
+import Card from "components/Card/Card";
+import CardBody from "components/Card/CardBody";
+import CardHeader from "components/Card/CardHeader";
+
+import Close from "@material-ui/icons/Close";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/customTabsStyle.js";
 
@@ -23,14 +26,24 @@ export default function CustomTabs(props) {
     setValue(value);
   };
   const classes = useStyles();
-  const { headerColor, plainTabs, tabs, title, rtlActive } = props;
+  const { headerColor, plainTabs, tabs, title, rightButtonHandler } = props;
   const cardTitle = classNames({
     [classes.cardTitle]: true,
-    [classes.cardTitleRTL]: rtlActive
   });
   return (
     <Card plain={plainTabs}>
       <CardHeader color={headerColor} plain={plainTabs}>
+        {rightButtonHandler && (<Button
+            onClick={rightButtonHandler}
+            variant="outlined"
+            className={classes.marginRight + " tab-button"}
+          >
+            <Close
+              className={classes.icons}
+              style={{ marginTop: "-2px", marginRight: "2px" }}
+            />
+          Terminar
+        </Button>)}
         {title !== undefined ? <div className={cardTitle}>{title}</div> : null}
         <Tabs
           value={value}
@@ -61,6 +74,7 @@ export default function CustomTabs(props) {
             );
           })}
         </Tabs>
+        
       </CardHeader>
       <CardBody>
         {tabs.map((prop, key) => {

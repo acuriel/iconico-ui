@@ -70,6 +70,7 @@ function ConsultationDetails(props) {
       </div>
       <Tabs
         headerColor="info"
+        rightButtonHandler={() => apiService.endConsultation(currentConsultation)}
         tabs={[
           {
             tabName: "Detalles",
