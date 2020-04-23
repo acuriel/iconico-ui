@@ -131,23 +131,31 @@ export default function ConsultationList() {
     <Loading />
   ) : (
     <div>
-      <Button
-        href={"/admin/consultas/nueva"}
-        color="primary"
-        className={classes.marginRight}
-      >
-        <Add
-          className={classes.icons}
-          style={{ marginTop: "-2px", marginRight: "2px" }}
-        />
-        Nueva Consulta
-      </Button>
-      <h4 style={{ marginTop: "20px" }}>Mis Consultas</h4>
-      {printConsultations(
-        consultations.filter(
-          c => c.Author.UserName === authService.currentUserValue.userName
-        )
-      )}
+      {authService.isInternal() 
+        ? (<Button
+          href={"/admin/consultas/nueva"}
+          color="primary"
+          className={classes.marginRight}
+        >
+          <Add
+            className={classes.icons}
+            style={{ marginTop: "-2px", marginRight: "2px" }}
+          />
+          Nueva Consulta
+        </Button>) : ""
+      }
+      {
+        authService.isInternal() ?(
+          <div>
+            <h4 style={{ marginTop: "20px" }}>Mis Consultas</h4>
+            {printConsultations(
+              consultations.filter(
+                c => c.Author.UserName === authService.currentUserValue.userName
+              )
+            )}
+          </div>
+        ):""
+      }
       <h4 style={{ marginTop: "20px" }}>Consultas Asociadas</h4>
       {printConsultations(
         consultations.filter(
