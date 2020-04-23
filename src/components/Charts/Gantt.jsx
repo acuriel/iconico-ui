@@ -29,13 +29,14 @@ const elementInsideInterval = (elem, getStartDate, getEndDate, focusDate, rowDay
 
 const dayInsideInterval = (date, start, end) => start <= date && date <= addDays(end, 1)
 
-const dayMarker = row => row % 5 === 0
+const dayMarker = row => row % 2 === 0
 
 const getColorState = (startDate, endDate, focusDay=undefined) => {
-  focusDay = focusDay || Date.now();
-  if(focusDay < startDate) return 'todo';
-  else if(focusDay <= endDate) return 'in-progress'
-  else return 'done'
+  // focusDay = focusDay || Date.now();
+  // if(focusDay < startDate) return 'todo';
+  // else if(focusDay <= endDate) return 'in-progress'
+  // else return 'bg-danger'
+  return 'bg-danger';
 }
 
 const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,intervalStart, rowDays, ...props}) => {
@@ -45,6 +46,7 @@ const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,
         <Link to={"/admin/consulta/" + element._id}>{getElementTitle(element)}</Link>
       </td>
       {[...Array(rowDays).keys()].map(d => {
+        console.log(`${addDays(intervalStart, d+1)} | ${startDate} | ${endDate} | ${dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate)}`);
         return (
           <td  className={dayMarker(d) ? ' time-mark':''}
             key={d + 1}
@@ -63,7 +65,7 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
   useEffect(() => {
     const resizeListener = () => {
       const temp = Math.floor(getWidth() / 100);
-      if(temp % 5 === 0){
+      if(dayMarker(temp)){
         setRowDays(temp*2);
       }
     }
@@ -110,7 +112,7 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
           <tr>
             <th key={0}></th>
             {[...Array(rowDays).keys()].map(key=> 
-              key % 5 === 0 
+              dayMarker(key)
               ? <th className='time-mark' key={key + 1}>
                 <div>{dateToStringShort(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</div>
               </th>
