@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {apiService, authService} from "../../services";
 import { addDays, dateToString, getNameInitials, getRandomBackground, BGS } from "../../helpers/utils";
-import Avatar from '@material-ui/core/Avatar';
-import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,8 +12,12 @@ import Person from "@material-ui/icons/Person";
 import CalendarToday from "@material-ui/icons/CalendarToday";
 
 // core components
+import Avatar from '@material-ui/core/Avatar';
 import Accordion from "../../components/Accordion/Accordion.js";
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import Loading from "../../components/Loading/Loading";
+import FolderSection from "../../components/Folders/FolderSection";
+
 
 // import { consultations } from "variables/general.js";
 
@@ -108,16 +110,28 @@ export default function ConsultationList() {
 
   const [consultations, setConsultations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentFolder, setCurrentFolder] = useState(undefined)
+
   useEffect(() => {
-    apiService
-      .getAllConsultations()
-      .then(res => {
-        const data = res.data;
-        setConsultations(data);
-        setLoading(false);
-      })
-      .catch(err => console.log(err));
-  }, []);
+    (currentFolder 
+      ? apiService.getConsultationsInFolder(currentFolder._id) 
+      : apiService.getAllConsultations())
+    .then(res => {
+      const data = res.data;
+      setConsultations(data);
+      setLoading(false);
+    })
+    .catch(err => console.log(err));
+
+    // apiService
+    //   .getAllConsultations()
+    //   .then(res => {
+    //     const data = res.data;
+    //     setConsultations(data);
+    //     setLoading(false);
+    //   })
+    //   .catch(err => console.log(err));
+  }, [currentFolder]);
 
   const printConsultations = elems => {
     return elems.length === 0 ? (
@@ -126,6 +140,7 @@ export default function ConsultationList() {
       <CounsultationListAccordion consultations={elems} />
     );
   };
+
 
   return loading ? (
     <Loading />
@@ -144,6 +159,7 @@ export default function ConsultationList() {
           Nueva Consulta
         </Button>) : ""
       }
+      <FolderSection folderSelectedHandler={(f) => setCurrentFolder(f)}/>
       {
         authService.isInternal() ?(
           <div>

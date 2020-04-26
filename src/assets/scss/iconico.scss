@@ -228,3 +228,28 @@ table.iconico-gantt{
     color: white !important;
     border-color: white !important;
 }
+
+.folder-section{
+    .flex{
+        display: flex;
+
+        .folder-element{
+            display: inline-flex;
+            margin-right: 10px;
+
+        }
+    }
+    .add-folder{
+        float: right;
+    }
+
+    .folder-title{
+        button{
+            float: right;
+        }
+
+        h3 > svg{
+            padding-top: 2px;
+        }
+    }
+}

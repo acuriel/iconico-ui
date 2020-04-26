@@ -7,6 +7,8 @@ const API_IMEM_URL = "api/internalMembers/";
 const API_EMEM_URL = "api/ExternalConnections/";
 const API_AEXM_URL = "api/ExternalMembers/";
 const API_EXCM_URL = "api/ExternalComments/";
+const API_FOLD_URL = "api/UserFolders/";
+const API_STAT_URL = "api/UserStatusInConsulta/"
 
 baseService.interceptors.request.use(
   config => {
@@ -37,7 +39,7 @@ const uploadImage = file => {
 
 const addNewConsultation = consultation => baseService.post(API_CONS_URL, consultation);
 
-const endConsultation = consultation => baseService.put(`${API_CONS_URL}${consultation._id}`, consultation);
+const endConsultation = consultation => baseService.put(`${API_CONS_URL}${consultation._id}`, {IsManuallyFinished:true, ...consultation});
 
 const getAllInternalMembers = () => baseService.get(API_IMEM_URL);
 
@@ -56,6 +58,11 @@ const getExternalConversation = (consultationId, authorId, receptorId) => {
 
 const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 
+const getAllFolders = () => baseService.get(API_FOLD_URL);
+const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/GetConsultas`);
+const addNewFolder = folder => baseService.post(API_FOLD_URL, folder);
+const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {isPinned:!folder.isPinned, ...folder});
+
 export const apiService = {
   getAllConsultations,
   getConsultationById,
@@ -70,4 +77,8 @@ export const apiService = {
   getExternalConversation,
   addExternalMessage,
   getAllExternalMembers,
+  getAllFolders,
+  getConsultationsInFolder,
+  addNewFolder,
+  togglePinFolder
 }
