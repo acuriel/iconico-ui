@@ -46,7 +46,6 @@ const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,
         <Link to={"/admin/consulta/" + element._id}>{getElementTitle(element)}</Link>
       </td>
       {[...Array(rowDays).keys()].map(d => {
-        console.log(`${addDays(intervalStart, d+1)} | ${startDate} | ${endDate} | ${dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate)}`);
         return (
           <td  className={dayMarker(d) ? ' time-mark':''}
             key={d + 1}

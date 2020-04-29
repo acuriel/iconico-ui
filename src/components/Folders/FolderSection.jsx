@@ -17,7 +17,7 @@ import Folder from '@material-ui/icons/Folder';
 import Star from '@material-ui/icons/Star';
 import StarBorder from '@material-ui/icons/StarBorder';
 
-export default function FolderSection({folderSelectedHandler, ...props }) {
+export default function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
   const [pageStepSize, setPageStepSize] = useState(2);
   const [pageSize, setPageSize] = useState(5);
   const [pagePosition, setPagePosition] = useState(0);
@@ -68,8 +68,8 @@ export default function FolderSection({folderSelectedHandler, ...props }) {
       </div>
       <h3>Carpetas</h3>
       <div className='flex'>
-        <FolderElement key={0} title="Todas" handler={() => setFolder(undefined)} color={selectedFolder ? "default" : "primary"} />
-        {folders.filter(f => f.IsPinned).map((f, i) => <FolderElement key={i + 1} title={f} handler={() => setFolder(f)} />)}
+        <FolderElement key={0} title="Todas" handler={() => setFolder(undefined)} updateEvent={updateEvent} color={selectedFolder ? "default" : "primary"} />
+        {folders.filter(f => f.isPinned).map((f, i) => <FolderElement key={i + 1} title={f.FolderName} folder={f} handler={() => setFolder(f)}  updateEvent={updateEvent} />)}
       </div>
       <div className='flex'>
         <Button variant="outlined" color="default" onClick={() => setPagePosition(0)} disabled={pagePosition === 0} >
@@ -78,7 +78,13 @@ export default function FolderSection({folderSelectedHandler, ...props }) {
         <Button variant="outlined" color="default" onClick={() => setPagePosition(Math.min(0, pagePosition-pageStepSize))} disabled={pagePosition === 0} >
           <KeyboardArrowLeftIcon />
         </Button>
-        {folders.filter(f => !f.IsPinned).slice(pagePosition, pagePosition + pageSize).map((f, i) => <FolderElement key={i} color={selectedFolder && selectedFolder._id === f._id ? "primary" : "default"} title={f.FolderName} handler={() => setFolder(f)} />)}
+        {folders
+          .filter(f => !f.isPinned)
+          .slice(pagePosition, pagePosition + pageSize)
+            .map((f, i)  => <FolderElement key={i}  updateEvent={updateEvent}
+                  color={selectedFolder && selectedFolder._id === f._id ? "primary" : "default"} 
+                  title={f.FolderName}  folder={f}
+                  handler={() => setFolder(f)} />)}
         <Button variant="outlined" color="default" 
           onClick={() => setPagePosition(pagePosition+pageStepSize)} 
           disabled={pagePosition >= folders.length - pageSize}
@@ -98,7 +104,7 @@ export default function FolderSection({folderSelectedHandler, ...props }) {
           apiService.togglePinFolder(selectedFolder);
           setFolderAddedOrModified(true);
         }} disabled={!selectedFolder} >
-          {!selectedFolder || selectedFolder.IsPinned ? <Star/> : <StarBorder/>}
+          {!selectedFolder || selectedFolder.isPinned ? <Star/> : <StarBorder/>}
         </IconButton>
         <h3><Folder/> {selectedFolder ? selectedFolder.FolderName : "Todas"}</h3>
       </div>

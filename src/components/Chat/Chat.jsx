@@ -51,31 +51,47 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   const [conv, setConv] = useConversation(currentElement._id, getEndpoint, currentExternal);
   const [showAttaching, setShowAttaching] = useState(false);
   const [attachedFile, setAttachedFile] = useState(undefined);
+  // const liveChat = (consultationId, setConv) => {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       (currentExternal 
+  //         ? getEndpoint(
+  //           consultationId, 
+  //           currentExternal.Author._id, 
+  //           currentExternal.Receiver._id) 
+  //         : getEndpoint(consultationId)
+  //         ).then(res => {
+  //         if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
+  //           sessionStorage.setItem("chat_count", res.data.length);
+  //           setConv(res.data);
+  //           scrollToBottom();
+  //         }
+  //       });
+  //       return resolve;
+  //     } catch (error) {
+  //       return reject(error);
+  //     }
+  //   }).then(setTimeout(() => liveChat(consultationId, setConv), 3000));
+  // };
+
   const liveChat = (consultationId, setConv) => {
-    return new Promise((resolve, reject) => {
-      try {
-        (currentExternal 
-          ? getEndpoint(
-            consultationId, 
-            currentExternal.Author._id, 
-            currentExternal.Receiver._id) 
-          : getEndpoint(consultationId)
-          ).then(res => {
-          if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
-            sessionStorage.setItem("chat_count", res.data.length);
-            setConv(res.data);
-            scrollToBottom();
-          }
-        });
-        return resolve;
-      } catch (error) {
-        return reject(error);
+    const request = currentExternal 
+      ? getEndpoint(
+        consultationId, 
+        currentExternal.Author._id, 
+        currentExternal.Receiver._id) 
+      : getEndpoint(consultationId);
+    request.then(res => {
+      if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
+        sessionStorage.setItem("chat_count", res.data.length);
+        setConv(res.data);
+        scrollToBottom();
       }
-    }).then(setTimeout(() => liveChat(consultationId, setConv), 3000));
-  };
+    });
+  }
 
   useEffect(() => {
-    liveChat(currentElement._id, setConv);
+    setInterval(liveChat, 1000, currentElement._id, setConv);
   }, []);
   
   const sendMessage = () => {

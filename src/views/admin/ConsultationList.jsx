@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {apiService, authService} from "../../services";
-import { addDays, dateToString, getNameInitials, getRandomBackground, BGS } from "../../helpers/utils";
+import { addDays, dateToString, getNameInitials, BGS } from "../../helpers/utils";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,6 +17,7 @@ import Accordion from "../../components/Accordion/Accordion.js";
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import Loading from "../../components/Loading/Loading";
 import FolderSection from "../../components/Folders/FolderSection";
+import ConsultationDragableItem from "../../components/ConsultationInfo/ConsultationDragableItem";
 
 
 // import { consultations } from "variables/general.js";
@@ -46,7 +47,7 @@ function CounsultationListAccordion({consultations, ...props}) {
         return {
           title: (
             <div>
-              <Link to={"/admin/consulta/" + c._id}>{c.Tittle}</Link>
+              <ConsultationDragableItem consultation={c}/>
               {/* {getInfoBadges()} */}
             </div>
           ),
@@ -110,7 +111,9 @@ export default function ConsultationList() {
 
   const [consultations, setConsultations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentFolder, setCurrentFolder] = useState(undefined)
+  const [currentFolder, setCurrentFolder] = useState(undefined);
+  const [updated, setUpdated] = useState(false);
+
 
   useEffect(() => {
     (currentFolder 
@@ -123,15 +126,7 @@ export default function ConsultationList() {
     })
     .catch(err => console.log(err));
 
-    // apiService
-    //   .getAllConsultations()
-    //   .then(res => {
-    //     const data = res.data;
-    //     setConsultations(data);
-    //     setLoading(false);
-    //   })
-    //   .catch(err => console.log(err));
-  }, [currentFolder]);
+  }, [currentFolder, updated]);
 
   const printConsultations = elems => {
     return elems.length === 0 ? (
@@ -159,7 +154,7 @@ export default function ConsultationList() {
           Nueva Consulta
         </Button>) : ""
       }
-      <FolderSection folderSelectedHandler={(f) => setCurrentFolder(f)}/>
+      <FolderSection folderSelectedHandler={(f) => setCurrentFolder(f)}  updateEvent={setUpdated}/>
       {
         authService.isInternal() ?(
           <div>

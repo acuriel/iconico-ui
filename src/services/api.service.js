@@ -39,7 +39,7 @@ const uploadImage = file => {
 
 const addNewConsultation = consultation => baseService.post(API_CONS_URL, consultation);
 
-const endConsultation = consultation => baseService.put(`${API_CONS_URL}${consultation._id}`, {IsManuallyFinished:true, ...consultation});
+const endConsultation = consultation => baseService.put(`${API_CONS_URL}${consultation._id}`, {...consultation, IsManuallyFinished:true});
 
 const getAllInternalMembers = () => baseService.get(API_IMEM_URL);
 
@@ -61,7 +61,8 @@ const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 const getAllFolders = () => baseService.get(API_FOLD_URL);
 const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/GetConsultas`);
 const addNewFolder = folder => baseService.post(API_FOLD_URL, folder);
-const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {isPinned:!folder.isPinned, ...folder});
+const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {...folder, isPinned:!folder.isPinned});
+const addConsultationToFolder = (consultationId, folderId) => baseService.put(`${API_STAT_URL}${folderId}/${consultationId}`);
 
 export const apiService = {
   getAllConsultations,
@@ -80,5 +81,6 @@ export const apiService = {
   getAllFolders,
   getConsultationsInFolder,
   addNewFolder,
-  togglePinFolder
+  togglePinFolder,
+  addConsultationToFolder
 }
