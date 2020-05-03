@@ -100,7 +100,8 @@ export default function Dashboard() {
             elements={allConsultations}
             getElementTitle={ c => c.Tittle}
             getStartDate={ c => new Date(c.IssuedOn)}
-            getEndDate={ c => addDays(new Date(c.IssuedOn), c.ExpiresIn)}
+            getEndDate={ c => new Date(c.ExpiresOn)}
+            getManuallyFinishedDate={c => c.IsManuallyFinished ? new Date(c.ManuallyFinishedOn) : undefined}
             currentUser={authService.currentUserValue}
             getAuthorUser={c => c.Author.UserName}
            />

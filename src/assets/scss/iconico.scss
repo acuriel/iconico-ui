@@ -165,6 +165,12 @@ table.iconico-gantt{
             position: relative;
             min-width: 20px;
             min-height: 20px;
+            max-height: 20px;
+
+            > svg{
+                font-size: 1.4em;
+                color: white;
+            }
 
             &.done {
                 background-color: $brand-success;
@@ -210,6 +216,9 @@ table.iconico-gantt{
 .bg-danger {
     background-color: $brand-danger !important;
 }
+.bg-danger-lite {
+    background-color: #f7beba !important;
+}
 .bg-warning {
     background-color: $brand-warning !important;
 }
@@ -230,8 +239,22 @@ table.iconico-gantt{
 }
 
 .folder-section{
-    .flex{
+    .flex-all{
         display: flex;
+        margin: 20px 0;
+        justify-content: space-between;
+
+       
+
+        .folder-element{
+            display: inline-flex;
+            margin-right: 10px;
+
+        }
+    }
+    .flex-fav{
+        display: flex;
+        margin: 20px 0;
 
         .folder-element{
             display: inline-flex;
@@ -251,5 +274,13 @@ table.iconico-gantt{
         h3 > svg{
             padding-top: 2px;
         }
+    }
+}
+
+.member-list-section{
+    float: right;
+
+    h5{
+        margin-left: -10px;
     }
 }

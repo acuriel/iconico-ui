@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {apiService, authService} from "../../services";
 
 import Person from "@material-ui/icons/Person";
 import CalendarToday from "@material-ui/icons/CalendarToday";
@@ -9,8 +10,18 @@ import { addDays, dateToString, getNameInitials, BGS } from "../../helpers/utils
 
 
 export default function ConsultationInfo({currentConsultation, ...props}){
+  const [providers, setProviders] = useState([])
+
+  useEffect(() => {
+    apiService.getExternalMembers(currentConsultation._id).then(res => {
+      setProviders(res.data);
+    });
+  }, [])
+
+  
   return (
-    <div>
+    <div style={{width:"100%"}}>
+      
       <div>
         <Person
           style={{
@@ -29,11 +40,11 @@ export default function ConsultationInfo({currentConsultation, ...props}){
           }}
         />{" "}
         {dateToString(new Date(currentConsultation.IssuedOn))} -{" "}
-        {dateToString(addDays(new Date(currentConsultation.IssuedOn), currentConsultation.ExpiresIn))}
+        {dateToString(new Date(currentConsultation.ExpiresOn))}
       </div>
-      <div>
-        Miembros Internos
-        <AvatarGroup max={3}>
+      <div className="member-list-section">
+        <h5>Miembros Internos</h5>
+        <AvatarGroup>
           {currentConsultation.InternalMembers.map((m, k) => 
           <Avatar 
             key={k}
@@ -42,11 +53,9 @@ export default function ConsultationInfo({currentConsultation, ...props}){
             className={BGS[k % BGS.length]}
           >{getNameInitials(m.UserName)}</Avatar>)}
         </AvatarGroup>
-      </div>
-      {/* <div>
-        Miembros Externos
-        <AvatarGroup max={3}>
-          {c.ExternalMembers.map((m, k) => 
+        <h5>Miembros Externos</h5>
+        <AvatarGroup>
+          {providers.map((m, k) => 
           <Avatar 
             key={k}
             title={m.Receiver.UserName} 
@@ -54,7 +63,12 @@ export default function ConsultationInfo({currentConsultation, ...props}){
             className={BGS[k % BGS.length]}
           >{getNameInitials(m.Receiver.UserName)}</Avatar>)}
         </AvatarGroup>
-      </div> */}
-      <p style={{ marginTop: "15px" }}>{currentConsultation.Description}</p>
+      </div>
+      <div>
+        <h5>Descripción</h5>
+
+        <p style={{ marginTop: "15px" }}>{currentConsultation.Description}</p>
+      </div>
+      
     </div>)
 }

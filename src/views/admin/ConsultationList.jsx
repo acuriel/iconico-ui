@@ -23,6 +23,7 @@ import ConsultationDragableItem from "../../components/ConsultationInfo/Consulta
 // import { consultations } from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/buttonsStyle.js";
+import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 
 const useStyles = makeStyles(styles);
 
@@ -51,55 +52,7 @@ function CounsultationListAccordion({consultations, ...props}) {
               {/* {getInfoBadges()} */}
             </div>
           ),
-          content: (
-            <div>
-              <div>
-                <Person
-                  style={{
-                    fontSize: "1.5em",
-                    marginBottom: "-4px",
-                    marginRight: "5px"
-                  }}
-                />
-                {c.Author.UserName}
-                <CalendarToday
-                  style={{
-                    fontSize: "1.5em",
-                    marginBottom: "-4px",
-                    marginRight: "5px",
-                    marginLeft: "20px"
-                  }}
-                />{" "}
-                {dateToString(date)} -{" "}
-                {dateToString(addDays(date, c.ExpiresIn))}
-              </div>
-              <div>
-                Miembros Internos
-                <AvatarGroup max={3}>
-                  {c.InternalMembers.map((m, k) => 
-                  <Avatar 
-                    key={k}
-                    title={m.UserName} 
-                    alt={m.UserName}
-                    className={BGS[k % BGS.length]}
-                  >{getNameInitials(m.UserName)}</Avatar>)}
-                </AvatarGroup>
-              </div>
-              {/* <div>
-                Miembros Externos
-                <AvatarGroup max={3}>
-                  {c.ExternalMembers.map((m, k) => 
-                  <Avatar 
-                    key={k}
-                    title={m.Receiver.UserName} 
-                    alt={m.Receiver.UserName}
-                    className={BGS[k % BGS.length]}
-                  >{getNameInitials(m.Receiver.UserName)}</Avatar>)}
-                </AvatarGroup>
-              </div> */}
-              <p style={{ marginTop: "15px" }}>{c.Description}</p>
-            </div>
-          )
+          content: <ConsultationInfo currentConsultation={c}/>
         };
       })}
     />
@@ -116,6 +69,7 @@ export default function ConsultationList() {
 
 
   useEffect(() => {
+    console.log("Updated");
     (currentFolder 
       ? apiService.getConsultationsInFolder(currentFolder._id) 
       : apiService.getAllConsultations())
@@ -123,6 +77,7 @@ export default function ConsultationList() {
       const data = res.data;
       setConsultations(data);
       setLoading(false);
+      setUpdated(false);
     })
     .catch(err => console.log(err));
 

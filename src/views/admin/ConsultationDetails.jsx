@@ -17,6 +17,7 @@ import Tabs from "../../components/CustomTabs/CustomTabs";
 import { addDays, dateToString } from "../../helpers/utils";
 import Chat from "../../components/Chat/Chat";
 import Providers from "../../components/Chat/Providers";
+import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 
 
 function ConsultationDetails(props) {
@@ -52,7 +53,7 @@ function ConsultationDetails(props) {
             }}
           />{" "}
           {dateToString(date)} -{" "}
-          {dateToString(addDays(date, currentConsultation.ExpiresIn))}
+          {dateToString(new Date(currentConsultation.ExpiresOn))}
         </div>
         <p style={{ marginTop: "15px", marginBottom: "50px" }}>
           {currentConsultation.Description}
@@ -71,11 +72,13 @@ function ConsultationDetails(props) {
       <Tabs
         headerColor="info"
         rightButtonHandler={() => apiService.endConsultation(currentConsultation)}
+        rightButtonDisabled={currentConsultation.IsManuallyFinished}
         tabs={[
           {
             tabName: "Detalles",
             tabIcon: Assignment,
-            tabContent: details(),
+            // tabContent: details(),
+            tabContent: <ConsultationInfo currentConsultation={currentConsultation} />,
             limited: false
           },
           {

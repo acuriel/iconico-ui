@@ -26,7 +26,7 @@ export default function CustomTabs(props) {
     setValue(value);
   };
   const classes = useStyles();
-  const { headerColor, plainTabs, tabs, title, rightButtonHandler } = props;
+  const { headerColor, plainTabs, tabs, title, rightButtonHandler, rightButtonDisabled } = props;
   const cardTitle = classNames({
     [classes.cardTitle]: true,
   });
@@ -34,15 +34,17 @@ export default function CustomTabs(props) {
     <Card plain={plainTabs}>
       <CardHeader color={headerColor} plain={plainTabs}>
         {rightButtonHandler && (<Button
+            disabled={rightButtonDisabled}
             onClick={rightButtonHandler}
             variant="outlined"
             className={classes.marginRight + " tab-button"}
           >
-            <Close
+            
+            {!rightButtonDisabled && <Close
               className={classes.icons}
               style={{ marginTop: "-2px", marginRight: "2px" }}
-            />
-          Terminar
+            />}
+          {rightButtonDisabled ? "Terminada" : "Terminar"}
         </Button>)}
         {title !== undefined ? <div className={cardTitle}>{title}</div> : null}
         <Tabs

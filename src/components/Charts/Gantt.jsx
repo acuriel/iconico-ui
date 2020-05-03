@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { addDays, dateToStringShort, getWidth } from "../../helpers/utils";
 import { Link } from "react-router-dom";
-import { NavigateBefore, NavigateNext } from "@material-ui/icons";
+import { NavigateBefore, NavigateNext, Done, WatchLaterOutlined } from "@material-ui/icons";
 import IconButton from '@material-ui/core/IconButton';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
@@ -31,33 +31,42 @@ const dayInsideInterval = (date, start, end) => start <= date && date <= addDays
 
 const dayMarker = row => row % 2 === 0
 
-const getColorState = (startDate, endDate, focusDay=undefined) => {
-  // focusDay = focusDay || Date.now();
+const getColorState = (startDate, endDate, manuallyFinishedDate, focusDay=undefined) => {
+  focusDay = focusDay || Date.now();
+  if(manuallyFinishedDate && focusDay > addDays(manuallyFinishedDate, 1)){
+    return 'bg-danger-lite';
+  }
   // if(focusDay < startDate) return 'todo';
   // else if(focusDay <= endDate) return 'in-progress'
   // else return 'bg-danger'
   return 'bg-danger';
+
 }
 
-const GanttItem = ({element, getElementTitle, startDate, endDate, isCurrentUser,intervalStart, rowDays, ...props}) => {
+const GanttItem = ({element, title, startDate, endDate, manuallyFinishedDate, isCurrentUser,intervalStart, rowDays}) => {
   return (
     <tr className={isCurrentUser ? "active" : undefined}>
-      <td key={0} title={getElementTitle(element)} >
-        <Link to={"/admin/consulta/" + element._id}>{getElementTitle(element)}</Link>
+      <td key={0} title={title} >
+        <Link to={"/admin/consulta/" + element._id}>{title}</Link>
       </td>
       {[...Array(rowDays).keys()].map(d => {
         return (
           <td  className={dayMarker(d) ? ' time-mark':''}
             key={d + 1}
             title={dateToStringShort(addDays(intervalStart, d))}>
-              <div className={(dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate) ? getColorState(startDate, endDate) : '')}/>
+              <div className={(
+                dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate) 
+                ? getColorState(startDate, endDate, manuallyFinishedDate, addDays(intervalStart, d+1)) 
+                : '')}>
+                {manuallyFinishedDate && addDays(intervalStart, d).getDate() === manuallyFinishedDate.getDate() ? <Done/> : ""}
+              </div>
           </td>
         )})}
     </tr>
   )
 }
 
-export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, currentUser, getAuthorUser, ...props}) {
+export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, getManuallyFinishedDate, currentUser, getAuthorUser}) {
   const [rowDays, setRowDays] = useState(31);
   const [focusDate, setFocusDate] = useState(Date.now())
 
@@ -87,7 +96,7 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
               <KeyboardDatePicker
                 disableToolbar
                 variant="inline"
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inline"
                 label="Ir a fecha"
@@ -122,9 +131,10 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
           {elements.filter(elem => elementInsideInterval(elem, getStartDate, getEndDate, focusDate, rowDays)).map(
             (elem, i) => <GanttItem 
             element={elem} 
-            getElementTitle={getElementTitle} 
+            title={getElementTitle(elem)} 
             startDate={getStartDate(elem)}
             endDate={getEndDate(elem)}
+            manuallyFinishedDate={getManuallyFinishedDate(elem)}
             rowDays={rowDays}
             intervalStart = {getIntervalDates(focusDate, rowDays)[0]}
             isCurrentUser={currentUser.userName === getAuthorUser(elem)}

@@ -18,8 +18,8 @@ import Star from '@material-ui/icons/Star';
 import StarBorder from '@material-ui/icons/StarBorder';
 
 export default function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
-  const [pageStepSize, setPageStepSize] = useState(2);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageStepSize, setPageStepSize] = useState(8);
+  const [pageSize, setPageSize] = useState(8);
   const [pagePosition, setPagePosition] = useState(0);
   const [addingFolder, setAddingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
@@ -32,12 +32,26 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
       setFolders(res.data);
       setFolderAddedOrModified(false);
     })
-  }, [folderAddedOrModified])
+  }, [folderAddedOrModified, selectedFolder])
   
   const setFolder = folder => {
     setSelectedFolder(folder);
     folderSelectedHandler(folder);
   }
+
+  const addFolder = () => {
+    apiService.addNewFolder({FolderName:newFolderName}).then(res => {
+      setFolderAddedOrModified(true);
+      setNewFolderName("");
+      setAddingFolder(false)
+    })};
+
+  const handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+      addFolder()
+    }
+  }
+
 
   return (
     <div className="folder-section">
@@ -45,13 +59,12 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
         {addingFolder 
           ? (
             <div>
-              <TextField label="Nombre" onChange={e => setNewFolderName(e.target.value)} autoFocus />
-              <IconButton color="primary" title="Guardar" onClick={() => {
-                apiService.addNewFolder({FolderName:newFolderName}).then(res => {
-                  setFolderAddedOrModified(true);
-                  setNewFolderName("");
-                  setAddingFolder(false)
-                })}} >
+              <TextField label="Nombre" 
+                onChange={e => setNewFolderName(e.target.value)} 
+                onKeyPress={handleKeyPress}
+                autoFocus />
+              <IconButton color="primary" title="Guardar" 
+                onClick={() => addFolder()} >
                 <Check/>
               </IconButton>
               <IconButton color="secondary" title="Cancelar" onClick={() => setAddingFolder(false)} >
@@ -67,37 +80,44 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
         
       </div>
       <h3>Carpetas</h3>
-      <div className='flex'>
-        <FolderElement key={0} title="Todas" handler={() => setFolder(undefined)} updateEvent={updateEvent} color={selectedFolder ? "default" : "primary"} />
-        {folders.filter(f => f.isPinned).map((f, i) => <FolderElement key={i + 1} title={f.FolderName} folder={f} handler={() => setFolder(f)}  updateEvent={updateEvent} />)}
+      <div className='flex-fav'>
+        <h4 style={{marginRight:15}}>Favoritas</h4>
+        <FolderElement key={0} title="Todas" handler={() => setFolder(undefined)} noFolder={true} updateEvent={updateEvent} color={selectedFolder ? "default" : "primary"} />
+        {folders.filter(f => f.isPinned).map((f, i) => <FolderElement key={i + 1} folder={f} handler={() => setFolder(f)}  updateEvent={updateEvent} />)}
       </div>
-      <div className='flex'>
-        <Button variant="outlined" color="default" onClick={() => setPagePosition(0)} disabled={pagePosition === 0} >
-          <FastRewindIcon />
-        </Button>
-        <Button variant="outlined" color="default" onClick={() => setPagePosition(Math.min(0, pagePosition-pageStepSize))} disabled={pagePosition === 0} >
-          <KeyboardArrowLeftIcon />
-        </Button>
+      <div className='flex-all'>
+        <div>
+          <Button variant="outlined" color="default" onClick={() => setPagePosition(0)} disabled={pagePosition === 0} >
+            <FastRewindIcon />
+          </Button>
+          <Button variant="outlined" color="default" onClick={() => setPagePosition(Math.min(0, pagePosition-pageStepSize))} disabled={pagePosition === 0} >
+            <KeyboardArrowLeftIcon />
+          </Button>
+        </div>
+        <div className={"folder-list"}>
         {folders
           .filter(f => !f.isPinned)
           .slice(pagePosition, pagePosition + pageSize)
             .map((f, i)  => <FolderElement key={i}  updateEvent={updateEvent}
+                  folder={f} 
                   color={selectedFolder && selectedFolder._id === f._id ? "primary" : "default"} 
-                  title={f.FolderName}  folder={f}
+                  title={f.FolderName}
                   handler={() => setFolder(f)} />)}
-        <Button variant="outlined" color="default" 
-          onClick={() => setPagePosition(pagePosition+pageStepSize)} 
-          disabled={pagePosition >= folders.length - pageSize}
-        >
-          <KeyboardArrowRightIcon />
-        </Button>
-        <Button variant="outlined" color="default" 
-          onClick={() => setPagePosition(folders.length - pageSize)} 
-          disabled={pagePosition >= folders.length - pageSize}
-        >
-          <FastForwardIcon />
-        </Button>
-
+        </div>
+        <div>
+          <Button variant="outlined" color="default" 
+            onClick={() => setPagePosition(pagePosition+pageStepSize)} 
+            disabled={pagePosition >= folders.filter(f => !f.isPinned).length - pageSize}
+          >
+            <KeyboardArrowRightIcon />
+          </Button>
+          <Button variant="outlined" color="default" 
+            onClick={() => setPagePosition(folders.length - pageSize)} 
+            disabled={pagePosition >= folders.filter(f => !f.isPinned).length - pageSize}
+          >
+            <FastForwardIcon />
+          </Button>
+        </div>
       </div>
       <div className={"folder-title"}>
         <IconButton color="primary" title="Crear carpeta" onClick={() => {

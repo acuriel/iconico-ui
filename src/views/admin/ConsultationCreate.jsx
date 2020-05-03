@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 import {apiService, authService} from "../../services";
+import {addDays} from "../../helpers/utils";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,7 +10,12 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
-
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 // @material-ui/core components
 import Assignment from "@material-ui/icons/Assignment";
 
@@ -41,8 +47,7 @@ export default function ConsultationCreate(props) {
   const [newConsultation, setConsultation] = React.useState({
     Tittle: "",
     Description: "",
-    IssuedOn: Date.now(),
-    ExpiresIn: 0,
+    ExpiresOn: addDays(Date.now(), 10),
     InternalMembers: [],
     ExternalMembers: []
   });
@@ -77,7 +82,7 @@ export default function ConsultationCreate(props) {
       setDetailsInputState("error");
       allValid = false;
     }
-    if (!verifyNumber(newConsultation.ExpiresIn)) {
+    if (newConsultation.ExpiresOn <= Date.now()) {
       setExpireInputState("error");
       allValid = false;
     }
@@ -118,6 +123,7 @@ export default function ConsultationCreate(props) {
   return (
     <div>
       {alert}
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardHeader color="info" icon>
           <CardIcon color="info">
@@ -158,29 +164,24 @@ export default function ConsultationCreate(props) {
                 />
               </GridItem>
               <GridItem xs={6}>
-                <CustomInput
-                  labelText="Expira en (dias) *"
-                  success={expireInputState === "success"}
-                  error={expireInputState === "error"}
-                  id="expiresIn"
-                  formControlProps={{
-                    fullWidth: true
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="Fecha de expiración *"
+                  value={newConsultation.ExpiresOn}
+                  onChange={(date) => {
+                    console.log(date);
+                    setConsultation({
+                      ...newConsultation,
+                      ExpiresOn: date
+                    });
                   }}
-                  inputProps={{
-                    type: "number",
-                    required: true,
-                    onChange: e => {
-                      validateField(
-                        verifyNumber(e.target.value),
-                        setExpireInputState
-                      );
-                      setConsultation({
-                        ...newConsultation,
-                        ExpiresIn: parseInt(e.target.value)
-                      });
-                    }
-                  }}
-                />
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}/>
               </GridItem>
               <GridItem xs={12}>
                 <FormControl fullWidth className={efClasses.selectFormControl}>
@@ -217,7 +218,7 @@ export default function ConsultationCreate(props) {
                     </MenuItem>
                     {allIntMembers.map(m => (
                       <MenuItem
-                        key={m.id}
+                        key={m._id}
                         value={m}
                         classes={{
                           root: efClasses.selectMenuItem,
@@ -268,6 +269,7 @@ export default function ConsultationCreate(props) {
           </form>
         </CardBody>
       </Card>
+      </MuiPickersUtilsProvider>
     </div>
   );
 }

@@ -62,7 +62,7 @@ const getAllFolders = () => baseService.get(API_FOLD_URL);
 const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/GetConsultas`);
 const addNewFolder = folder => baseService.post(API_FOLD_URL, folder);
 const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {...folder, isPinned:!folder.isPinned});
-const addConsultationToFolder = (consultationId, folderId) => baseService.put(`${API_STAT_URL}${folderId}/${consultationId}`);
+const addConsultationToFolder = (consultationId, folderId) => baseService.put(`${API_STAT_URL}${consultationId}/${folderId ? folderId : ""}`);
 
 export const apiService = {
   getAllConsultations,
@@ -82,5 +82,5 @@ export const apiService = {
   getConsultationsInFolder,
   addNewFolder,
   togglePinFolder,
-  addConsultationToFolder
+  addConsultationToFolder,
 }
