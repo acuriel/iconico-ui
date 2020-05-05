@@ -13,7 +13,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 // @material-ui/core components
