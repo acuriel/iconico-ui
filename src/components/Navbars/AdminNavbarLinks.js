@@ -12,7 +12,6 @@ import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 import Hidden from "@material-ui/core/Hidden";
 import Popper from "@material-ui/core/Popper";
-import Divider from "@material-ui/core/Divider";
 
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
@@ -79,7 +78,6 @@ export default function HeaderLinks(props) {
   return (
     <div className={wrapper}>
       <CustomInput
-        rtlActive={rtlActive}
         formControlProps={{
           className: classes.top + " " + classes.search
         }}

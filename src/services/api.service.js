@@ -47,6 +47,7 @@ const getExternalMembers = consultationId =>
   baseService.get(
     `${API_EMEM_URL}GetExternalConnections/${consultationId}`
   );
+  const getAllExternalConnections = () => baseService.get(`${API_EMEM_URL}GetExternalConnections/`);
 
 const getAllExternalMembers = () => baseService.get(API_AEXM_URL);
 
@@ -74,6 +75,7 @@ export const apiService = {
   uploadImage,
   getAllInternalMembers,
   getExternalMembers,
+  getAllExternalConnections,
   addExternalToConsultation,
   getExternalConversation,
   addExternalMessage,

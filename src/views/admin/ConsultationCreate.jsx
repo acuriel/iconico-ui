@@ -6,10 +6,6 @@ import {addDays} from "../../helpers/utils";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -19,7 +15,6 @@ import {
 import Assignment from "@material-ui/icons/Assignment";
 
 // core components
-import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Card from "../../components/Card/Card";
 import CardHeader from "../../components/Card/CardHeader";
@@ -27,6 +22,12 @@ import CardIcon from "../../components/Card/CardIcon";
 import CardBody from "../../components/Card/CardBody";
 import GridContainer from "../../components/Grid/GridContainer";
 import GridItem from "../../components/Grid/GridItem";
+import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+
 
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
 import saStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
@@ -37,6 +38,8 @@ const useStyles = makeStyles(styles);
 const useSWStyles = makeStyles(saStyles);
 const useefStyles = makeStyles(efstyles);
 
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function ConsultationCreate(props) {
   const classes = useStyles();
@@ -138,32 +141,30 @@ export default function ConsultationCreate(props) {
           <form>
             <GridContainer>
               <GridItem xs={6}>
-                <CustomInput
-                  labelText="Titulo *"
+                <TextField
+                  style={{marginTop:"16px"}}
+                  label="Titulo"
+                  autoFocus={true}
+                  required
                   success={titleInputState === "success"}
                   error={titleInputState === "error"}
-                  id="title"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "text",
-                    required: true,
-                    onChange: e => {
-                      validateField(
-                        verifyLength(e.target.value),
-                        setTitleInputState
-                      );
-                      setConsultation({
-                        ...newConsultation,
-                        Tittle: e.target.value
-                      });
-                    }
+                  fullWidth
+                  value={newConsultation.Tittle}
+                  onChange={ e => {
+                    validateField(
+                      verifyLength(e.target.value),
+                      setTitleInputState
+                    );
+                    setConsultation({
+                      ...newConsultation,
+                      Tittle: e.target.value
+                    });
                   }}
                 />
               </GridItem>
               <GridItem xs={6}>
                 <KeyboardDatePicker
+                  style={{width:"100%"}}
                   disableToolbar
                   variant="inline"
                   format="dd/MM/yyyy"
@@ -183,78 +184,51 @@ export default function ConsultationCreate(props) {
                   }}/>
               </GridItem>
               <GridItem xs={12}>
-                <FormControl fullWidth className={efClasses.selectFormControl}>
-                  <InputLabel
-                    htmlFor="simple-select"
-                    className={efClasses.selectLabel}
-                  >
-                    Miembros Internos
-                  </InputLabel>
-                  <Select
-                    multiple
-                    value={newConsultation.InternalMembers}
-                    onChange={e => {
-                      setConsultation({
-                        ...newConsultation,
-                        InternalMembers: e.target.value
-                      });
-                    }}
-                    MenuProps={{ className: efClasses.selectMenu }}
-                    classes={{ select: efClasses.select }}
-                    inputProps={{
-                      name: "multipleSelect",
-                      id: "multiple-select"
-                    }}
-                  >
-                    <MenuItem
-                      disabled
-                      classes={{
-                        root: efClasses.selectMenuItem,
-                        selected: efClasses.selectMenuItemSelected
-                      }}
-                    >
-                      Seleccione los Miembros Internos
-                    </MenuItem>
-                    {allIntMembers.map(m => (
-                      <MenuItem
-                        key={m._id}
-                        value={m}
-                        classes={{
-                          root: efClasses.selectMenuItem,
-                          selected: efClasses.selectMenuItemSelected
-                        }}
-                      >
-                        {m.UserName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  style={{marginTop:"10px"}}
+                  multiple
+                  id="checkboxes-tags-demo"
+                  options={allIntMembers}
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option.UserName}
+                  renderOption={(option, { selected }) => (
+                    <React.Fragment>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option.UserName}
+                    </React.Fragment>
+                  )}
+                  onChange={(_, v) => setConsultation({...newConsultation, InternalMembers: v})}
+                  fullWidth={true}
+                  renderInput={(params) => (
+                    <TextField {...params}  label="Miembros Internos" placeholder="Email" />
+                  )}
+              />
               </GridItem>
               <GridItem xs={12}>
-                <CustomInput
-                  labelText="Detalles *"
+                <TextField
+                style={{marginTop:"10px"}}
+                  required
+                  label="Detalles"
                   success={detailsInputState === "success"}
                   error={detailsInputState === "error"}
-                  id="details"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "text",
-                    autoComplete: "off",
-                    multiline: true,
-                    rows: 7,
-                    required: true,
-                    onChange: e => {
-                      validateField(
-                        verifyLength(e.target.value),
-                        setDetailsInputState
-                      );
-                      setConsultation({
-                        ...newConsultation,
-                        Description: e.target.value
-                      });
-                    }
+                  fullWidth={true}
+                  multiline={true}
+                  rows={7}
+                  value={newConsultation.Description}
+                  onChange= {e => {
+                    validateField(
+                      verifyLength(e.target.value),
+                      setDetailsInputState
+                    );
+                    setConsultation({
+                      ...newConsultation,
+                      Description: e.target.value
+                    });
                   }}
                 />
               </GridItem>

@@ -23,6 +23,7 @@ import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 function ConsultationDetails(props) {
   const [currentConsultation, setCurrentConsultation] = useState({});
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0)
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
     apiService.getConsultationById(props.match.params.id).then(res => {
@@ -30,7 +31,7 @@ function ConsultationDetails(props) {
       setCurrentConsultation(data);
       setLoading(false);
     });
-  }, []);
+  }, [reload]);
   const details = () => {
     let date = new Date(currentConsultation.IssuedOn);
     return (
@@ -71,7 +72,7 @@ function ConsultationDetails(props) {
       </div>
       <Tabs
         headerColor="info"
-        rightButtonHandler={() => apiService.endConsultation(currentConsultation)}
+        rightButtonHandler={() => apiService.endConsultation(currentConsultation).then(res => setReload(reload+1))}
         rightButtonDisabled={currentConsultation.IsManuallyFinished}
         tabs={[
           {

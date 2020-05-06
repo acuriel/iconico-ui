@@ -24,24 +24,28 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
   const [addingFolder, setAddingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [folders, setFolders] = useState([]);
-  const [folderAddedOrModified, setFolderAddedOrModified] = useState(false);
+  const [reload, setReload] = useState(0);
   const [selectedFolder, setSelectedFolder] = useState(undefined)
   
   useEffect(() => {
     apiService.getAllFolders().then(res => {
       setFolders(res.data);
-      setFolderAddedOrModified(false);
+      if(selectedFolder){
+        const folder = res.data.find(f => f._id === selectedFolder._id);
+        if(folder) setSelectedFolder(folder);
+      }
     })
-  }, [folderAddedOrModified, selectedFolder])
+  }, [reload])
   
   const setFolder = folder => {
     setSelectedFolder(folder);
+    setReload(reload+1);
     folderSelectedHandler(folder);
   }
 
   const addFolder = () => {
     apiService.addNewFolder({FolderName:newFolderName}).then(res => {
-      setFolderAddedOrModified(true);
+      setReload(reload+1);
       setNewFolderName("");
       setAddingFolder(false)
     })};
@@ -83,7 +87,12 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
       <div className='flex-fav'>
         <h4 style={{marginRight:15}}>Favoritas</h4>
         <FolderElement key={0} title="Todas" handler={() => setFolder(undefined)} noFolder={true} updateEvent={updateEvent} color={selectedFolder ? "default" : "primary"} />
-        {folders.filter(f => f.isPinned).map((f, i) => <FolderElement key={i + 1} folder={f} handler={() => setFolder(f)}  updateEvent={updateEvent} />)}
+        {folders.filter(f => f.isPinned).map((f, i) => 
+          <FolderElement key={i + 1} 
+            folder={f} 
+            handler={() => setFolder(f)} 
+            updateEvent={updateEvent} 
+            color={selectedFolder && selectedFolder._id === f._id ? "primary" : "default"}/>)}
       </div>
       <div className='flex-all'>
         <div>
@@ -120,10 +129,9 @@ export default function FolderSection({folderSelectedHandler, updateEvent, ...pr
         </div>
       </div>
       <div className={"folder-title"}>
-        <IconButton color="primary" title="Crear carpeta" onClick={() => {
-          apiService.togglePinFolder(selectedFolder);
-          setFolderAddedOrModified(true);
-        }} disabled={!selectedFolder} >
+        <IconButton color="primary" title="Crear carpeta" 
+          onClick={() => {apiService.togglePinFolder(selectedFolder).then(_ => setReload(reload+1))}} 
+          disabled={!selectedFolder} >
           {!selectedFolder || selectedFolder.isPinned ? <Star/> : <StarBorder/>}
         </IconButton>
         <h3><Folder/> {selectedFolder ? selectedFolder.FolderName : "Todas"}</h3>

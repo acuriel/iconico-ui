@@ -122,7 +122,7 @@ export default function ConsultationList() {
           </div>
         ):""
       }
-      <h4 style={{ marginTop: "20px" }}>Consultas Asociadas</h4>
+      <h4 style={{ marginTop: "50px" }}>Consultas Asociadas</h4>
       {printConsultations(
         consultations.filter(
           c => c.Author.UserName !== authService.currentUserValue.userName

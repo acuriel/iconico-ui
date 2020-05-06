@@ -285,3 +285,17 @@ table.iconico-gantt{
     }
 
 }
+
+.status{
+    font-weight: bold;
+
+    &.done{
+        color: $brand-success;
+    }
+    &.in-progress{
+        color: $brand-warning;
+    }
+    &.blocked{
+        color: $brand-danger;
+    }
+}
