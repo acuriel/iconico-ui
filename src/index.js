@@ -1,30 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Switch, Redirect } from "react-router-dom";
-import { createBrowserHistory } from "history";
-import './index.css';
-import AdminLayout from './layouts/Admin'
-import AuthLayout from './layouts/Auth'
 
-import { DndProvider } from 'react-dnd'
-import Backend from 'react-dnd-html5-backend'
+import App from 'App';
 
-import "assets/scss/material-dashboard-pro-react.scss?v=1.8.0";
-
-
-const history = createBrowserHistory();
 
 ReactDOM.render(
   <React.StrictMode>
-    <DndProvider backend={Backend}>
-    <Router history={history}>
-      <Switch>
-        <Route path="/auth" component={AuthLayout}/>
-        <Route path="/admin" component={AdminLayout}/>
-        <Redirect from="/" to="/admin/dashboard" />
-      </Switch>
-    </Router>
-    </DndProvider>
+    <App/>
   </React.StrictMode>,
   document.getElementById('root')
 );
