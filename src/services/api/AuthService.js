@@ -1,5 +1,6 @@
 import {baseService} from './AxiosApiService';
 import { BehaviorSubject } from 'rxjs';
+import UserMigrator from 'migrators/UserMigrator';
 
 
 class AuthService {
@@ -7,15 +8,10 @@ class AuthService {
   LS_KEY = 'iconicoUser'
   currentUserSubject;
 
-
   constructor(){
     const savedToken = localStorage.getItem(this.LS_KEY);
-    if(savedToken){
-      const user = JSON.parse(savedToken);
-      this.currentUserSubject = new BehaviorSubject(user);
-    }else{
-      this.currentUserSubject = new BehaviorSubject(null);
-    }
+    const user = UserMigrator.loadFromToken(savedToken);
+    this.currentUserSubject = new BehaviorSubject(user);
   }
 
   async login(email, password){
@@ -37,7 +33,7 @@ class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  isInternal(user){
+  isInternal(user=undefined){
     const checkUser = user || this.currentUserSubject.value;
     if(!checkUser) return false;
     const domain = checkUser.email.indexOf('@') > -1 ? checkUser.email.split('@')[1] : "";

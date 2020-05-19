@@ -29,11 +29,11 @@ const scrollToBottom = () => {
 const useConversation = (consultationId, getEndpoint, externalData=undefined) => {
   const [conv, setConv] = useState([]);
   useEffect(() => {
-    (externalData 
+    (externalData
       ? getEndpoint(
-        consultationId, 
-        externalData.Author._id, 
-        externalData.Receiver._id) 
+        consultationId,
+        externalData.Author._id,
+        externalData.Receiver._id)
       : getEndpoint(consultationId)
       ).then(res => {
       setConv(res.data);
@@ -54,11 +54,11 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   // const liveChat = (consultationId, setConv) => {
   //   return new Promise((resolve, reject) => {
   //     try {
-  //       (currentExternal 
+  //       (currentExternal
   //         ? getEndpoint(
-  //           consultationId, 
-  //           currentExternal.Author._id, 
-  //           currentExternal.Receiver._id) 
+  //           consultationId,
+  //           currentExternal.Author._id,
+  //           currentExternal.Receiver._id)
   //         : getEndpoint(consultationId)
   //         ).then(res => {
   //         if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
@@ -75,11 +75,11 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   // };
 
   const liveChat = (consultationId, setConv) => {
-    const request = currentExternal 
+    const request = currentExternal
       ? getEndpoint(
-        consultationId, 
-        currentExternal.Author._id, 
-        currentExternal.Receiver._id) 
+        consultationId,
+        currentExternal.Author._id,
+        currentExternal.Receiver._id)
       : getEndpoint(consultationId);
     request.then(res => {
       if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
@@ -93,15 +93,15 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   useEffect(() => {
     setInterval(liveChat, 1000, currentElement._id, setConv);
   }, []);
-  
+
   const sendMessage = () => {
     let newConv = {
       _idConsulta: currentElement._id,
       Author: { UserName: authService.currentUserValue.userName },
-      Mentions: currentExternal 
+      Mentions: currentExternal
         ? (
-          currentExternal.Receiver.UserEmail === authService.currentUserValue.userName 
-            ? [currentExternal.Author] 
+          currentExternal.Receiver.UserEmail === authService.currentUserValue.userName
+            ? [currentExternal.Author]
             : [currentExternal.Receiver]
           ) : [],
       ThisCommentAnswersTo: comMsg,
@@ -132,7 +132,6 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
       sendMessage()
       setText("");
       inputRef.current.value = "";
-      console.log('enter press here! ')
     }
   }
 

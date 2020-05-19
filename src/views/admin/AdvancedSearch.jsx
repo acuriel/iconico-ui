@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { dateToString } from "../../helpers/utils";
 import StoreContext from "stores/RootStore";
 
-import {apiService} from "../../services";
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -69,9 +68,9 @@ function AdvancedSearch() {
   const filterData = (conultations)=>{
     return conultations.filter(cons => {
       return (title.length === 0 || secuencialStringSearch(title, cons.title)) &&
-      (member.length === 0 || cons.internalMembers.some(m => m.userName === member) 
+      (member.length === 0 || cons.internalMembers.some(m => m.userName === member)
         || allConnections.some(cnx => cnx._idConsulta === cons.id && cnx.Receiver.UserName === member)) &&
-      (!fromDate || fromDate <= (cons.finished ? cons.finishedOn : cons.expiresOn)) && 
+      (!fromDate || fromDate <= (cons.finished ? cons.finishedOn : cons.expiresOn)) &&
       (!toDate || toDate  >= cons.issuedOn)
     }
       )
@@ -98,7 +97,6 @@ function AdvancedSearch() {
             options={consultationStore.getAllMembers}
             getOptionLabel={(option) => option.userName}
             onChange={(_, v) => setMember(v)}
-            fullWidth
             renderInput={(params) => <TextField {...params} label="Miembros"/>}
           />
         </GridItem>

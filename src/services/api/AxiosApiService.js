@@ -26,28 +26,26 @@ export default class AxiosApiService {
   }
 
   _getUrl(...urls){
-    const paths = []
+    var paths = []
     urls.forEach(url => {
-      console.log(url.split('/'));
-      paths.concat(url.split('/'))
+      paths = paths.concat(url.split('/'))
     });
     return this.modelUrl + paths.join('/');
   }
 
   getItem(id) {
-    return this.baseService.get(this._getUrl(this.modelUrl, id))
+    return this.baseService.get(this._getUrl(id))
   }
   getAll() {
-    console.log(this.modelUrl);
     return this.baseService.get(this.modelUrl)
   }
   create(elem) {
     return this.baseService.post(this.modelUrl, elem);
   }
   update(elem) {
-    return this.baseService.put(this._getUrl(this.modelUrl, elem.id), elem)
+    return this.baseService.put(this._getUrl(elem.id), elem)
   }
   remove(id) {
-    return this.baseService.delete(this._getUrl(this.modelUrl, id))
+    return this.baseService.delete(this._getUrl(id))
   }
 }

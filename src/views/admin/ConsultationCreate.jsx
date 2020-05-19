@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { observer } from "mobx-react";
+import StoreContext from "stores/RootStore";
+
 import SweetAlert from "react-bootstrap-sweetalert";
 
 import {apiService, authService} from "../../services";
@@ -41,10 +44,11 @@ const useefStyles = makeStyles(efstyles);
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function ConsultationCreate(props) {
+function ConsultationCreate(props) {
+  const {consultationStore, uiStore} = useContext(StoreContext);
+
   const classes = useStyles();
   const saClases = useSWStyles();
-  const efClasses = useefStyles();
   const [alert, setAlert] = React.useState(null);
   const [newConsultation, setConsultation] = React.useState({
     Tittle: "",
@@ -55,76 +59,58 @@ export default function ConsultationCreate(props) {
   });
   const [allIntMembers, setAllIntMembers] = useState([]);
   const [titleInputState, setTitleInputState] = useState("");
-  const [expireInputState, setExpireInputState] = useState("");
   const [detailsInputState, setDetailsInputState] = useState("");
 
   useEffect(() => {
     apiService.getAllInternalMembers().then(res => setAllIntMembers(res.data.filter(m => m.UserName !== authService.currentUserValue.userName)));
   }, []);
-
   const validateField = (valid, setStateFunc) => {
     if (valid) setStateFunc("success");
     else setStateFunc("error");
   };
 
   const verifyLength = (value, length = 1) => value.length >= length;
-  const verifyNumber = (value, minValue = 1, maxValue = Number.MAX_VALUE) =>
-    value >= minValue && value <= maxValue;
 
   const hideAlert = () => {
     setAlert(null);
   };
-  const successAlert = newConsultation => {
-    let allValid = true;
-    if (!verifyLength(newConsultation.Tittle)) {
-      setTitleInputState("error");
-      allValid = false;
+  const getAlert = () => {
+    var result = "";
+    if(uiStore.sweetAlertState === "success"){
+      result = (
+        <SweetAlert
+          success
+          style={{ display: "block" }}
+          title="Consulta creada!"
+          onConfirm={() => props.history.push("/admin/consultas")}
+          onCancel={() => hideAlert()}
+          confirmBtnCssClass={saClases.button + " " + saClases.success} >
+            Ha gregado una nueva consulta
+        </SweetAlert>)
     }
-    if (!verifyLength(newConsultation.Description)) {
-      setDetailsInputState("error");
-      allValid = false;
+    else if(uiStore.sweetAlertState === "error"){
+      result = (
+        <SweetAlert
+          success
+          style={{ display: "block" }}
+          title="Consulta creada!"
+          onConfirm={() => {
+            uiStore.sweetAlertState = null;
+            props.history.push("/admin/consultas")}
+          }
+          onCancel={() => hideAlert()}
+          confirmBtnCssClass={saClases.button + " " + saClases.success}
+        >
+          Ha gregado una nueva consulta
+        </SweetAlert>
+      )
     }
-    if (newConsultation.ExpiresOn <= Date.now()) {
-      setExpireInputState("error");
-      allValid = false;
-    }
-    if (allValid) {
-      apiService
-        .addNewConsultation(newConsultation)
-        .then(res => {
-          setAlert(
-            <SweetAlert
-              success
-              style={{ display: "block" }}
-              title="Consulta creada!"
-              onConfirm={() => props.history.push("/admin/consultas")}
-              onCancel={() => hideAlert()}
-              confirmBtnCssClass={saClases.button + " " + saClases.success}
-            >
-              Ha gregado una nueva consulta
-            </SweetAlert>
-          );
-        })
-        .catch(res => {
-          setAlert(
-            <SweetAlert
-              error
-              style={{ display: "block" }}
-              title="Hubo un error"
-              onConfirm={() => hideAlert()}
-              onCancel={() => hideAlert()}
-              confirmBtnCssClass={saClases.button + " " + saClases.success}
-            >
-              Hubo un problema agregando la consulta - {res.statusText}
-            </SweetAlert>
-          );
-        });
-    }
+    return result;
   };
 
   return (
     <div>
-      {alert}
+      {getAlert()}
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardHeader color="info" icon>
@@ -148,17 +134,14 @@ export default function ConsultationCreate(props) {
                   required
                   success={titleInputState === "success"}
                   error={titleInputState === "error"}
-                  fullWidth
-                  value={newConsultation.Tittle}
+                  fullWidth={true}
+                  value={consultationStore.editingConsultation.title}
                   onChange={ e => {
                     validateField(
                       verifyLength(e.target.value),
                       setTitleInputState
                     );
-                    setConsultation({
-                      ...newConsultation,
-                      Tittle: e.target.value
-                    });
+                    consultationStore.editingConsultation.title = e.target.value
                   }}
                 />
               </GridItem>
@@ -171,13 +154,9 @@ export default function ConsultationCreate(props) {
                   margin="normal"
                   id="date-picker-inline"
                   label="Fecha de expiración *"
-                  value={newConsultation.ExpiresOn}
+                  value={consultationStore.editingConsultation.expiresOn}
                   onChange={(date) => {
-                    console.log(date);
-                    setConsultation({
-                      ...newConsultation,
-                      ExpiresOn: date
-                    });
+                    consultationStore.editingConsultation.expiresOn = date;
                   }}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
@@ -188,9 +167,9 @@ export default function ConsultationCreate(props) {
                   style={{marginTop:"10px"}}
                   multiple
                   id="checkboxes-tags-demo"
-                  options={allIntMembers}
+                  options={consultationStore.allInternalMembers}
                   disableCloseOnSelect
-                  getOptionLabel={(option) => option.UserName}
+                  getOptionLabel={(option) => option.userName}
                   renderOption={(option, { selected }) => (
                     <React.Fragment>
                       <Checkbox
@@ -199,10 +178,10 @@ export default function ConsultationCreate(props) {
                         style={{ marginRight: 8 }}
                         checked={selected}
                       />
-                      {option.UserName}
+                      {option.userName}
                     </React.Fragment>
                   )}
-                  onChange={(_, v) => setConsultation({...newConsultation, InternalMembers: v})}
+                  onChange={(_, v) => consultationStore.editingConsultation.internalMembers = v}
                   fullWidth={true}
                   renderInput={(params) => (
                     <TextField {...params}  label="Miembros Internos" placeholder="Email" />
@@ -219,23 +198,20 @@ export default function ConsultationCreate(props) {
                   fullWidth={true}
                   multiline={true}
                   rows={7}
-                  value={newConsultation.Description}
+                  value={consultationStore.editingConsultation.description}
                   onChange= {e => {
                     validateField(
                       verifyLength(e.target.value),
                       setDetailsInputState
                     );
-                    setConsultation({
-                      ...newConsultation,
-                      Description: e.target.value
-                    });
+                    consultationStore.editingConsultation.description = e.target.value
                   }}
                 />
               </GridItem>
             </GridContainer>
             <Button
               color="success"
-              onClick={() => successAlert(newConsultation)}
+              onClick={() => consultationStore.saveNewConsultation()}
             >
               Guardar
             </Button>
@@ -246,3 +222,6 @@ export default function ConsultationCreate(props) {
     </div>
   );
 }
+
+
+export default observer(ConsultationCreate);

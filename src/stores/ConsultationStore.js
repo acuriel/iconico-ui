@@ -1,9 +1,11 @@
-import {observable, action, computed, runInAction, decorate} from 'mobx';
+import {observable, action, computed, runInAction, decorate, autorun} from 'mobx';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import InternalMemberService from 'services/api/InternalMemberService';
+import UserFolderService from 'services/api/UserFolderService';
 import UserMigrator from 'migrators/UserMigrator';
+import UserFolderMigrator from 'migrators/UserFolderMigrator';
 import ExternalMemberService from 'services/api/ExternalMemberService';
 
 export default class ConsultationStore extends BaseStore{
@@ -11,22 +13,29 @@ export default class ConsultationStore extends BaseStore{
   allInternalMembers = [];
   allExternalMembers = [];
   editingConsultation = this.getEmptyConsultation();
-  
+  selectedFolder = "all";
+  myFolders = [];
+
   constructor(rootStore){
     super(rootStore);
-    this.getAllConsultations();
+    this.fetchConsultationsInFolder();
     this.getAllInternalMembers();
+    this.fetchMyFolders();
   }
 
-  getAllConsultations = async () => {
-    try{
-      const result = await ConsultationService.getAll();
-      runInAction(() => {
-        this.consultations.replace(result.data.map(c => ConsultationMigrator.loadFromResponse(c)))
+  getAllConsultations = () => {
+    this.setFolder("all");
+  }
+
+  saveNewConsultation = async () => {
+    try {
+      await ConsultationService.create(ConsultationMigrator.saveForRequest(this.editingConsultation));
+      runInAction(()=>{
+        this.editingConsultation = this.getEmptyConsultation();
+        this.rootStore.uiStore.sweetAlertState = "success"
       })
-    }
-    catch(error){
-      console.log(error);
+    } catch (error) {
+      this.rootStore.uiStore.sweetAlertState = "error"
     }
   }
 
@@ -36,11 +45,57 @@ export default class ConsultationStore extends BaseStore{
     )
   }
 
+  // FOLDERS
+
+  fetchMyFolders = async () => {
+    try{
+      const result = await UserFolderService.getAll();
+      runInAction(() => {
+        this.myFolders.replace(result.data.map(f => UserFolderMigrator.loadFromResponse(f)))
+      })
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
+  setFolder = (folder) => {
+    this.selectedFolder = folder;
+    this.fetchConsultationsInFolder();
+  }
+
+  fetchConsultationsInFolder = async () => {
+    try{
+      const result = await ( typeof this.selectedFolder === "string"
+        ? ConsultationService.getAll()
+        : UserFolderService.getConsultations(this.selectedFolder)
+      );
+      console.log(result.data);
+      runInAction(() => {
+        this.consultations.replace(result.data.map(c => ConsultationMigrator.loadFromResponse(c)))
+      })
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
+  addFolder = async (name) => {
+    try {
+      await UserFolderService.create(UserFolderMigrator.getNewFolder(name));
+      this.fetchMyFolders();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // MEMBERS
+
   getAllInternalMembers = async () => {
     try{
-      const result = await ExternalMemberService.getAll();
+      const result = await InternalMemberService.getAll();
       runInAction(() => {
-        this.allExternalMembers.replace(result.data.map(c => UserMigrator.loadFromResponse(c)))
+        this.allInternalMembers.replace(result.data.map(c => UserMigrator.loadFromResponse(c)))
       })
     }
     catch(error){
@@ -54,24 +109,13 @@ export default class ConsultationStore extends BaseStore{
 
   getAllExternalMembers = async () => {
     try{
-      const result = await InternalMemberService.getAll();
+      const result = await ExternalMemberService.getAll();
       runInAction(() => {
-        this.allInternalMembers.replace(result.data.map(c => UserMigrator.loadFromResponse(c)))
+        this.allExternalMembers.replace(result.data.map(c => UserMigrator.loadFromResponse(c)))
       })
     }
     catch(error){
       console.log(error);
-    }
-  }
-
-  saveNewConsultation = async () => {
-    try {
-      await ConsultationService.create(this.editingConsultation);
-      runInAction(()=>{
-        this.editingConsultation = this.getEmptyConsultation();
-      })
-    } catch (error) {
-      
     }
   }
 
@@ -90,11 +134,16 @@ decorate(ConsultationStore, {
   consultations: observable,
   activeConsultations: computed,
   allInternalMembers: observable,
+  myFolders: observable,
   allExternalMembers: observable,
   editingConsultation: observable,
   getAllConsultations: action,
+  fetchConsultationsInFolder: action,
+  fetchMyFolders: action,
   getAllInternalMembers: action,
   getAllExternalMembers: action,
-  getAllMembers: computed, 
+  setFolder: action,
+  addFolder: action,
+  getAllMembers: computed,
   saveNewConsultation: action
 })

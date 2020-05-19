@@ -3,7 +3,8 @@ class UserMigrator{
     return {
       id: data._id,
       userName: data.UserName,
-      email: data.UserEmail
+      email: data.UserEmail,
+      isInternal: data.UserName.endsWith("iconico.es")
     }
   }
   saveForRequest(data) {
@@ -27,8 +28,9 @@ class UserMigrator{
       userName: parsedUser.userName,
       email: parsedUser.userName,
       token: parsedUser.access_token,
+      isInternal: parsedUser.userName.endsWith("iconico.es")
     }
   }
-} 
+}
 
 export default new UserMigrator();

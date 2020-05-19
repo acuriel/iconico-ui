@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
-
-import { authService} from "../../services";
+import React, { useEffect, useContext } from "react";
+import StoreContext from "stores/RootStore";
+import { observer } from "mobx-react";
 
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,13 +19,11 @@ import CardFooter from "components/Card/CardFooter";
 import GanttChart from "../../components/Charts/Gantt";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
-import StoreContext from "stores/RootStore";
-import { observer } from "mobx-react";
 
 const useStyles = makeStyles(styles);
 
 function Dashboard() {
-  const {consultationStore} = useContext(StoreContext);
+  const {consultationStore, uiStore} = useContext(StoreContext);
 
   useEffect(() => {
     consultationStore.getAllConsultations();
@@ -95,7 +93,7 @@ function Dashboard() {
             getStartDate={ c => c.issuedOn}
             getEndDate={ c => c.expiresOn}
             getManuallyFinishedDate={c => c.finished ? c.finishedOn : undefined}
-            currentUser={authService.currentUserValue}
+            currentUser={uiStore.signedUser}
             getAuthorUser={c => c.author.userName}
            />
         </GridItem>
