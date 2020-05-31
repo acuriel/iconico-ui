@@ -20,7 +20,6 @@ import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 const useStyles = makeStyles(styles);
 
 function CounsultationListAccordion({consultations, ...props}) {
-
   return (
     <Accordion
       style={{backgroundColor:"transparent !important"}}
@@ -43,8 +42,10 @@ function ConsultationList() {
   const classes = useStyles();
   const {consultationStore, uiStore} = useContext(StoreContext)
 
-  const [currentFolder, setCurrentFolder] = useState(undefined);
-  const [updated, setUpdated] = useState(false);
+  useEffect(() => {
+    consultationStore.getAllConsultations();
+  }, [])
+
   return (
     <div>
       {uiStore.signedUser.isInternal
@@ -60,9 +61,9 @@ function ConsultationList() {
           Nueva Consulta
         </Button>) : ""
       }
-      <FolderSection folderSelectedHandler={(f) => setCurrentFolder(f)}  updateEvent={setUpdated}/>
+      <FolderSection/>
       <div>
-        {consultationStore.consultations.length === 0
+        {consultationStore.activeConsultations.length === 0
           ? <p>No existen consultas</p>
           : <CounsultationListAccordion consultations={consultationStore.consultations}/>
         }

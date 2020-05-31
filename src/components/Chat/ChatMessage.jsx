@@ -6,26 +6,12 @@ import Reply from "@material-ui/icons/Reply";
 import RemoveRedEye from "@material-ui/icons/RemoveRedEye";
 
 import ChatBubble from './ChatBubble'
+import { observer } from "mobx-react";
 
 
-export default function ChatMessage({ msg, setReplyMsg, ...props }){
-  const showReplyButton = () => {
-    if (authService.currentUserValue.userName !== msg.Author.UserName)
-      return (
-        <Button
-          color="info"
-          justIcon
-          simple
-          round
-          onClick={() => setReplyMsg(msg)}
-          style={{ float: "right", marginRight: "-10px" }}
-        >
-          <Reply />
-        </Button>
-      );
-  };
+function ChatMessage({ msg, replyAction, ...props }){
   const showImage = () => {
-    if (msg.ImageData) {
+    if (msg.imageData) {
       return (
         <div
           style={{
@@ -35,7 +21,7 @@ export default function ChatMessage({ msg, setReplyMsg, ...props }){
           }}
         >
           <br />
-          <a href={`data:${msg.ImageMimeType};base64,${msg.ImageData}`}>
+          <a href={`data:${msg.imageMimeType};base64,${msg.imageData}`}>
             <div className="image-cover">
               <RemoveRedEye />
             </div>
@@ -43,7 +29,7 @@ export default function ChatMessage({ msg, setReplyMsg, ...props }){
           <img
             alt="Attachment"
             className="chat-image"
-            src={`data:${msg.ImageMimeType};base64,${msg.ImageData}`}
+            src={`data:${msg.imageMimeType};base64,${msg.imageData}`}
           />
           <br />
         </div>
@@ -52,16 +38,14 @@ export default function ChatMessage({ msg, setReplyMsg, ...props }){
   };
   return (
     <div>
-      <ChatBubble msg={msg} pushRight={authService.currentUserValue.userName === msg.Author.UserName}>
-        {showReplyButton()}
+      <ChatBubble msg={msg} pushRight={authService.currentUserValue.userName === msg.author.userName}>
+        {authService.currentUserValue.userName === msg.author.userName || <Reply onClick={() => replyAction(msg)}/>}
         {showImage()}
-        <span>{msg.Author.UserName}</span>
-        {msg.ThisCommentAnswersTo !== null ? (
-          <ChatBubble msg={msg.ThisCommentAnswersTo} />
-        ) : (
-          ""
-        )}
+        <span>{msg.author.userName}</span>
+        {msg.replyTo && <ChatBubble msg={msg.replyTo}><span>{msg.replyTo.author.userName}</span> </ChatBubble>}
       </ChatBubble>
     </div>
   );
 };
+
+export default observer(ChatMessage);

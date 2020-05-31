@@ -62,7 +62,7 @@ const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 const getAllFolders = () => baseService.get(API_FOLD_URL);
 const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/Consultas`);
 const addNewFolder = folder => baseService.post(API_FOLD_URL, folder);
-const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {...folder, isPinned:!folder.isPinned});
+const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder.id}`, {...folder, isPinned:!folder.isPinned});
 const addConsultationToFolder = (consultationId, folderId) => baseService.put(`${API_STAT_URL}${consultationId}/${folderId ? folderId : ""}`);
 
 export const apiService = {

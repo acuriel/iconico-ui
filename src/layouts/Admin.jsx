@@ -142,7 +142,7 @@ export default function Dashboard(props) {
                   <Redirect from="/admin" to="/admin/dashboard" />
                 </Switch>
               ) : (
-                <Redirect to="/auth/login-page" />
+                <Redirect to="/auth/login" />
               )}
             </div>
           </div>

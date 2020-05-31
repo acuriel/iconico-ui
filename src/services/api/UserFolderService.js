@@ -6,8 +6,6 @@ class UserFolderService extends AxiosApiService{
   }
 
   getConsultations(elem){
-
-    console.log(this._getUrl(elem.id, "Consultas"));
     return this.baseService.get(this._getUrl(elem.id, "Consultas"))
   }
 }

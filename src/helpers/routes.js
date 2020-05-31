@@ -88,7 +88,7 @@ export const dashboardRoutes = [
 
 export const authRoutes = [
   {
-    path: "/login-page",
+    path: "/login",
     name: "Login Page",
     component: LoginPage,
     layout: "/auth"
@@ -97,7 +97,7 @@ export const authRoutes = [
 
 export const errorRoutes = [
   {
-    path: "/error-page",
+    path: "/error",
     name: "Error Page",
     component: ErrorPage,
     layout: "/auth"

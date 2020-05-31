@@ -67,9 +67,9 @@ function AdvancedSearch() {
 
   const filterData = (conultations)=>{
     return conultations.filter(cons => {
-      return (title.length === 0 || secuencialStringSearch(title, cons.title)) &&
-      (member.length === 0 || cons.internalMembers.some(m => m.userName === member)
-        || allConnections.some(cnx => cnx._idConsulta === cons.id && cnx.Receiver.UserName === member)) &&
+      return (!title || title.length === 0 || secuencialStringSearch(title, cons.title)) &&
+      (!member || member.length === 0 || cons.internalMembers.some(m => m.userName === member)
+        || cons.externalMembers.some(cnx => cnx._idConsulta === cons.id && cnx.Receiver.UserName === member)) &&
       (!fromDate || fromDate <= (cons.finished ? cons.finishedOn : cons.expiresOn)) &&
       (!toDate || toDate  >= cons.issuedOn)
     }
@@ -96,7 +96,7 @@ function AdvancedSearch() {
             id="combo-box-demo"
             options={consultationStore.getAllMembers}
             getOptionLabel={(option) => option.userName}
-            onChange={(_, v) => setMember(v)}
+            onChange={(_, v) => setMember(v ? v.userName : '')}
             renderInput={(params) => <TextField {...params} label="Miembros"/>}
           />
         </GridItem>
@@ -152,7 +152,7 @@ function AdvancedSearch() {
           {filterData(consultationStore.consultations).map((consultation) =>  (
             <TableRow key={consultation.id}>
               <TableCell component="th" scope="row">
-                <Link to={"/admin/consulta/" + consultation._id}> {consultation.title}</Link>
+                <Link to={"/admin/consulta/" + consultation.id}> {consultation.title}</Link>
               </TableCell>
               <TableCell align="right">{consultation.author.userName}</TableCell>
               <TableCell align="right">{dateToString(new Date(consultation.issuedOn))}</TableCell>

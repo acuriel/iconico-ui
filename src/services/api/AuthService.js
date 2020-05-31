@@ -10,13 +10,13 @@ class AuthService {
 
   constructor(){
     const savedToken = localStorage.getItem(this.LS_KEY);
-    const user = UserMigrator.loadFromToken(savedToken);
+    const user = savedToken ? UserMigrator.loadFromToken(savedToken) : null;
     this.currentUserSubject = new BehaviorSubject(user);
   }
 
   async login(email, password){
     const res = await baseService.post(
-      this.API_LOGIN_URL, 
+      this.API_LOGIN_URL,
       `grant_type=password&username=${email}&password=${password}`,
       {
         headers: {

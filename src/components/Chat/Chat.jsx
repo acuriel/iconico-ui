@@ -17,6 +17,7 @@ import AddPhotoAlternate from "@material-ui/icons/AddPhotoAlternate";
 import PhotoSizeSelectActual from "@material-ui/icons/PhotoSizeSelectActual";
 import Reply from "@material-ui/icons/Reply";
 import { authService } from "../../services";
+import { observer } from "mobx-react";
 
 
 const scrollToBottom = () => {
@@ -44,35 +45,14 @@ const useConversation = (consultationId, getEndpoint, externalData=undefined) =>
   return [conv, setConv];
 };
 
-export default function Chat({ currentElement, currentExternal, noEditing, getEndpoint, postEndpoint, ...props }) {
+function Chat({ currentElement, currentExternal, noEditing, getEndpoint, postEndpoint, ...props }) {
   const [text, setText] = useState("");
   const [comMsg, setComMsg] = useState(null);
   const inputRef = useRef();
   const [conv, setConv] = useConversation(currentElement._id, getEndpoint, currentExternal);
   const [showAttaching, setShowAttaching] = useState(false);
   const [attachedFile, setAttachedFile] = useState(undefined);
-  // const liveChat = (consultationId, setConv) => {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       (currentExternal
-  //         ? getEndpoint(
-  //           consultationId,
-  //           currentExternal.Author._id,
-  //           currentExternal.Receiver._id)
-  //         : getEndpoint(consultationId)
-  //         ).then(res => {
-  //         if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
-  //           sessionStorage.setItem("chat_count", res.data.length);
-  //           setConv(res.data);
-  //           scrollToBottom();
-  //         }
-  //       });
-  //       return resolve;
-  //     } catch (error) {
-  //       return reject(error);
-  //     }
-  //   }).then(setTimeout(() => liveChat(consultationId, setConv), 3000));
-  // };
+
 
   const liveChat = (consultationId, setConv) => {
     const request = currentExternal
@@ -91,7 +71,10 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
   }
 
   useEffect(() => {
-    setInterval(liveChat, 1000, currentElement._id, setConv);
+    const chatInterval = setInterval(liveChat, 1000, currentElement._id, setConv);
+    return () => {
+      clearInterval(chatInterval);
+    }
   }, []);
 
   const sendMessage = () => {
@@ -210,3 +193,5 @@ export default function Chat({ currentElement, currentExternal, noEditing, getEn
     </div>
   );
 }
+
+export default observer(Chat);

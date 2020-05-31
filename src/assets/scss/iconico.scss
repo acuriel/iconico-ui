@@ -27,9 +27,19 @@
     margin-top: 20px;
     background-color: #dedede;
 
+    svg{
+        &:first-of-type{
+            float: right;
+            margin-top: -5px;
+            margin-right: -40px;
+            cursor: pointer;
+        }
+    }
     span{
         padding-bottom: 50px;
         font-weight: bold;
+
+
     }
     .bubble-msg{
         max-width: 300px;
@@ -47,7 +57,7 @@
 .chat-conversation{
     height: 500px;
     overflow-y:scroll;
-    
+
     .chat-image{
         width: 380px;
     }
@@ -79,7 +89,7 @@
                 color: white;
             }
         }
-        
+
     }
     .bubble-msg.current-user {
         display: block;
@@ -239,31 +249,38 @@ table.iconico-gantt{
 }
 
 .folder-section{
-    .flex-all{
-        display: flex;
-        margin: 20px 0;
-        justify-content: space-between;
+    .folder-controls{
+        padding-top: 10px;
+        padding-bottom: 20px;
 
-       
+        .flex-all{
+            display: flex;
+            margin: 20px 0;
+            justify-content: space-between;
 
-        .folder-element{
-            display: inline-flex;
-            margin-right: 10px;
 
+
+            .folder-element{
+                display: inline-flex;
+                margin-right: 10px;
+
+            }
+        }
+        .flex-fav{
+            display: flex;
+            margin: 20px 0;
+
+            .folder-element{
+                display: inline-flex;
+                margin-right: 10px;
+
+            }
         }
     }
-    .flex-fav{
-        display: flex;
-        margin: 20px 0;
 
-        .folder-element{
-            display: inline-flex;
-            margin-right: 10px;
-
-        }
-    }
     .add-folder{
         float: right;
+        margin-top: -20px;
     }
 
     .folder-title{
@@ -278,8 +295,8 @@ table.iconico-gantt{
 }
 
 .member-list-section{
-    float: right;
-
+    margin-left: 20px;
+    padding-bottom: 10px;
     h5{
         margin-left: -10px;
     }

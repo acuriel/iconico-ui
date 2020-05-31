@@ -25,34 +25,36 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
   const [pageSize, setPageSize] = useState(8);
   const [pagePosition, setPagePosition] = useState(0);
   const [addingFolder, setAddingFolder] = useState(false);
-  const [newFolderName, setNewFolderName] = useState("");
-  const [folders, setFolders] = useState([]);
-  const [reload, setReload] = useState(0);
-  const [selectedFolder, setSelectedFolder] = useState(undefined)
+  const [startedToWrite, setStartedToWrite] = useState(false);
 
-  const {consultationStore, uiStore} = useContext(StoreContext)
+  const {consultationStore} = useContext(StoreContext)
 
 
   useEffect(() => {
     consultationStore.fetchMyFolders();
   }, [])
 
-  const setFolder = folder => {
-    setSelectedFolder(folder);
-    setReload(reload+1);
-    folderSelectedHandler(folder);
-  }
 
   const addFolder = async () => {
-    await consultationStore.addFolder(newFolderName)
-    setNewFolderName("");
+    await consultationStore.addFolder()
     setAddingFolder(false)
+    setStartedToWrite(false);
   };
 
   const handleKeyPress = (event) => {
-    if(event.key === 'Enter'){
+    if(event.key === 'Enter' && !getError()){
       addFolder()
     }
+  }
+
+  const getError = () => {
+    if(startedToWrite) {
+      if(consultationStore.newFolder.name.length < 3)
+        return "Debe tener al menos 3 letras";
+      if(consultationStore.myFolders.some(f => f.name.toLowerCase() === consultationStore.newFolder.name.toLowerCase()))
+        return "Ya existe dicha carpeta";
+    }
+    return undefined;
   }
 
 
@@ -63,14 +65,20 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
           ? (
             <div>
               <TextField label="Nombre"
-                onChange={e => setNewFolderName(e.target.value)}
+                onChange={e => {
+                  consultationStore.newFolder.name = e.target.value;
+                  setStartedToWrite(true);
+                }}
                 onKeyPress={handleKeyPress}
+                error={getError()}
+                helperText={getError()}
                 autoFocus />
               <IconButton color="primary" title="Guardar"
+                disabled={getError()}
                 onClick={() => addFolder()} >
                 <Check/>
               </IconButton>
-              <IconButton color="secondary" title="Cancelar" onClick={() => setAddingFolder(false)} >
+              <IconButton color="secondary" title="Cancelar" onClick={() => {setAddingFolder(false); setStartedToWrite(false);}} >
                 <Close />
               </IconButton>
             </div>
@@ -83,58 +91,61 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
 
       </div>
       <h3>Carpetas</h3>
-      <div className='flex-fav'>
-        <h4 style={{marginRight:15}}>Favoritas</h4>
-        <FolderElement key={0} title="Todas" handler={() => consultationStore.setFolder("all")} noFolder={true} updateEvent={updateEvent} color={selectedFolder ? "default" : "primary"} />
-        {consultationStore.myFolders.filter(f => f.isPinned).map((f, i) =>
-          <FolderElement key={i + 1}
-            folder={f}
-            handler={() => consultationStore.setFolder(f)}
-            updateEvent={updateEvent}
-            title={f.name}
-            color={selectedFolder && selectedFolder.id === f.id ? "primary" : "default"}/>)}
-      </div>
-      <div className='flex-all'>
-        <div>
-          <Button variant="outlined" color="default" onClick={() => setPagePosition(0)} disabled={pagePosition === 0} >
-            <FastRewindIcon />
-          </Button>
-          <Button variant="outlined" color="default" onClick={() => setPagePosition(Math.min(0, pagePosition-pageStepSize))} disabled={pagePosition === 0} >
-            <KeyboardArrowLeftIcon />
-          </Button>
+      <div className='folder-controls'>
+        <div className='flex-fav'>
+          <h4 style={{marginRight:15}}>Favoritas</h4>
+          <FolderElement key={0} title="Todas" handler={() => consultationStore.setFolder(undefined)} noFolder={true} updateEvent={updateEvent} color={consultationStore.selectedFolder ? "default" : "primary"} />
+          {consultationStore.myFolders.filter(f => f.isPinned).map((f, i) =>
+            <FolderElement key={i + 1}
+              folder={f}
+              handler={() => consultationStore.setFolder(f)}
+              updateEvent={updateEvent}
+              title={f.name}
+              color={consultationStore.selectedFolder?.id === f.id ? "primary" : "default"}/>)}
         </div>
-        <div className={"folder-list"}>
-        {consultationStore.myFolders
-          .filter(f => !f.isPinned)
-          .slice(pagePosition, pagePosition + pageSize)
-            .map((f, i)  => <FolderElement key={i}  updateEvent={updateEvent}
-                  folder={f}
-                  color={selectedFolder && selectedFolder.id === f.id ? "primary" : "default"}
-                  title={f.name}
-                  handler={() => consultationStore.setFolder(f)} />)}
-        </div>
-        <div>
-          <Button variant="outlined" color="default"
-            onClick={() => setPagePosition(pagePosition+pageStepSize)}
-            disabled={pagePosition >= folders.filter(f => !f.isPinned).length - pageSize}
-          >
-            <KeyboardArrowRightIcon />
-          </Button>
-          <Button variant="outlined" color="default"
-            onClick={() => setPagePosition(folders.length - pageSize)}
-            disabled={pagePosition >= folders.filter(f => !f.isPinned).length - pageSize}
-          >
-            <FastForwardIcon />
-          </Button>
+        <div className='flex-all'>
+          <div>
+            <Button variant="outlined" color="default" onClick={() => setPagePosition(0)} disabled={pagePosition === 0} >
+              <FastRewindIcon />
+            </Button>
+            <Button variant="outlined" color="default" onClick={() => setPagePosition(Math.min(0, pagePosition-pageStepSize))} disabled={pagePosition === 0} >
+              <KeyboardArrowLeftIcon />
+            </Button>
+          </div>
+          <div className={"folder-list"}>
+          {consultationStore.myFolders
+            .filter(f => !f.isPinned)
+            .slice(pagePosition, pagePosition + pageSize)
+              .map((f, i)  => <FolderElement key={i + 1}
+                folder={f}
+                handler={() => consultationStore.setFolder(f)}
+                updateEvent={updateEvent}
+                title={f.name}
+                color={consultationStore.selectedFolder?.id === f.id ? "primary" : "default"}/>)}
+          </div>
+          <div>
+            <Button variant="outlined" color="default"
+              onClick={() => setPagePosition(pagePosition+pageStepSize)}
+              disabled={pagePosition >= consultationStore.myFolders.filter(f => !f.isPinned).length - pageSize}
+            >
+              <KeyboardArrowRightIcon />
+            </Button>
+            <Button variant="outlined" color="default"
+              onClick={() => setPagePosition(consultationStore.myFolders.length - pageSize)}
+              disabled={pagePosition >= consultationStore.myFolders.filter(f => !f.isPinned).length - pageSize}
+            >
+              <FastForwardIcon />
+            </Button>
+          </div>
         </div>
       </div>
       <div className={"folder-title"}>
         <IconButton color="primary" title="Crear carpeta"
-          onClick={() => {apiService.togglePinFolder(selectedFolder).then(_ => setReload(reload+1))}}
-          disabled={!selectedFolder} >
-          {!selectedFolder || selectedFolder.isPinned ? <Star/> : <StarBorder/>}
+          onClick={() => consultationStore.selectedFolder.togglePinned()}
+          disabled={!consultationStore.selectedFolder} >
+          {!consultationStore.selectedFolder || consultationStore.selectedFolder.isPinned ? <Star/> : <StarBorder/>}
         </IconButton>
-        <h3><Folder/> {selectedFolder ? selectedFolder.FolderName : "Todas"}</h3>
+        <h3><Folder/> {consultationStore.selectedFolder? consultationStore.selectedFolder.name : "Todas"}</h3>
       </div>
     </div>
   );

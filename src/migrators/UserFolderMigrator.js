@@ -13,7 +13,6 @@ class UserFolderMigrator{
     return {
       _id: data.id,
       FolderName: data.name,
-      Author: UserMigrator.saveForRequest(data.author),
       isPinned: data.isPinned,
     }
   }

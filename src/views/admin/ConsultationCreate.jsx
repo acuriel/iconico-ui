@@ -50,20 +50,12 @@ function ConsultationCreate(props) {
   const classes = useStyles();
   const saClases = useSWStyles();
   const [alert, setAlert] = React.useState(null);
-  const [newConsultation, setConsultation] = React.useState({
-    Tittle: "",
-    Description: "",
-    ExpiresOn: addDays(Date.now(), 10),
-    InternalMembers: [],
-    ExternalMembers: []
-  });
-  const [allIntMembers, setAllIntMembers] = useState([]);
   const [titleInputState, setTitleInputState] = useState("");
   const [detailsInputState, setDetailsInputState] = useState("");
 
   useEffect(() => {
-    apiService.getAllInternalMembers().then(res => setAllIntMembers(res.data.filter(m => m.UserName !== authService.currentUserValue.userName)));
   }, []);
+
   const validateField = (valid, setStateFunc) => {
     if (valid) setStateFunc("success");
     else setStateFunc("error");
@@ -118,8 +110,8 @@ function ConsultationCreate(props) {
             <Assignment />
           </CardIcon>
           <h4 className={classes.cardIconTitle}>
-            {newConsultation.Tittle !== ""
-              ? newConsultation.Tittle
+            {consultationStore.editingConsultation.title !== ""
+              ? consultationStore.editingConsultation.title
               : "Nueva Consulta"}
           </h4>
         </CardHeader>
@@ -132,7 +124,6 @@ function ConsultationCreate(props) {
                   label="Titulo"
                   autoFocus={true}
                   required
-                  success={titleInputState === "success"}
                   error={titleInputState === "error"}
                   fullWidth={true}
                   value={consultationStore.editingConsultation.title}
@@ -182,7 +173,6 @@ function ConsultationCreate(props) {
                     </React.Fragment>
                   )}
                   onChange={(_, v) => consultationStore.editingConsultation.internalMembers = v}
-                  fullWidth={true}
                   renderInput={(params) => (
                     <TextField {...params}  label="Miembros Internos" placeholder="Email" />
                   )}
@@ -193,7 +183,6 @@ function ConsultationCreate(props) {
                 style={{marginTop:"10px"}}
                   required
                   label="Detalles"
-                  success={detailsInputState === "success"}
                   error={detailsInputState === "error"}
                   fullWidth={true}
                   multiline={true}

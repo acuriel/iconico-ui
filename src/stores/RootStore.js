@@ -1,11 +1,11 @@
 import React from 'react';
-import ConsultationStore from './ConsultationStore';
+import ConsultationListStore from './ConsultationListStore';
 import UIStore from './UIStore';
 
 
 class RootStoreClass {
   constructor() {
-    this.consultationStore = new ConsultationStore(this);
+    this.consultationStore = new ConsultationListStore(this);
     this.uiStore= new UIStore(this);
   }
 }

@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { withRouter } from "react-router";
+import StoreContext from "stores/RootStore";
+import ConversationStore from "stores/Conversation";
+import { observer } from "mobx-react";
 import {apiService, authService} from "../../services";
 import Loading from "../../components/Loading/Loading.js";
 
@@ -9,91 +12,49 @@ import Assignment from "@material-ui/icons/Assignment";
 import PlaylistAddCheck from "@material-ui/icons/PlaylistAddCheck";
 import People from "@material-ui/icons/People";
 import Code from "@material-ui/icons/Code";
-import Person from "@material-ui/icons/Person";
-import CalendarToday from "@material-ui/icons/CalendarToday";
 // core components
 import Tabs from "../../components/CustomTabs/CustomTabs";
 
-import { addDays, dateToString } from "../../helpers/utils";
-import Chat from "../../components/Chat/Chat";
+import Chat from "../../components/Chat/ChatMobx";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 
 
-function ConsultationDetails(props) {
-  const [currentConsultation, setCurrentConsultation] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [reload, setReload] = useState(0)
-  useEffect(() => {
-    // eslint-disable-next-line react/prop-types
-    apiService.getConsultationById(props.match.params.id).then(res => {
-      let data = res.data;
-      setCurrentConsultation(data);
-      setLoading(false);
-    });
-  }, [reload]);
-  const details = () => {
-    let date = new Date(currentConsultation.IssuedOn);
-    return (
-      <div>
-        <div>
-          <Person
-            style={{
-              fontSize: "1.5em",
-              marginBottom: "-4px",
-              marginRight: "5px"
-            }}
-          />
-          {currentConsultation.Author.UserName}
-          <CalendarToday
-            style={{
-              fontSize: "1.5em",
-              marginBottom: "-4px",
-              marginRight: "5px",
-              marginLeft: "20px"
-            }}
-          />{" "}
-          {dateToString(date)} -{" "}
-          {dateToString(new Date(currentConsultation.ExpiresOn))}
-        </div>
-        <p style={{ marginTop: "15px", marginBottom: "50px" }}>
-          {currentConsultation.Description}
-        </p>
-      </div>
-    );
-  };
+function ConsultationDetails({match}) {
+  const {consultationStore} = useContext(StoreContext);
 
-  return loading ? (
+  useEffect(() => {
+    consultationStore.selectConsultation(match.params.id);
+  }, [])
+
+  return !consultationStore.selectedConsultation ? (
     <Loading />
   ) : (
     <div>
       <div>
-        <h3>{currentConsultation.Tittle}</h3>
+        <h3>{consultationStore.selectedConsultation.title}</h3>
       </div>
       <Tabs
         headerColor="info"
-        rightButtonHandler={() => apiService.endConsultation(currentConsultation).then(res => setReload(reload+1))}
-        rightButtonDisabled={currentConsultation.IsManuallyFinished}
+        rightButtonHandler={() => consultationStore.selectedConsultation.terminate()}
+        rightButtonDisabled={consultationStore.selectedConsultation.finished}
         tabs={[
           {
             tabName: "Detalles",
             tabIcon: Assignment,
-            // tabContent: details(),
-            tabContent: <ConsultationInfo currentConsultation={currentConsultation} />,
+            tabContent: <ConsultationInfo currentConsultation={consultationStore.selectedConsultation} />,
             limited: false
           },
           {
             tabName: "Chat",
             tabIcon: Comment,
-            tabContent: <Chat currentElement={currentConsultation} 
-              getEndpoint={apiService.getConsultationConv} 
-              postEndpoint={apiService.addMessage}/>,
+            tabContent: <Chat conversation={consultationStore.selectedConsultation.conversation}/>,
             limited: true
           },
           {
             tabName: "Proveedores",
             tabIcon: People,
-            tabContent: <Providers currentElement={currentConsultation} />,
+            tabContent: <Providers currentElement={consultationStore.selectedConsultation} />,
             limited: false
           },
           {
@@ -114,4 +75,4 @@ function ConsultationDetails(props) {
   );
 }
 
-export default withRouter(ConsultationDetails);
+export default withRouter(observer(ConsultationDetails));

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { createBrowserHistory } from "history";
+import { toast } from 'react-toastify';
 import AdminLayout from './layouts/Admin'
 import AuthLayout from './layouts/Auth'
 
@@ -9,9 +10,13 @@ import Backend from 'react-dnd-html5-backend'
 import StoreContext, {RootStore} from './stores/RootStore'
 
 import "assets/scss/material-dashboard-pro-react.scss?v=1.8.0";
+import 'react-toastify/dist/ReactToastify.css';
 
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
+toast.configure({
+  position: toast.POSITION.BOTTOM_RIGHT
+});
 
 function App() {
   return (

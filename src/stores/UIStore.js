@@ -3,7 +3,7 @@ import BaseStore from './BaseStore';
 import AuthService from 'services/api/AuthService';
 
 export default class UIStore extends BaseStore{
-  signedUser;
+  signedUser = {userName:''};
   loadingState = false;
   sweetAlertState = null;
 

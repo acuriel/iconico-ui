@@ -27,7 +27,7 @@ function Dashboard() {
 
   useEffect(() => {
     consultationStore.getAllConsultations();
-  })
+  }, [])
 
   const classes = useStyles();
   return (
@@ -88,7 +88,7 @@ function Dashboard() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <GanttChart
-            elements={consultationStore.consultations}
+            elements={consultationStore.activeConsultations}
             getElementTitle={ c => c.title}
             getStartDate={ c => c.issuedOn}
             getEndDate={ c => c.expiresOn}

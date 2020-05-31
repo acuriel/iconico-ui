@@ -1,6 +1,9 @@
 import {observable, action, computed, runInAction, decorate, autorun} from 'mobx';
+import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
+import Consultation from './Consultation';
+import UserFolder from './UserFolder';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import InternalMemberService from 'services/api/InternalMemberService';
 import UserFolderService from 'services/api/UserFolderService';
@@ -8,12 +11,14 @@ import UserMigrator from 'migrators/UserMigrator';
 import UserFolderMigrator from 'migrators/UserFolderMigrator';
 import ExternalMemberService from 'services/api/ExternalMemberService';
 
-export default class ConsultationStore extends BaseStore{
+export default class ConsultationListStore extends BaseStore{
   consultations = [];
   allInternalMembers = [];
   allExternalMembers = [];
   editingConsultation = this.getEmptyConsultation();
-  selectedFolder = "all";
+  selectedConsultation = undefined;
+  selectedFolder = undefined;
+  newFolder = new UserFolder();
   myFolders = [];
 
   constructor(rootStore){
@@ -24,7 +29,7 @@ export default class ConsultationStore extends BaseStore{
   }
 
   getAllConsultations = () => {
-    this.setFolder("all");
+    this.setFolder(undefined);
   }
 
   saveNewConsultation = async () => {
@@ -33,9 +38,21 @@ export default class ConsultationStore extends BaseStore{
       runInAction(()=>{
         this.editingConsultation = this.getEmptyConsultation();
         this.rootStore.uiStore.sweetAlertState = "success"
+        this.fetchConsultationsInFolder();
       })
     } catch (error) {
       this.rootStore.uiStore.sweetAlertState = "error"
+    }
+  }
+
+  selectConsultation = async (id) => {
+    try {
+      const result = await ConsultationService.getItem(id);
+      runInAction(()=> {
+        this.selectedConsultation = new Consultation(ConsultationMigrator.loadFromResponse(result.data))
+      });
+    } catch (e) {
+      toast.error("No se pudo obtener la consulta", {toastId:"consultation-unreachable"});
     }
   }
 
@@ -51,41 +68,54 @@ export default class ConsultationStore extends BaseStore{
     try{
       const result = await UserFolderService.getAll();
       runInAction(() => {
-        this.myFolders.replace(result.data.map(f => UserFolderMigrator.loadFromResponse(f)))
+        this.myFolders.replace(result.data.map(f => new UserFolder(UserFolderMigrator.loadFromResponse(f))))
       })
     }
     catch(error){
+      console.log('Here');
       console.log(error);
+      if(error === '401'){
+        toast.warn("Su sesión ha vencido", {toastId:"unauthorized"});
+      }
     }
   }
 
   setFolder = (folder) => {
-    this.selectedFolder = folder;
+    this.selectedFolder = folder ? folder : undefined;
     this.fetchConsultationsInFolder();
   }
 
   fetchConsultationsInFolder = async () => {
     try{
-      const result = await ( typeof this.selectedFolder === "string"
+      const result = await (!this.selectedFolder || typeof this.selectedFolder === "string"
         ? ConsultationService.getAll()
         : UserFolderService.getConsultations(this.selectedFolder)
       );
-      console.log(result.data);
       runInAction(() => {
-        this.consultations.replace(result.data.map(c => ConsultationMigrator.loadFromResponse(c)))
-      })
+        this.consultations.replace(
+          result.data.map(
+            c => new Consultation(ConsultationMigrator.loadFromResponse(c))
+          )
+        );
+      });
     }
     catch(error){
       console.log(error);
+      toast.error(error, {toastId:"server-unreachable"});
     }
   }
 
-  addFolder = async (name) => {
+  addFolder = async () => {
     try {
-      await UserFolderService.create(UserFolderMigrator.getNewFolder(name));
+      await this.newFolder.save();
+      const name = this.newFolder.name;
+      toast.success(`Carpeta ${name} agreagada`, {toastId:"save-folfer"});
       this.fetchMyFolders();
+      this.newFolder = new UserFolder();
     } catch (error) {
       console.log(error);
+      toast.error("No se pudo guardar la carpeta", {toastId:"save-folfer"});
+
     }
   }
 
@@ -130,20 +160,24 @@ export default class ConsultationStore extends BaseStore{
   }
 }
 
-decorate(ConsultationStore, {
+decorate(ConsultationListStore, {
   consultations: observable,
   activeConsultations: computed,
   allInternalMembers: observable,
   myFolders: observable,
   allExternalMembers: observable,
+  selectedConsultation: observable,
   editingConsultation: observable,
   getAllConsultations: action,
   fetchConsultationsInFolder: action,
   fetchMyFolders: action,
   getAllInternalMembers: action,
   getAllExternalMembers: action,
+  selectConsultation: action,
   setFolder: action,
   addFolder: action,
+  newFolder: observable,
   getAllMembers: computed,
+  selectedFolder: observable,
   saveNewConsultation: action
 })
