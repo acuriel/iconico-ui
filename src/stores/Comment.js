@@ -1,5 +1,6 @@
-import {observable, action, decorate, runInAction} from 'mobx';
+import {observable, action, decorate, computed} from 'mobx';
 import ConsultationService from '../services/api/ConsultationService';
+import AuthService from '../services/api/AuthService';
 import BaseStore from './BaseStore';
 import CommentMigrator from 'migrators/CommentMigrator';
 
@@ -17,7 +18,7 @@ export default class Comment extends BaseStore{
   imageData = undefined;
 
 
-  constructor(comment, conversation){
+  constructor(comment, conversation=undefined){
     super();
     this.conversation = conversation;
     if(comment){
@@ -50,7 +51,7 @@ export default class Comment extends BaseStore{
     try {
       console.log("Toggled");
       await ConsultationService.toggleHighlight(this.consultationId, this.id);
-      this.conversation._reload(true);
+      if(this.conversation) this.conversation._reload(true);
     } catch (error) {
       console.log(error);
     }
@@ -62,6 +63,14 @@ export default class Comment extends BaseStore{
     } catch (error) {
 
     }
+  }
+
+  get highlightsListString(){
+    return this.highLightedBy.map(u => u.userName).join(", ");
+  }
+
+  get highlightedByMe(){
+    return this.highLightedBy.some(u => u.userName === AuthService.currentUserValue.userName);
   }
 
 }
@@ -78,5 +87,7 @@ decorate(Comment, {
   replyTo: observable,
   imageData: observable,
   _update:action,
+  highlightsListString: computed,
+  highlightedByMe: computed,
   // toggleHighlight: action,
 })

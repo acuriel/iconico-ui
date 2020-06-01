@@ -1,9 +1,8 @@
-import {observable, action, decorate, runInAction, autorun} from 'mobx';
+import {observable, action, decorate, runInAction} from 'mobx';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import CommentMigrator from 'migrators/CommentMigrator';
 import Comment from './Comment';
-import ConsultationMigrator from 'migrators/ConsultationMigrator';
 
 export default class Conversation extends BaseStore{
   consultation = undefined;

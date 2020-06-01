@@ -5,7 +5,6 @@ import Conversation from './Conversation'
 
 import { animateScroll } from "react-scroll";
 
-import CustomInput from "components/CustomInput/CustomInput";
 import Button from "components/CustomButtons/Button";
 import ImageUpload from "components/CustomUpload/ImageUpload";
 import TextField from '@material-ui/core/TextField';
@@ -54,7 +53,6 @@ function Chat({ conversation }) {
           <TextField
             style={{ display: "inline-block" }}
             label="Mensaje"
-            autoFocus={true}
             required
             fullWidth={true}
             value={conversation.newMessage.text}

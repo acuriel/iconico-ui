@@ -18,6 +18,7 @@ import Tabs from "../../components/CustomTabs/CustomTabs";
 import Chat from "../../components/Chat/ChatMobx";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
+import Highlights from "components/ConsultationInfo/Highlights";
 
 
 function ConsultationDetails({match}) {
@@ -60,7 +61,7 @@ function ConsultationDetails({match}) {
           {
             tabName: "Highlights",
             tabIcon: Code,
-            tabContent: <p>Seccion en construccion</p>,
+            tabContent: <Highlights currentConsultation={consultationStore.selectedConsultation}/>,
             limited: true
           },
           {

@@ -3,7 +3,6 @@ import UserMigrator from "./UserMigrator";
 class CommentMigrator{
   loadFromResponse(data) {
     if(!data) return undefined;
-
     return {
       id: data._id,
       consultationId: data._idConsulta,

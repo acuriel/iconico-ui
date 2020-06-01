@@ -1,7 +1,6 @@
 import React from "react";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import Favorite from "@material-ui/icons/Favorite";
-import IconButton from '@material-ui/core/IconButton';
 
 
 export default function ChatBubble({ msg, ...props }) {

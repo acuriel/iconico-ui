@@ -4,6 +4,7 @@ import BaseStore from './BaseStore';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import CommentMigrator from '../migrators/CommentMigrator';
 import Conversation from './Conversation';
+import Comment from './Comment';
 
 export default class Consultation extends BaseStore{
   id=undefined;
@@ -43,14 +44,14 @@ export default class Consultation extends BaseStore{
     return new Conversation(this);
   }
 
-  _loadHighlights = async () => {
+  loadHighlights = async () => {
     try {
       const res = await ConsultationService.getHighlights(this.id);
-      runInAction(() => this.conversation.replace(
-        res.data.map(m => CommentMigrator.loadFromResponse(m))
-      ));
+      runInAction(() => {
+        this.highlights.replace(res.data.map(h => new Comment(CommentMigrator.loadFromResponse(h))))
+      })
     } catch (error) {
-
+      console.log(error);
     }
   }
 
@@ -101,8 +102,10 @@ decorate(Consultation, {
   finished: observable,
   finishedOn: observable,
   externalMembers: observable,
+  highlights: observable,
   _loadExternalMembers: action,
   save: action,
   conversation: computed,
   _update:action,
+  loadHighlights:action,
 })
