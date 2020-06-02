@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Conversation from './Conversation'
 
 import { animateScroll } from "react-scroll";
-
+import Viewer from 'react-viewer';
 import Button from "components/CustomButtons/Button";
 import ImageUpload from "components/CustomUpload/ImageUpload";
 import TextField from '@material-ui/core/TextField';
@@ -27,7 +27,6 @@ const scrollToBottom = () => {
 
 function Chat({ conversation }) {
   const [showAttaching, setShowAttaching] = useState(false);
-  const [attachedFile, setAttachedFile] = useState(undefined);
 
   // scrollToBottom()
 
@@ -46,7 +45,11 @@ function Chat({ conversation }) {
 
   return (
     <div>
-      {/* {renderMembers()} */}
+      <Viewer
+        visible={conversation.galeryVisible}
+        onClose={() => conversation.setGaleryVisibility(false)}
+        images={conversation.allImagesSrc}
+        />
       <Conversation messages={conversation.comments} replyAction={(msg) => conversation.setReply(msg)} />
       <div>
         <div className="chat-text-box">
@@ -60,7 +63,7 @@ function Chat({ conversation }) {
             onChange={ e => {
               conversation.newMessage.text = e.target.value
             }}/>
-          {attachedFile ? (
+          {conversation.newMessage.attachedFile ? (
             <Button
               color="success"
               simple
@@ -100,7 +103,7 @@ function Chat({ conversation }) {
           </div>
         )}
       </div>
-      {showAttaching && <ImageUpload handleChange={setAttachedFile} />}
+      {showAttaching && <ImageUpload handleChange={f => conversation.newMessage.attachedFile = f} />}
     </div>
   );
 }

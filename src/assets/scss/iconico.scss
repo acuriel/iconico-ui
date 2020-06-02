@@ -27,13 +27,11 @@
     margin-top: 20px;
     background-color: #dedede;
 
-    svg{
-        &:first-of-type{
-            float: right;
-            margin-top: -5px;
-            margin-right: -40px;
-            cursor: pointer;
-        }
+    svg.reply-btn{
+        float: right;
+        margin-top: -5px;
+        margin-right: -40px;
+        cursor: pointer;
     }
     span{
         padding-bottom: 50px;
@@ -60,7 +58,8 @@
     overflow-x: hidden;
 
     .chat-image{
-        width: 380px;
+        max-width: 380px;
+        max-height: 200px;
     }
     .image-cover{
         position: absolute;

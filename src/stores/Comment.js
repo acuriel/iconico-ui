@@ -1,5 +1,7 @@
 import {observable, action, decorate, computed} from 'mobx';
+import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
+import FileService from '../services/api/FileService';
 import AuthService from '../services/api/AuthService';
 import BaseStore from './BaseStore';
 import CommentMigrator from 'migrators/CommentMigrator';
@@ -16,6 +18,8 @@ export default class Comment extends BaseStore{
   highLightedBy=[];
   replyTo = undefined;
   imageData = undefined;
+  imageMimeType = '';
+  attachedFile = undefined;
 
 
   constructor(comment, conversation=undefined){
@@ -36,7 +40,9 @@ export default class Comment extends BaseStore{
     this.highlighted = comment.highlighted;
     this.highLightedBy.replace(comment.highLightedBy);
     this.replyTo = comment.replyTo;
-    // this.imageData.replace(comment.imageData);
+    this.attachedFile = undefined;
+    this.imageData = comment.imageData;
+    this.imageMimeType = comment.imageMimeType;
   }
   _reload = async () => {
     try {
@@ -47,10 +53,10 @@ export default class Comment extends BaseStore{
     }
   }
 
-  toggleHighlight = async () => {
+  toggleHighlight = async (callback) => {
     try {
-      console.log("Toggled");
       await ConsultationService.toggleHighlight(this.consultationId, this.id);
+      if(callback) callback();
       if(this.conversation) this.conversation._reload(true);
     } catch (error) {
       console.log(error);
@@ -59,9 +65,12 @@ export default class Comment extends BaseStore{
 
   save = async () => {
     try {
+      if(this.attachedFile){
+        await FileService.uploadImage(this.attachedFile);
+      }
       await ConsultationService.addMessage(this.consultationId, CommentMigrator.saveForRequest(this))
     } catch (error) {
-
+      toast.error("Hubo un problema enviando el mensaje: " + error);
     }
   }
 
@@ -86,6 +95,7 @@ decorate(Comment, {
   highLightedBy: observable,
   replyTo: observable,
   imageData: observable,
+  attachedFile: observable,
   _update:action,
   highlightsListString: computed,
   highlightedByMe: computed,

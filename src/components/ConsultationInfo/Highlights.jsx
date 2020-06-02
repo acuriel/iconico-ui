@@ -33,7 +33,7 @@ function Highlights({currentConsultation}){
               secondary={h.highlightsListString}
             />
             <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete" onClick={() => h.toggleHighlight()} title={h.highlightedByMe ? "Remover Highlight" : "Highlight"}>
+              <IconButton edge="end" aria-label="delete" onClick={() => h.toggleHighlight(() => currentConsultation.loadHighlights())} title={h.highlightedByMe ? "Remover Highlight" : "Highlight"}>
                 {h.highlightedByMe ? <FavoriteBorder/> : <Favorite  />}
               </IconButton>
             </ListItemSecondaryAction>

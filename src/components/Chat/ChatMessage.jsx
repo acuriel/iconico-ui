@@ -42,7 +42,7 @@ function ChatMessage({ msg, replyAction, ...props }){
   return (
     <div>
       <ChatBubble msg={msg} pushRight={uiStore.signedUser.userName === msg.author.userName}>
-        {uiStore.signedUser.userName === msg.author.userName || <Reply onClick={() => replyAction(msg)}/>}
+        {uiStore.signedUser.userName === msg.author.userName || <Reply className="reply-btn" onClick={() => replyAction(msg)}/>}
         {showImage()}
         <span>{msg.author.userName}</span>
         {msg.replyTo && <ChatBubble msg={msg.replyTo}><span>{msg.replyTo.author.userName}</span> </ChatBubble>}
