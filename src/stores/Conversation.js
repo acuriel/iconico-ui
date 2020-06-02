@@ -10,8 +10,7 @@ export default class Conversation extends BaseStore {
   comments = observable.array([]);
   newMessage = undefined;
   reloadingInterval = undefined;
-  reloading = false;
-  galeryVisible = false;
+  galeryVisibility = observable.box(false);
 
   constructor(consultation) {
     super();
@@ -45,7 +44,7 @@ export default class Conversation extends BaseStore {
   }
 
   setGaleryVisibility(value){
-    this.galeryVisibility = value;
+    this.galeryVisibility.set(value);
     console.log("Hide")
   }
 
@@ -64,8 +63,6 @@ export default class Conversation extends BaseStore {
 decorate(Comment, {
   consultation: observable,
   newMessage: observable,
-  reloading: observable,
-  galeryVisible: observable,
   sendMessage: action,
   _reload: action,
   setReply: action,

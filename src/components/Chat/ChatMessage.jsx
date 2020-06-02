@@ -10,30 +10,26 @@ import { observer } from "mobx-react";
 
 
 function ChatMessage({ msg, replyAction, ...props }){
-  const {consultationStore, uiStore} = useContext(StoreContext)
+  const {uiStore} = useContext(StoreContext)
 
 
   const showImage = () => {
     if (msg.imageData) {
       return (
-        <div
-          style={{
-            position: "relative",
-            width: "fit-content",
-            marginBottom: "10px"
-          }}
-        >
-          <br />
-          <a href={`data:${msg.imageMimeType};base64,${msg.imageData}`}>
-            <div className="image-cover">
+        <div className="chat-image-container">
+          <div className="chat-image"
+            style={{
+              backgroundImage: `url('data:${msg.imageMimeType};base64,${msg.imageData}')`,
+              }}>
+            <div className="image-cover" onClick={() => msg.conversation.setGaleryVisibility(true)}>
               <RemoveRedEye />
             </div>
-          </a>
-          <img
+          </div>
+          {/* <img
             alt="Attachment"
             className="chat-image"
             src={`data:${msg.imageMimeType};base64,${msg.imageData}`}
-          />
+          /> */}
           <br />
         </div>
       );

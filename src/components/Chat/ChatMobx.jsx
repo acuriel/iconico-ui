@@ -46,7 +46,7 @@ function Chat({ conversation }) {
   return (
     <div>
       <Viewer
-        visible={conversation.galeryVisible}
+        visible={conversation.galeryVisibility.get()}
         onClose={() => conversation.setGaleryVisibility(false)}
         images={conversation.allImagesSrc}
         />
