@@ -4,8 +4,6 @@ import StoreContext from "stores/RootStore";
 
 import SweetAlert from "react-bootstrap-sweetalert";
 
-import {apiService, authService} from "../../services";
-import {addDays} from "../../helpers/utils";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,12 +32,10 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
 import saStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
-import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.js";
 
 
 const useStyles = makeStyles(styles);
 const useSWStyles = makeStyles(saStyles);
-const useefStyles = makeStyles(efstyles);
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

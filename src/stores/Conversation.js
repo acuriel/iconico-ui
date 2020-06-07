@@ -11,6 +11,7 @@ export default class Conversation extends BaseStore {
   newMessage = undefined;
   reloadingInterval = undefined;
   galeryVisibility = observable.box(false);
+  galeryActiveIndex = 0;
 
   constructor(consultation) {
     super();
@@ -37,10 +38,14 @@ export default class Conversation extends BaseStore {
 
   get allImagesSrc() {
     const result = this.comments.filter(msg => msg.imageData).map(msg => {
-      return { src: `data:${msg.imageMimeType};base64,${msg.imageData}`, alt: '' }
+      return { src: `data:${msg.imageMimeType};base64,${msg.imageData}`, alt: '', messageId: msg.id }
     })
     console.log(result);
     return result;
+  }
+
+  setGaleryActiveIndex(msgId){
+    this.galeryActiveIndex = this.allImagesSrc.findIndex(img => img.messageId === msgId);
   }
 
   setGaleryVisibility(value){
@@ -63,9 +68,11 @@ export default class Conversation extends BaseStore {
 decorate(Comment, {
   consultation: observable,
   newMessage: observable,
+  galeryActiveIndex: observable,
   sendMessage: action,
   _reload: action,
   setReply: action,
-  setGaleryVisibility: action
+  setGaleryVisibility: action,
+  setGaleryActiveIndex: action
   // allImagesSrc: computed,
 })

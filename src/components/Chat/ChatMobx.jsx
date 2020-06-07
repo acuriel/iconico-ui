@@ -37,9 +37,15 @@ function Chat({ conversation }) {
     }
   }, [])
 
+  const sendMessage = () => {
+    conversation.sendMessage();
+    setShowAttaching(false);
+
+  }
+
   const handleKeyPress = (event) => {
     if(event.key === 'Enter'){
-      conversation.sendMessage();
+      sendMessage();
     }
   }
 
@@ -47,8 +53,10 @@ function Chat({ conversation }) {
     <div>
       <Viewer
         visible={conversation.galeryVisibility.get()}
+        activeIndex={conversation.galeryActiveIndex}
         onClose={() => conversation.setGaleryVisibility(false)}
         images={conversation.allImagesSrc}
+        onMaskClick={() => conversation.setGaleryVisibility(false)}
         />
       <Conversation messages={conversation.comments} replyAction={(msg) => conversation.setReply(msg)} />
       <div>
@@ -89,7 +97,7 @@ function Chat({ conversation }) {
             color="info"
             simple
             justIcon
-            onClick={() => conversation.sendMessage()}
+            onClick={() => sendMessage()}
             style={{ float: "right" }}
           >
             <Send />

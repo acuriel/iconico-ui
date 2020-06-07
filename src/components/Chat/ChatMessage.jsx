@@ -21,7 +21,10 @@ function ChatMessage({ msg, replyAction, ...props }){
             style={{
               backgroundImage: `url('data:${msg.imageMimeType};base64,${msg.imageData}')`,
               }}>
-            <div className="image-cover" onClick={() => msg.conversation.setGaleryVisibility(true)}>
+            <div className="image-cover" onClick={() => {
+              msg.conversation.setGaleryActiveIndex(msg.id);
+              msg.conversation.setGaleryVisibility(true)
+              }}>
               <RemoveRedEye />
             </div>
           </div>

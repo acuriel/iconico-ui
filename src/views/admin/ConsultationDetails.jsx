@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { withRouter } from "react-router";
 import StoreContext from "stores/RootStore";
-import ConversationStore from "stores/Conversation";
 import { observer } from "mobx-react";
 import {apiService, authService} from "../../services";
 import Loading from "../../components/Loading/Loading.js";
@@ -22,7 +21,7 @@ import Highlights from "components/ConsultationInfo/Highlights";
 
 
 function ConsultationDetails({match}) {
-  const {consultationStore} = useContext(StoreContext);
+  const {consultationStore, uiStore} = useContext(StoreContext);
 
   useEffect(() => {
     consultationStore.selectConsultation(match.params.id);
@@ -70,7 +69,7 @@ function ConsultationDetails({match}) {
             tabContent: <p>Seccion en construccion</p>,
             limited: true
           }
-        ].filter(tab => authService.isInternal() || !tab.limited)}
+        ].filter(tab => uiStore.signedUser.isInternal || !tab.limited)}
       />
     </div>
   );
