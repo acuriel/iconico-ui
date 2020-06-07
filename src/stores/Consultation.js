@@ -3,6 +3,7 @@ import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import CommentMigrator from '../migrators/CommentMigrator';
+import UserStatusMigrator from '../migrators/UserStatusMigrator';
 import Conversation from './Conversation';
 import Comment from './Comment';
 
@@ -18,6 +19,7 @@ export default class Consultation extends BaseStore{
   finishedOn=undefined;
   externalMembers = [];
   highlights = [];
+  statuses = observable.map();
 
 
   constructor(consultation){
@@ -38,6 +40,8 @@ export default class Consultation extends BaseStore{
     this.finished = consultation.finished;
     this.finishedOn = consultation.finishedOn;
     this._loadExternalMembers();
+    this.loadHighlights();
+    this._loadMembersStatuses();
   }
 
   get conversation(){
@@ -62,6 +66,25 @@ export default class Consultation extends BaseStore{
     } catch (error) {
       console.log(error);
     }
+  }
+  _loadMembersStatuses = async () => {
+    try {
+      const result = await ConsultationService.getMembersStatuses(this.id);
+      runInAction(() => {
+        result.data.map(s => {
+          const status = UserStatusMigrator.loadFromResponse(s);
+          this.statuses.set(status.userId, status.status);
+        })
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  getMemberStatus(userId){
+    const statuses = this.statuses.filter(s => s.userId === userId);
+    if(statuses.length === 0) return 0;
+    return statuses[0].status;
   }
 
   save = async (callback) => {
@@ -104,6 +127,7 @@ decorate(Consultation, {
   externalMembers: observable,
   highlights: observable,
   _loadExternalMembers: action,
+  _loadMembersStatuses:action,
   save: action,
   conversation: computed,
   _update:action,

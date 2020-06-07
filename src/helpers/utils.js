@@ -9,8 +9,8 @@ const dateToString = date => `${date.getDate()} ${MONTHS[date.getMonth()]} ${dat
 
 const dateToStringShort = date =>  `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 
-const getWidth = () => window.innerWidth 
-  || document.documentElement.clientWidth 
+const getWidth = () => window.innerWidth
+  || document.documentElement.clientWidth
   || document.body.clientWidth;
 
 const getNameInitials = name => {
@@ -18,7 +18,7 @@ const getNameInitials = name => {
   return words.length > 1 ? `${words[0][0]}${words[1][0]}`:`${words[0][0]}`
 }
 
-const BGS = ['bg-success', 'bg-danger', 'bg-warning', 'bg-primary', 'bg-info', 'bg-rose'];
+const BGS = [ 'bg-danger','bg-warning', 'bg-success'];
 
 const getRandomBackground = () => BGS[Math.floor(Math.random() * 10) % BGS.length ];
 
