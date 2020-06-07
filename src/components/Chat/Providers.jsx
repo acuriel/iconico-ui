@@ -18,7 +18,6 @@ import CardIcon from "components/Card/CardIcon";
 import Button from "components/CustomButtons/Button";
 
 import Done from "@material-ui/icons/Done";
-import Add from "@material-ui/icons/Add";
 import QueryBuilder from "@material-ui/icons/QueryBuilder";
 import Warning from "@material-ui/icons/Warning";
 
@@ -26,7 +25,6 @@ import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsSt
 import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle";
 
 import CardBody from "components/Card/CardBody";
-import { Link } from "react-router-dom";
 import Chat from "./Chat";
 import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
@@ -75,7 +73,7 @@ export default function Providers({ currentElement, ...props }) {
     currentConsExternals.filter(
       ext => ext.Author.UserName === authService.currentUserValue.userName
     );
-  
+
   const myInternals = () =>
     currentConsExternals.filter(
       ext => ext.Receiver.UserName === authService.currentUserValue.userName
@@ -186,7 +184,7 @@ export default function Providers({ currentElement, ...props }) {
                   {" "}
                   <b>{ext.Receiver.UserName}</b>
                 </h4>
-                
+
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
                 {readable ? (
@@ -255,7 +253,7 @@ export default function Providers({ currentElement, ...props }) {
                   {" "}
                   <b>{ext.Author.UserName}</b>
                 </h4>
-                
+
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
                 <Button
@@ -265,7 +263,7 @@ export default function Providers({ currentElement, ...props }) {
                 >
                   Discusion
                 </Button>
- 
+
               </CardBody>
             </Card>
           </GridItem>
@@ -279,10 +277,10 @@ export default function Providers({ currentElement, ...props }) {
       <Button simple color="info" onClick={() => setSelectedExternal(null)}>
         Volver
       </Button>
-      <Chat 
-        currentElement={currentConsultation} 
+      <Chat
+        currentElement={currentConsultation}
         currentExternal={selectedExternal}
-        getEndpoint={apiService.getExternalConversation} 
+        getEndpoint={apiService.getExternalConversation}
         postEndpoint={apiService.addExternalMessage}/>
     </div>
   ) : (authService.isInternal() ? renderInternalProvidersSection() : renderExternalChats())

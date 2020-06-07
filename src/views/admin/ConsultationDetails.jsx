@@ -11,6 +11,9 @@ import Assignment from "@material-ui/icons/Assignment";
 import PlaylistAddCheck from "@material-ui/icons/PlaylistAddCheck";
 import People from "@material-ui/icons/People";
 import Code from "@material-ui/icons/Code";
+import Done from "@material-ui/icons/Done";
+import QueryBuilder from "@material-ui/icons/QueryBuilder";
+import Warning from "@material-ui/icons/Warning";
 // core components
 import Tabs from "../../components/CustomTabs/CustomTabs";
 
@@ -18,6 +21,8 @@ import Chat from "../../components/Chat/ChatMobx";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 import Highlights from "components/ConsultationInfo/Highlights";
+import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
+
 
 
 function ConsultationDetails({match}) {
@@ -32,6 +37,11 @@ function ConsultationDetails({match}) {
   ) : (
     <div>
       <div>
+        <CustomizedMenus options={[
+          {icon:Done, text:"Resuelto", handler: () => {}},
+          {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
+          {icon:Warning, text:"Sin solucion", handler: () => {}}
+        ]}/>
         <h3>{consultationStore.selectedConsultation.title}</h3>
       </div>
       <Tabs
