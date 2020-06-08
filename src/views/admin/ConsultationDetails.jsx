@@ -21,6 +21,7 @@ import Chat from "../../components/Chat/ChatMobx";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 import Highlights from "components/ConsultationInfo/Highlights";
+import Truth from "components/ConsultationInfo/Truth";
 import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 
@@ -37,11 +38,11 @@ function ConsultationDetails({match}) {
   ) : (
     <div>
       <div>
-        <CustomizedMenus options={[
+        {consultationStore.selectedConsultation.finished || <CustomizedMenus options={[
           {icon:Done, text:"Resuelto", handler: () => {}},
           {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
           {icon:Warning, text:"Sin solucion", handler: () => {}}
-        ]}/>
+        ]}/>}
         <h3>{consultationStore.selectedConsultation.title}</h3>
       </div>
       <Tabs
@@ -53,33 +54,33 @@ function ConsultationDetails({match}) {
             tabName: "Detalles",
             tabIcon: Assignment,
             tabContent: <ConsultationInfo currentConsultation={consultationStore.selectedConsultation} />,
-            limited: false
+            visible: uiStore.signedUser.isInternal
           },
           {
             tabName: "Chat",
             tabIcon: Comment,
             tabContent: <Chat conversation={consultationStore.selectedConsultation.conversation}/>,
-            limited: true
+            visible: uiStore.signedUser.isInternal
           },
           {
             tabName: "Proveedores",
             tabIcon: People,
             tabContent: <Providers currentElement={consultationStore.selectedConsultation} />,
-            limited: false
+            visible: true
           },
           {
             tabName: "Highlights",
             tabIcon: Code,
             tabContent: <Highlights currentConsultation={consultationStore.selectedConsultation}/>,
-            limited: true
+            visible: true
           },
           {
             tabName: "Verdades",
             tabIcon: PlaylistAddCheck,
-            tabContent: <p>Seccion en construccion</p>,
-            limited: true
+            tabContent: <Truth truth={consultationStore.selectedConsultation.truth}/>,
+            visible: consultationStore.selectedConsultation.finished
           }
-        ].filter(tab => uiStore.signedUser.isInternal || !tab.limited)}
+        ].filter(tab => tab.visible)}
       />
     </div>
   );

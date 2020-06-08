@@ -1,11 +1,14 @@
 import {observable, action, computed, decorate, runInAction} from 'mobx';
+import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import CommentMigrator from '../migrators/CommentMigrator';
 import UserStatusMigrator from '../migrators/UserStatusMigrator';
+import TruthMigrator from '../migrators/TruthMigrator';
 import Conversation from './Conversation';
 import Comment from './Comment';
+import Truth from './Truth';
 
 export default class Consultation extends BaseStore{
   id=undefined;
@@ -20,6 +23,7 @@ export default class Consultation extends BaseStore{
   externalMembers = [];
   highlights = [];
   statuses = observable.map();
+  truth = undefined;
 
 
   constructor(consultation){
@@ -39,6 +43,7 @@ export default class Consultation extends BaseStore{
     this.expiresOn = consultation.expiresOn;
     this.finished = consultation.finished;
     this.finishedOn = consultation.finishedOn;
+    this.truth = new Truth(TruthMigrator.getEmpty(consultation.id));
     this._loadExternalMembers();
     this.loadHighlights();
     this._loadMembersStatuses();
@@ -107,7 +112,9 @@ export default class Consultation extends BaseStore{
       const res = await ConsultationService.terminate(this.id)
       this._update(ConsultationMigrator.loadFromResponse(res.data));
       if(callback) callback();
+      toast.success(`Consulta Finalizada`, {toastId:"finished-consultation"});
     } catch (error) {
+      toast.error("Hubo un error: " + error, {toastId:"finished-consultation"});
       console.log(error);
     }
   }

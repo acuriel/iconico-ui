@@ -59,58 +59,60 @@ function Chat({ conversation }) {
         onMaskClick={() => conversation.setGaleryVisibility(false)}
         />
       <Conversation messages={conversation.comments} replyAction={(msg) => conversation.setReply(msg)} />
-      <div>
-        <div className="chat-text-box">
-          <TextField
-            style={{ display: "inline-block" }}
-            label="Mensaje"
-            required
-            fullWidth={true}
-            value={conversation.newMessage.text}
-            onKeyPress={handleKeyPress}
-            onChange={ e => {
-              conversation.newMessage.text = e.target.value
-            }}/>
-          {conversation.newMessage.attachedFile ? (
-            <Button
-              color="success"
-              simple
-              justIcon
-              onClick={() => setShowAttaching(true)}
-              style={{ float: "right" }}
-            >
-              <PhotoSizeSelectActual />
-            </Button>
-          ) : (
+      {conversation.consultation.finished ||
+        <div>
+          <div className="chat-text-box">
+            <TextField
+              style={{ display: "inline-block" }}
+              label="Mensaje"
+              required
+              fullWidth={true}
+              value={conversation.newMessage.text}
+              onKeyPress={handleKeyPress}
+              onChange={ e => {
+                conversation.newMessage.text = e.target.value
+              }}/>
+            {conversation.newMessage.attachedFile ? (
+              <Button
+                color="success"
+                simple
+                justIcon
+                onClick={() => setShowAttaching(true)}
+                style={{ float: "right" }}
+              >
+                <PhotoSizeSelectActual />
+              </Button>
+            ) : (
+              <Button
+                color="info"
+                simple
+                justIcon
+                onClick={() => setShowAttaching(true)}
+                style={{ float: "right" }}
+              >
+                <AddPhotoAlternate />
+              </Button>
+            )}
+
             <Button
               color="info"
               simple
               justIcon
-              onClick={() => setShowAttaching(true)}
+              onClick={() => sendMessage()}
               style={{ float: "right" }}
             >
-              <AddPhotoAlternate />
+              <Send />
             </Button>
-          )}
-
-          <Button
-            color="info"
-            simple
-            justIcon
-            onClick={() => sendMessage()}
-            style={{ float: "right" }}
-          >
-            <Send />
-          </Button>
-        </div>
-        {conversation.newMessage.replyTo && (
-        <div className="chat-text-box">
-            <Reply />
-            <b>{conversation.newMessage.replyTo.author.userName}: </b>
-            {conversation.newMessage.replyTo.text}
           </div>
-        )}
-      </div>
+          {conversation.newMessage.replyTo && (
+          <div className="chat-text-box">
+              <Reply />
+              <b>{conversation.newMessage.replyTo.author.userName}: </b>
+              {conversation.newMessage.replyTo.text}
+            </div>
+          )}
+        </div>
+      }
       {showAttaching && <ImageUpload handleChange={f => conversation.newMessage.attachedFile = f} />}
     </div>
   );
