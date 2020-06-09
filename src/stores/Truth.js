@@ -16,13 +16,17 @@ export default class Truth extends BaseStore{
   consultationStart=undefined
   consultationEnd=undefined
   members=[];
+  tags=[];
   created = observable.box(false);
 
 
-  constructor(consultation){
+  constructor(consultation, truth=undefined){
     super();
-    this.consultationId = consultation.id;
-    this._loadTruth(consultation.id);
+    if(truth){
+      this._update(truth)
+    }else{
+      this._loadTruth(consultation.id);
+    }
   }
 
   _update(truth){
@@ -37,6 +41,9 @@ export default class Truth extends BaseStore{
     this.consultationEnd=truth.consultationEnd;
     this.created.set(!!truth.id);
 
+    if(truth.tags){
+      this.tags.replace(truth.tags)
+    }
     if(truth.members){
       this.members.replace(truth.members);
     }
@@ -45,7 +52,7 @@ export default class Truth extends BaseStore{
   _loadTruth = async (consultationId) => {
     try {
       const res = await ConsultationService.getTruth(consultationId);
-      const truth = res.data ? TruthMigrator.loadFromResponse(res.data) : TruthMigrator.getEmpty(this.consultationId)
+      const truth = res.data ? TruthMigrator.loadFromResponse(res.data) : TruthMigrator.getEmpty(consultationId)
       runInAction(() => {
         this._update(truth)
       })
@@ -62,7 +69,6 @@ export default class Truth extends BaseStore{
         this.created.set(true);
       })
       toast.success("Verdad guardada");
-      // this._loadTruth(this.consultationId);
     } catch (error) {
       toast.error("Hubo un problema guardando la Verdad: " + error);
     }
@@ -81,6 +87,7 @@ decorate(Truth, {
   consultationEnd: observable,
   created:observable,
   members: observable,
+  tags:observable,
   _loadTruth:action,
   _update:action,
 })

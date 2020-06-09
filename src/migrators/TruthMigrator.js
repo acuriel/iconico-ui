@@ -12,6 +12,7 @@ class TruthMigrator{
       consultationTitle: data.ConsultationTitle,
       consultationStart: data.ConsultationStart,
       consultationEnd: data.ConsultationEnd,
+      tags:data.Tags || [],
       members: data.Members,
     }
   }
@@ -20,6 +21,7 @@ class TruthMigrator{
       _id: data.id,
       Title: data.title,
       Summary: data.summary,
+      Tags: data.tags,
       _idConsulta: data.consultationId,
     }
   }

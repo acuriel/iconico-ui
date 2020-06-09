@@ -25,6 +25,7 @@ export default class ConsultationListStore extends BaseStore{
     super(rootStore);
     this.fetchConsultationsInFolder();
     this.getAllInternalMembers();
+    this.getAllExternalMembers();
     this.fetchMyFolders();
   }
 

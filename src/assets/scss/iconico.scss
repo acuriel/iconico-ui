@@ -346,6 +346,16 @@ table.iconico-gantt{
 
 .truth-panel{
     min-height: 400px;
+
+    .truth-details{
+        > p{
+            margin-top: 20px;
+        }
+
+        .tags > div{
+            margin-right: 10px;
+        }
+    }
 }
 
 .makeStyles-cardHeader-198 {

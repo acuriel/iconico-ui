@@ -21,12 +21,14 @@ import Assignment from "@material-ui/icons/Assignment";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import Home from "@material-ui/icons/Home";
 import Search from "@material-ui/icons/Search";
+import HistoryIcon from '@material-ui/icons/History';
 // core components/views for Admin layout
 import DashboardPage from "views/admin/Dashboard";
 import ConsultationList from "views/admin/ConsultationList";
 import ConsultationCreate from 'views/admin/ConsultationCreate'
 import ConsultationDetails from 'views/admin/ConsultationDetails'
 import AdvancedSearch from 'views/admin/AdvancedSearch'
+import History from 'views/admin/History'
 //auth layout
 import LoginPage from "views/auth/LoginPage";
 //error views
@@ -82,6 +84,13 @@ export const dashboardRoutes = [
     name: "Buscar",
     icon: Search,
     component: AdvancedSearch,
+    layout: "/admin"
+  },
+  {
+    path: "/historial",
+    name: "Historial",
+    icon: HistoryIcon,
+    component: History,
     layout: "/admin"
   },
 ];
