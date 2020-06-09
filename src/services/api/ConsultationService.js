@@ -23,6 +23,10 @@ class ConsultationService extends AxiosApiService{
     return this.baseService.get(this._getUrl(id, "Highlights"))
   }
 
+  getTruth(id){
+    return this.baseService.get(this._getUrl(id, "Truth"))
+  }
+
   getMessage(consultationId, commentId){
     return this.baseService.get(this._getUrl(consultationId, "Conversation", commentId))
   }

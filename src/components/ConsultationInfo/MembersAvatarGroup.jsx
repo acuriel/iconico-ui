@@ -44,11 +44,11 @@ function MembersAvatarGroup({users, statuses}){
           </AvatarGroup>
       }
 
-      <Button variant="text" disableElevation fullWidth title="Ver más"
+      {users.length > maxAvatars && <Button variant="text" disableElevation fullWidth title="Ver más"
         onClick={() => setExpanded(!expanded)}
       >
         {expanded ? <ExpandLessIcon/> :<ExpandMoreIcon/>}
-      </Button>
+      </Button>}
     </div>
   );
 }

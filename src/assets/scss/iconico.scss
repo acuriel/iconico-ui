@@ -64,6 +64,7 @@
     .chat-image{
         background-size: "cover";
         background-position: center;
+        background-repeat: no-repeat;
         width: 100%;
         height: 250px;
     }
@@ -322,6 +323,29 @@ table.iconico-gantt{
     &.blocked{
         color: $brand-danger;
     }
+}
+
+.highlights{
+    width: 100%;
+    min-height: 400px;
+
+
+    .empty-container{
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+
+        svg{
+            font-size: 3em;
+            color: #aaa;
+        }
+    }
+}
+
+.truth-panel{
+    min-height: 400px;
 }
 
 .makeStyles-cardHeader-198 {

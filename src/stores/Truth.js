@@ -1,9 +1,9 @@
-import {observable, action, decorate, computed} from 'mobx';
+import {observable, action, decorate, runInAction} from 'mobx';
 import { toast } from 'react-toastify';
 import TruthService from '../services/api/TruthService';
 import BaseStore from './BaseStore';
-import CommentMigrator from 'migrators/CommentMigrator';
 import TruthMigrator from 'migrators/TruthMigrator';
+import ConsultationService from '../services/api/ConsultationService';
 
 export default class Truth extends BaseStore{
   id=undefined;
@@ -16,13 +16,13 @@ export default class Truth extends BaseStore{
   consultationStart=undefined
   consultationEnd=undefined
   members=[];
+  created = observable.box(false);
 
 
-  constructor(truth){
+  constructor(consultation){
     super();
-    if(truth){
-      this._update(truth);
-    }
+    this.consultationId = consultation.id;
+    this._loadTruth(consultation.id);
   }
 
   _update(truth){
@@ -35,15 +35,34 @@ export default class Truth extends BaseStore{
     this.consultationTitle=truth.consultationTitle;
     this.consultationStart=truth.consultationStart;
     this.consultationEnd=truth.consultationEnd;
+    this.created.set(!!truth.id);
+
     if(truth.members){
       this.members.replace(truth.members);
     }
   }
 
+  _loadTruth = async (consultationId) => {
+    try {
+      const res = await ConsultationService.getTruth(consultationId);
+      const truth = res.data ? TruthMigrator.loadFromResponse(res.data) : TruthMigrator.getEmpty(this.consultationId)
+      runInAction(() => {
+        this._update(truth)
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   save = async () => {
     try {
-      await TruthService.create(TruthMigrator.saveForRequest(this));
+      const truth = TruthMigrator.saveForRequest(this);
+      await this.created.get() ?  TruthService.update(this.consultationId, truth) : TruthService.create(truth);
+      runInAction(()=>{
+        this.created.set(true);
+      })
       toast.success("Verdad guardada");
+      // this._loadTruth(this.consultationId);
     } catch (error) {
       toast.error("Hubo un problema guardando la Verdad: " + error);
     }
@@ -60,6 +79,8 @@ decorate(Truth, {
   consultationTitle: observable,
   consultationStart: observable,
   consultationEnd: observable,
+  created:observable,
   members: observable,
+  _loadTruth:action,
   _update:action,
 })

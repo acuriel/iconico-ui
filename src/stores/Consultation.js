@@ -43,7 +43,7 @@ export default class Consultation extends BaseStore{
     this.expiresOn = consultation.expiresOn;
     this.finished = consultation.finished;
     this.finishedOn = consultation.finishedOn;
-    this.truth = new Truth(TruthMigrator.getEmpty(consultation.id));
+    this.truth = new Truth(consultation);
     this._loadExternalMembers();
     this.loadHighlights();
     this._loadMembersStatuses();
@@ -52,6 +52,8 @@ export default class Consultation extends BaseStore{
   get conversation(){
     return new Conversation(this);
   }
+
+
 
   loadHighlights = async () => {
     try {

@@ -17,6 +17,7 @@ class TruthMigrator{
   }
   saveForRequest(data) {
     return {
+      _id: data.id,
       Title: data.title,
       Summary: data.summary,
       _idConsulta: data.consultationId,
