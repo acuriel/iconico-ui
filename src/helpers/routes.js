@@ -17,7 +17,6 @@
 */
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
-import Assignment from "@material-ui/icons/Assignment";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import Home from "@material-ui/icons/Home";
 import Search from "@material-ui/icons/Search";
@@ -52,7 +51,7 @@ export const dashboardRoutes = [
   {
     path: "/consultas",
     name: "Consultas",
-    icon: Assignment,
+    icon: LibraryBooks,
     component: ConsultationList,
     section:'consultations',
     layout: "/admin"
@@ -62,14 +61,6 @@ export const dashboardRoutes = [
     name: "Consultas",
     component: ConsultationDetails,
     section:'consultations',
-    layout: "/admin"
-  },
-  {
-    path: "/proyectos",
-    name: "Proyectos",
-    icon: LibraryBooks,
-    component: ConsultationList,
-    section:'projects',
     layout: "/admin"
   },
   {

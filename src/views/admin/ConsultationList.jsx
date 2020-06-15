@@ -20,22 +20,24 @@ import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 const useStyles = makeStyles(styles);
 
 function CounsultationListAccordion({consultations, ...props}) {
-  return (
-    <Accordion
-      style={{backgroundColor:"transparent !important"}}
-      active={0}
-      collapses={consultations.map(c => {
-        return {
-          title: (
-            <div>
-              <ConsultationDragableItem consultation={c}/>
-            </div>
-          ),
-          content: <ConsultationInfo currentConsultation={c}/>
-        };
-      })}
-    />
-  );
+  return consultations.length === 0
+    ? <p>No existen consultas</p>
+    :(
+      <Accordion
+        style={{backgroundColor:"transparent !important"}}
+        active={0}
+        collapses={consultations.map(c => {
+          return {
+            title: (
+              <div>
+                <ConsultationDragableItem consultation={c}/>
+              </div>
+            ),
+            content: <ConsultationInfo currentConsultation={c}/>
+          };
+        })}
+      />
+    );
 }
 
 function ConsultationList() {
@@ -63,10 +65,7 @@ function ConsultationList() {
       }
       <FolderSection/>
       <div>
-        {consultationStore.activeConsultations.length === 0
-          ? <p>No existen consultas</p>
-          : <CounsultationListAccordion consultations={consultationStore.consultations}/>
-        }
+        <CounsultationListAccordion consultations={consultationStore.activeConsultations}/>
       </div>
     </div>
   );

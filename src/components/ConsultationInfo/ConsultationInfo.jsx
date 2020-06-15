@@ -45,7 +45,7 @@ function ConsultationInfo({currentConsultation, ...props}){
               statuses={currentConsultation.statuses}
             />
             <h5>Miembros Externos</h5>
-            {currentConsultation.externalMembers.length === 0
+            {!currentConsultation.externalMembers.length || currentConsultation.externalMembers.length === 0
             ? "Ninguno"
             :<MembersAvatarGroup
               users={currentConsultation.externalMembers}

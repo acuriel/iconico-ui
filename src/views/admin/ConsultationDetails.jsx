@@ -65,7 +65,7 @@ function ConsultationDetails({match}) {
           {
             tabName: "Proveedores",
             tabIcon: People,
-            tabContent: <Providers currentElement={consultationStore.selectedConsultation} />,
+            tabContent: <Providers currentConsultation={consultationStore.selectedConsultation} />,
             visible: true
           },
           {

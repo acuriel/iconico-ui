@@ -17,14 +17,16 @@ export default class Conversation extends BaseStore {
     super();
     this.consultation = consultation;
     this.newMessage = new Comment(CommentMigrator.getEmptyElement(consultation.id));
-    this._reload();
+    // this._reload();
   }
 
   _reload = async (force = false) => {
     try {
-      const res = await ConsultationService.getConversation(this.consultation.id);
-      if (force || res.data.length !== this.comments.length) {
+      const res = await ConsultationService.getConversation(this.consultation.id, this.comments.slice().length > 0 && !force ? this.comments[this.comments.length - 1].postedOn : undefined);
+      if(force){
         runInAction(() => this.comments.replace(res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this))));
+      } else if (res.data.length > 0) {
+        runInAction(() => this.comments.push(...res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this))));
       }
     } catch (error) {
       console.log(error);
@@ -40,7 +42,6 @@ export default class Conversation extends BaseStore {
     const result = this.comments.filter(msg => msg.imageData).map(msg => {
       return { src: `data:${msg.imageMimeType};base64,${msg.imageData}`, alt: '', messageId: msg.id }
     })
-    console.log(result);
     return result;
   }
 

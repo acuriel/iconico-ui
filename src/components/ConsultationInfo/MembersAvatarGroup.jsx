@@ -15,7 +15,7 @@ function MembersAvatarGroup({users, statuses}){
 
   const expand = () =>  [...new Array(Math.ceil(users.length / maxAvatars)).keys()]
     .map((_,k) => (
-      <AvatarGroup key={k}>
+      <AvatarGroup key={k} >
         {users.slice(k*maxAvatars, (k + 1) * maxAvatars).map(u =>
           <Avatar
             key={u.id}

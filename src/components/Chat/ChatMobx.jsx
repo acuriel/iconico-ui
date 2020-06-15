@@ -31,9 +31,12 @@ function Chat({ conversation }) {
   // scrollToBottom()
 
   useEffect(() => {
-    const interval = setInterval(() => conversation._reload(), 1000)
+    conversation._reload()
+    var interval = !conversation.consultation.finished && setInterval(() => conversation._reload(), 1000)
     return () => {
-      clearInterval(interval);
+      if(interval){
+        clearInterval(interval);
+      }
     }
   }, [])
 

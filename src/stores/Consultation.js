@@ -2,10 +2,11 @@ import {observable, action, computed, decorate, runInAction} from 'mobx';
 import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
+import ProviderStore from './ProviderStore';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import CommentMigrator from '../migrators/CommentMigrator';
 import UserStatusMigrator from '../migrators/UserStatusMigrator';
-import TruthMigrator from '../migrators/TruthMigrator';
+import ExternalConnectionMigrator from '../migrators/ExternalConnectionMigrator';
 import Conversation from './Conversation';
 import Comment from './Comment';
 import Truth from './Truth';
@@ -20,7 +21,7 @@ export default class Consultation extends BaseStore{
   expiresOn=undefined;
   finished=false;
   finishedOn=undefined;
-  externalMembers = [];
+  externalConnections = [];
   highlights = [];
   statuses = observable.map();
   truth = undefined;
@@ -53,7 +54,9 @@ export default class Consultation extends BaseStore{
     return new Conversation(this);
   }
 
-
+  get externalMembers(){
+    return this.externalConnections.map(cnx => cnx.externalUser);
+  }
 
   loadHighlights = async () => {
     try {
@@ -69,7 +72,11 @@ export default class Consultation extends BaseStore{
   _loadExternalMembers = async () => {
     try {
       const result = await ConsultationService.getExternalConnections(this.id);
-      runInAction(() => this.externalMembers.push(...result.data));
+      runInAction(() => this.externalConnections.replace(
+        result.data.map(
+          cnx => new ProviderStore(ExternalConnectionMigrator.loadFromResponse(cnx))
+       ))
+      );
     } catch (error) {
       console.log(error);
     }
@@ -78,11 +85,20 @@ export default class Consultation extends BaseStore{
     try {
       const result = await ConsultationService.getMembersStatuses(this.id);
       runInAction(() => {
-        result.data.map(s => {
+        result.data.forEach(s => {
           const status = UserStatusMigrator.loadFromResponse(s);
           this.statuses.set(status.userId, status.status);
         })
       })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  connectWithProvider = async (externalId) => {
+    try {
+      await ConsultationService.addExternalConnection(this.id, externalId);
+      this._loadExternalMembers();
     } catch (error) {
       console.log(error);
     }
@@ -133,12 +149,13 @@ decorate(Consultation, {
   expiresOn: observable,
   finished: observable,
   finishedOn: observable,
-  externalMembers: observable,
+  externalConnections: observable,
   highlights: observable,
   _loadExternalMembers: action,
   _loadMembersStatuses:action,
   save: action,
   conversation: computed,
+  externalMembers: computed,
   _update:action,
   loadHighlights:action,
 })

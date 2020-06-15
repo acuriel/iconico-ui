@@ -60,7 +60,7 @@ export default class ConsultationListStore extends BaseStore{
   get activeConsultations() {
     return this.consultations.filter(
       c => !c.finished
-    )
+    );
   }
 
   // FOLDERS
