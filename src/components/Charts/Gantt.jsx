@@ -14,7 +14,7 @@ import {
 
 
 const getIntervalDates = (focusDay, rowDays) => [
-  addDays(focusDay, -1 * Math.floor(rowDays/2)), 
+  addDays(focusDay, -1 * Math.floor(rowDays/2)),
   addDays(focusDay, Math.floor(rowDays/2))
 ]
 
@@ -47,7 +47,7 @@ const GanttItem = ({element, title, startDate, endDate, manuallyFinishedDate, is
   return (
     <tr className={isCurrentUser ? "active" : undefined}>
       <td key={0} title={title} >
-        <Link to={"/admin/consulta/" + element._id}>{title}</Link>
+        <Link to={"/admin/consulta/" + element.id}>{title}</Link>
       </td>
       {[...Array(rowDays).keys()].map(d => {
         return (
@@ -55,8 +55,8 @@ const GanttItem = ({element, title, startDate, endDate, manuallyFinishedDate, is
             key={d + 1}
             title={dateToStringShort(addDays(intervalStart, d))}>
               <div className={(
-                dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate) 
-                ? getColorState(startDate, endDate, manuallyFinishedDate, addDays(intervalStart, d+1)) 
+                dayInsideInterval(addDays(intervalStart, d+1), startDate, endDate)
+                ? getColorState(startDate, endDate, manuallyFinishedDate, addDays(intervalStart, d+1))
                 : '')}>
                 {manuallyFinishedDate && addDays(intervalStart, d).getDate() === manuallyFinishedDate.getDate() ? <Done/> : ""}
               </div>
@@ -119,7 +119,7 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
         <thead>
           <tr>
             <th key={0}></th>
-            {[...Array(rowDays).keys()].map(key=> 
+            {[...Array(rowDays).keys()].map(key=>
               dayMarker(key)
               ? <th className='time-mark' key={key + 1}>
                 <div>{dateToStringShort(addDays(getIntervalDates(focusDate, rowDays)[0], key))}</div>
@@ -129,9 +129,9 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
         </thead>
         <tbody>
           {elements.filter(elem => elementInsideInterval(elem, getStartDate, getEndDate, focusDate, rowDays)).map(
-            (elem, i) => <GanttItem 
-            element={elem} 
-            title={getElementTitle(elem)} 
+            (elem, i) => <GanttItem
+            element={elem}
+            title={getElementTitle(elem)}
             startDate={getStartDate(elem)}
             endDate={getEndDate(elem)}
             manuallyFinishedDate={getManuallyFinishedDate(elem)}

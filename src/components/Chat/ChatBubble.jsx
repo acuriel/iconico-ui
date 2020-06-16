@@ -9,11 +9,11 @@ export default function ChatBubble({ msg, ...props }) {
       className={props.pushRight ? "bubble-msg current-user" : "bubble-msg"}
     >
       {props.children}
-      <p>{msg.CommentText}</p>
-      {msg.HighLighted ? (
-        <Favorite className="float-right-btn" />
+      <p>{msg.text}</p>
+      {msg.highlighted ? (
+          <Favorite  className="float-right-btn" onClick={() => msg.toggleHighlight()} />
       ) : (
-        <FavoriteBorder className="float-right-btn" />
+          <FavoriteBorder className="float-right-btn" onClick={() => msg.toggleHighlight()}  />
       )}
     </div>
   );

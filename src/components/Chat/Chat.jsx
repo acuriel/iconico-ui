@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 // import "react-chat-elements/dist/main.css";
 
-import {apiService} from "services";
 import Conversation from './Conversation'
 
 import { animateScroll } from "react-scroll";
-
-import { makeStyles } from "@material-ui/core/styles";
-import CustomInput from "components/CustomInput/CustomInput";
+import Viewer from 'react-viewer';
 import Button from "components/CustomButtons/Button";
 import ImageUpload from "components/CustomUpload/ImageUpload";
+import TextField from '@material-ui/core/TextField';
 
 // @material-ui/core components
 import Send from "@material-ui/icons/Send";
 import AddPhotoAlternate from "@material-ui/icons/AddPhotoAlternate";
 import PhotoSizeSelectActual from "@material-ui/icons/PhotoSizeSelectActual";
 import Reply from "@material-ui/icons/Reply";
-import { authService } from "../../services";
+import { observer } from "mobx-react";
 
 
 const scrollToBottom = () => {
@@ -26,188 +24,100 @@ const scrollToBottom = () => {
   });
 };
 
-const useConversation = (consultationId, getEndpoint, externalData=undefined) => {
-  const [conv, setConv] = useState([]);
-  useEffect(() => {
-    (externalData 
-      ? getEndpoint(
-        consultationId, 
-        externalData.Author._id, 
-        externalData.Receiver._id) 
-      : getEndpoint(consultationId)
-      ).then(res => {
-      setConv(res.data);
-      scrollToBottom();
-      sessionStorage.setItem("chat_count", res.data.length);
-    });
-  }, []);
-  return [conv, setConv];
-};
 
-export default function Chat({ currentElement, currentExternal, noEditing, getEndpoint, postEndpoint, ...props }) {
-  const [text, setText] = useState("");
-  const [comMsg, setComMsg] = useState(null);
-  const inputRef = useRef();
-  const [conv, setConv] = useConversation(currentElement._id, getEndpoint, currentExternal);
+function Chat({ conversation }) {
   const [showAttaching, setShowAttaching] = useState(false);
-  const [attachedFile, setAttachedFile] = useState(undefined);
-  // const liveChat = (consultationId, setConv) => {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       (currentExternal 
-  //         ? getEndpoint(
-  //           consultationId, 
-  //           currentExternal.Author._id, 
-  //           currentExternal.Receiver._id) 
-  //         : getEndpoint(consultationId)
-  //         ).then(res => {
-  //         if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
-  //           sessionStorage.setItem("chat_count", res.data.length);
-  //           setConv(res.data);
-  //           scrollToBottom();
-  //         }
-  //       });
-  //       return resolve;
-  //     } catch (error) {
-  //       return reject(error);
-  //     }
-  //   }).then(setTimeout(() => liveChat(consultationId, setConv), 3000));
-  // };
 
-  const liveChat = (consultationId, setConv) => {
-    const request = currentExternal 
-      ? getEndpoint(
-        consultationId, 
-        currentExternal.Author._id, 
-        currentExternal.Receiver._id) 
-      : getEndpoint(consultationId);
-    request.then(res => {
-      if (res.data.length !== parseInt(sessionStorage.getItem("chat_count"))) {
-        sessionStorage.setItem("chat_count", res.data.length);
-        setConv(res.data);
-        scrollToBottom();
-      }
-    });
-  }
-
+  // scrollToBottom()
   useEffect(() => {
-    setInterval(liveChat, 1000, currentElement._id, setConv);
-  }, []);
-  
-  const sendMessage = () => {
-    let newConv = {
-      _idConsulta: currentElement._id,
-      Author: { UserName: authService.currentUserValue.userName },
-      Mentions: currentExternal 
-        ? (
-          currentExternal.Receiver.UserEmail === authService.currentUserValue.userName 
-            ? [currentExternal.Author] 
-            : [currentExternal.Receiver]
-          ) : [],
-      ThisCommentAnswersTo: comMsg,
-      CommentText: inputRef.current.value
-  };
-  const send = () =>
-    postEndpoint(newConv).then(() => {
-      setText("");
-      inputRef.current.value = "";
-      setConv([...conv, newConv]);
-      setComMsg(null);
-      setAttachedFile(undefined);
-      setShowAttaching(false);
-      scrollToBottom();
-    });
-
-    if (attachedFile) {
-      apiService.uploadImage(attachedFile).then(res => {
-        send();
-      });
-    } else {
-      send();
+    conversation._reload()
+    var interval = !conversation.consultation.finished && setInterval(() => conversation._reload(), 1000)
+    return () => {
+      if(interval){
+        clearInterval(interval);
+      }
     }
-  };
+  }, [])
+
+  const sendMessage = () => {
+    conversation.sendMessage();
+    setShowAttaching(false);
+
+  }
 
   const handleKeyPress = (event) => {
     if(event.key === 'Enter'){
-      sendMessage()
-      setText("");
-      inputRef.current.value = "";
-      console.log('enter press here! ')
+      sendMessage();
     }
   }
 
-  const renderCommentingMsg = () => {
-    return comMsg && (
-        <div className="chat-text-box">
-          <Reply />
-          <b>{comMsg.Author.UserName}: </b>
-          {comMsg.CommentText}
-        </div>
-      );
-  };
-  const renderTextBox = () => {
-    return !noEditing && (
-      <div>
-        <div className="chat-text-box">
-          <CustomInput
-            style={{ dispplay: "inline-block" }}
-            labelText="Mensaje"
-            id="message"
-            // value={text}
-            formControlProps={{
-              fullWidth: true
-            }}
-            inputProps={{
-              multiline: true,
-              rows: 3,
-              inputRef: inputRef,
-              value: text,
-              onChange: (e) => setText(e.target.value),
-              onKeyPress:handleKeyPress
-            }}
-          />
-          {attachedFile ? (
-            <Button
-              color="success"
-              simple
-              justIcon
-              onClick={() => setShowAttaching(true)}
-              style={{ float: "right" }}
-            >
-              <PhotoSizeSelectActual />
-            </Button>
-          ) : (
+  return (
+    <div>
+      <Viewer
+        visible={conversation.galeryVisibility.get()}
+        activeIndex={conversation.galeryActiveIndex}
+        onClose={() => conversation.setGaleryVisibility(false)}
+        images={conversation.allImagesSrc}
+        onMaskClick={() => conversation.setGaleryVisibility(false)}
+        />
+      <Conversation messages={conversation.comments} replyAction={(msg) => conversation.setReply(msg)} />
+      {conversation.consultation.finished ||
+        <div>
+          <div className="chat-text-box">
+            <TextField
+              style={{ display: "inline-block" }}
+              label="Mensaje"
+              required
+              fullWidth={true}
+              value={conversation.newMessage.text}
+              onKeyPress={handleKeyPress}
+              onChange={ e => {
+                conversation.newMessage.text = e.target.value
+              }}/>
+            {conversation.newMessage.attachedFile ? (
+              <Button
+                color="success"
+                simple
+                justIcon
+                onClick={() => setShowAttaching(true)}
+                style={{ float: "right" }}
+              >
+                <PhotoSizeSelectActual />
+              </Button>
+            ) : (
+              <Button
+                color="info"
+                simple
+                justIcon
+                onClick={() => setShowAttaching(true)}
+                style={{ float: "right" }}
+              >
+                <AddPhotoAlternate />
+              </Button>
+            )}
+
             <Button
               color="info"
               simple
               justIcon
-              onClick={() => setShowAttaching(true)}
+              onClick={() => sendMessage()}
               style={{ float: "right" }}
             >
-              <AddPhotoAlternate />
+              <Send />
             </Button>
+          </div>
+          {conversation.newMessage.replyTo && (
+          <div className="chat-text-box">
+              <Reply />
+              <b>{conversation.newMessage.replyTo.author.userName}: </b>
+              {conversation.newMessage.replyTo.text}
+            </div>
           )}
-
-          <Button
-            color="info"
-            simple
-            justIcon
-            onClick={() => sendMessage()}
-            style={{ float: "right" }}
-          >
-            <Send />
-          </Button>
         </div>
-        {renderCommentingMsg()}
-      </div>
-    );
-  }
-  return (
-    <div>
-      {/* {renderMembers()} */}
-      <Conversation conv={conv} setReplyMsg={setComMsg} />
-      {renderTextBox()}
-      {showAttaching && <ImageUpload handleChange={setAttachedFile} />}
+      }
+      {showAttaching && <ImageUpload handleChange={f => conversation.newMessage.attachedFile = f} />}
     </div>
   );
 }
+
+export default observer(Chat);

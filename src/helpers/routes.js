@@ -17,16 +17,17 @@
 */
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
-import Assignment from "@material-ui/icons/Assignment";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import Home from "@material-ui/icons/Home";
 import Search from "@material-ui/icons/Search";
+import HistoryIcon from '@material-ui/icons/History';
 // core components/views for Admin layout
 import DashboardPage from "views/admin/Dashboard";
 import ConsultationList from "views/admin/ConsultationList";
 import ConsultationCreate from 'views/admin/ConsultationCreate'
 import ConsultationDetails from 'views/admin/ConsultationDetails'
 import AdvancedSearch from 'views/admin/AdvancedSearch'
+import History from 'views/admin/History'
 //auth layout
 import LoginPage from "views/auth/LoginPage";
 //error views
@@ -50,7 +51,7 @@ export const dashboardRoutes = [
   {
     path: "/consultas",
     name: "Consultas",
-    icon: Assignment,
+    icon: LibraryBooks,
     component: ConsultationList,
     section:'consultations',
     layout: "/admin"
@@ -60,14 +61,6 @@ export const dashboardRoutes = [
     name: "Consultas",
     component: ConsultationDetails,
     section:'consultations',
-    layout: "/admin"
-  },
-  {
-    path: "/proyectos",
-    name: "Proyectos",
-    icon: LibraryBooks,
-    component: ConsultationList,
-    section:'projects',
     layout: "/admin"
   },
   {
@@ -84,11 +77,18 @@ export const dashboardRoutes = [
     component: AdvancedSearch,
     layout: "/admin"
   },
+  {
+    path: "/historial",
+    name: "Historial",
+    icon: HistoryIcon,
+    component: History,
+    layout: "/admin"
+  },
 ];
 
 export const authRoutes = [
   {
-    path: "/login-page",
+    path: "/login",
     name: "Login Page",
     component: LoginPage,
     layout: "/auth"
@@ -97,7 +97,7 @@ export const authRoutes = [
 
 export const errorRoutes = [
   {
-    path: "/error-page",
+    path: "/error",
     name: "Error Page",
     component: ErrorPage,
     layout: "/auth"

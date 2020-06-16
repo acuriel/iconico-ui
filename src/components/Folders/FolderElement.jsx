@@ -13,7 +13,7 @@ const addConsultationToFolder = (folderId, consultationId, handler) => {
 export default function FolderElement({ title, handler, color, folder, noFolder, updateEvent, ...props }) {
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.CONSULTATION,
-    drop: ({type, elementId}) => {addConsultationToFolder(folder ? folder._id : undefined, elementId, updateEvent)},
+    drop: ({type, elementId}) => {addConsultationToFolder(folder ? folder.id : undefined, elementId, updateEvent)},
     collect: mon => ({
       isOver: !!mon.isOver(),
       canDrop: !!mon.canDrop(),

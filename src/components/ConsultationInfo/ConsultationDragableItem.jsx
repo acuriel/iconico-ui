@@ -7,13 +7,13 @@ import { ItemTypes } from '../../helpers/itemTypes'
 
 
 export default function ConsultationDragableItem({consultation}){
-  const [{isDragging, elementId}, drag] = useDrag({
-    item: { type: ItemTypes.CONSULTATION, elementId: consultation._id},
+  const [_, drag] = useDrag({
+    item: { type: ItemTypes.CONSULTATION, elementId: consultation.id},
     collect: monitor => ({ isDragging: !!monitor.isDragging()}),
   });
 
   return (
     <div>
-      <Link ref={drag} to={"/admin/consulta/" + consultation._id}>{consultation.Tittle}</Link>
+      <Link ref={drag} to={"/admin/consulta/" + consultation.id}>{consultation.title}</Link>
     </div>)
 }

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { observer } from "mobx-react";
 
-import {apiService, authService} from "../../services";
+import StoreContext from "stores/RootStore";
 
 import "react-chat-elements/dist/main.css";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import Badge from "components/Badge/Badge.js";
+import Chip from '@material-ui/core/Chip';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 import Accordion from "components/Accordion/Accordion";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem.js";
@@ -18,7 +18,6 @@ import CardIcon from "components/Card/CardIcon";
 import Button from "components/CustomButtons/Button";
 
 import Done from "@material-ui/icons/Done";
-import Add from "@material-ui/icons/Add";
 import QueryBuilder from "@material-ui/icons/QueryBuilder";
 import Warning from "@material-ui/icons/Warning";
 
@@ -26,179 +25,54 @@ import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsSt
 import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle";
 
 import CardBody from "components/Card/CardBody";
-import { Link } from "react-router-dom";
 import Chat from "./Chat";
 import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 const useStyles = makeStyles(styles);
-const useefStyles = makeStyles(efstyles);
 
-
-const getUserList = elems => {
-  let temp = [];
-  elems.forEach(e => {
-    if (temp.indexOf(e.Author.UserName) === -1) {
-      temp.push(e.Author.UserName);
-    }
-  });
-  return temp;
-};
-const groupByUser = elems =>
-  getUserList(elems).map(u => {
-    return { user: u, externals: elems.filter(e => u === e.Author.UserName) };
-  });
 
 const statusToColor = { 0: "danger", 1: "warning", 2: "success" };
 const statusToIcon = { 0: <Warning/>, 1: <QueryBuilder/>, 2: <Done/> };
 
-export default function Providers({ currentElement, ...props }) {
+function Providers({ currentConsultation }) {
   const classes = useStyles();
-  const efClasses = useefStyles();
-  const [currentConsultation, setcurrentConsultation] = useState(
-    currentElement
-  );
-  const [currentConsExternals, setCurrentConsExternals] = useState([]);
-  const [allExtMembers, setAllExtMembers] = useState([]);
-  const [groupedExternal, setGroupedExternal] = useState([]);
-  const [selectedExternal, setSelectedExternal] = useState(null);
-  const [addingExternal, setAddingExternal] = useState(null);
-  const [addingFlag, setAddingFlag] = useState(false);
 
-  const loadMyExternals = () => {
-    apiService.getExternalMembers(currentConsultation._id).then(res => {
-      setCurrentConsExternals(res.data);
-      setGroupedExternal(groupByUser(res.data));
-    });
-    apiService.getAllExternalMembers().then(res => setAllExtMembers(res.data));
-  };
-  const myExternals = () =>
-    currentConsExternals.filter(
-      ext => ext.Author.UserName === authService.currentUserValue.userName
-    );
-  
-  const myInternals = () =>
-    currentConsExternals.filter(
-      ext => ext.Receiver.UserName === authService.currentUserValue.userName
-  );
+  const {consultationStore, uiStore} = useContext(StoreContext);
 
-  const addExternal = () => {
-    apiService
-      .addExternalToConsultation({
-        _idConsulta: currentElement._id,
-        Receiver: addingExternal
-      })
-      .then(() => {
-        setAddingFlag(false);
-        loadMyExternals();
-      });
-  };
+  const [conversation, setConversation] = useState(undefined);
 
-  const renderMembers = () => {
-    return (
-      <div className="external-members-list">
-        {myExternals().map((ext, i) => (
-          <Badge color={statusToColor[ext.Status]} key={i}>
-            {ext.Receiver.UserName}
-          </Badge>
-        ))}
-        <div className="add-external">
-          {!addingFlag ? (
-            <Button simple color="info" onClick={() => setAddingFlag(true)}>
-              Agregar
-            </Button>
-          ) : (
-            <div>
-              <FormControl
-                style={{ width: "150px" }}
-                className={efClasses.selectFormControl}
-              >
-                <Select
-                  value={addingExternal ?? ""}
-                  onChange={e => setAddingExternal(e.target.value)}
-                  MenuProps={{ className: efClasses.selectMenu }}
-                  classes={{ select: efClasses.select }}
-                  inputProps={{
-                    name: "select-external",
-                    id: "select-external"
-                  }}
-                >
-                  <MenuItem
-                    disabled
-                    classes={{
-                      root: efClasses.selectMenuItem,
-                      selected: efClasses.selectMenuItemSelected
-                    }}
-                  >
-                    Seleccione un Miembro Externo
-                  </MenuItem>
-                  {allExtMembers
-                    .filter(
-                      ext =>
-                        myExternals().filter(
-                          myext => myext.Receiver._id === ext._id
-                        ).length === 0
-                    )
-                    .map(m => (
-                      <MenuItem
-                        key={m._id}
-                        value={m}
-                        classes={{
-                          root: efClasses.selectMenuItem,
-                          selected: efClasses.selectMenuItemSelected
-                        }}
-                      >
-                        {m.UserName}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <Button
-                simple
-                color="info"
-                onClick={() => {
-                  addExternal();
-                }}
-              >
-                Confirmar
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-  const renderProvidersChats = (externals, readable = false) => {
+  const renderProvidersChats = (internalMember) => {
     return (
       <GridContainer>
-        {externals.map((ext, key) => (
-          <GridItem xs={4} key={key}>
+        {currentConsultation.externalConnections
+          .filter(cnx => cnx.internalUser.userName === internalMember.userName)
+          .map((ext, key) => (
+          <GridItem sm={6} xs={12} key={key}>
             <Card>
-              <CardHeader color={statusToColor[ext.Status]} icon>
+              <CardHeader color={statusToColor[ext.status]} icon>
                 <CustomizedMenus options={[
-                  {icon:Done, text:"Resuelto", handler: () => {}},
-                  {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
-                  {icon:Warning, text:"Sin solucion", handler: () => {}}
+                  {icon:Done, text:"Resuelto", handler: () => ext.updateStatus(2)},
+                  {icon:QueryBuilder, text:"En Proceso", handler: () => ext.updateStatus(1)},
+                  {icon:Warning, text:"Sin solucion", handler: () => ext.updateStatus(0)}
                 ]}/>
-                <CardIcon color={statusToColor[ext.Status]}>
-                  {statusToIcon[ext.Status]}
+                <CardIcon color={statusToColor[ext.status]}>
+                  {statusToIcon[ext.status]}
                 </CardIcon>
                 <h4 className={classes.cardIconTitle}>
                   {" "}
-                  <b>{ext.Receiver.UserName}</b>
+                  <b>{ext.externalUser.userName}</b>
                 </h4>
-                
+
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
-                {readable ? (
+                {ext.internalUser.userName === uiStore.signedUser.userName && (
                   <Button
                     simple
                     color="info"
-                    onClick={() => setSelectedExternal(ext)}
+                    onClick={() => setConversation(ext.conversation)}
                   >
                   Discusion
                 </Button>
-                ) : (
-                  "Sin acceso"
                 )}
               </CardBody>
             </Card>
@@ -208,33 +82,63 @@ export default function Providers({ currentElement, ...props }) {
     );
   };
 
-  // const showMeFirst = (a,b) => {
-  //   if(a.user === apiService.currentUser().userName)
-  //   return 1
-  // }
-
-  useEffect(() => {
-    loadMyExternals();
-  }, []);
 
   const renderInternalProvidersSection = () =>{
     return (
       <div>
-        {renderMembers()}
+        <Autocomplete
+          multiple
+          options={consultationStore.allExternalMembers.filter(
+            v => !currentConsultation.externalMembers.some(
+              m => m.userName === v.userName
+          ))}
+          getOptionLabel={(option) => option.userName}
+          defaultValue={currentConsultation.externalMembers}
+          filterSelectedOptions
+          disableClearable
+          renderTags={(tagValue, getTagProps) =>
+            tagValue.map((option, index) => (
+              <Chip
+                key={index}
+                label={option.userName}
+                style={{margin:"5px 3px"}}
+              />
+            ))
+          }
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              label="Proveedores"
+              placeholder="Usuario"
+            />
+          )}
+          onChange={(event, newValue, reason) => {
+            if(reason === "select-option"){
+              console.log(currentConsultation.externalMembers)
+              const temp = newValue.filter(
+                v => !currentConsultation.externalMembers.some(
+                  m => m.userName === v.userName
+              ));
+              console.log(temp);
+              if(temp.length > 0){
+                console.log(temp[0]);
+                currentConsultation.connectWithProvider(temp[0].id);
+              }
+            }
+          }}
+        />
         <Accordion
           active={0}
-          collapses={groupedExternal
-            .map(group => {
+          collapses={currentConsultation.internalMembers
+            .map(internalMember => {
               return {
-                title: "Atendidos por " + group.user,
-                content: renderProvidersChats(
-                  group.externals,
-                  group.user === authService.currentUserValue.userName
-                )
+                title: "Atendidos por " + internalMember.userName,
+                content: renderProvidersChats(internalMember)
               };
             })
-            .sort((a, b) =>
-              a.user === authService.currentUserValue.userName ? 1 : -1
+            .sort((a, _) =>
+              a.user === uiStore.signedUser.userName ? 1 : -1
             )}
         />
       </div>
@@ -244,28 +148,30 @@ export default function Providers({ currentElement, ...props }) {
   const renderExternalChats = () => {
     return (
       <GridContainer>
-        {myInternals().map((ext, key) => (
+        {currentConsultation.externalConnections
+          .filter(cnx => cnx.externalUser.userName === uiStore.signedUser.userName)
+          .map((ext, key) => (
           <GridItem xs={4} key={key}>
             <Card>
-              <CardHeader color={statusToColor[ext.Status]} icon>
-                <CardIcon color={statusToColor[ext.Status]}>
-                  {statusToIcon[ext.Status]}
+              <CardHeader color={statusToColor[ext.status]} icon>
+                <CardIcon color={statusToColor[ext.status]}>
+                  {statusToIcon[ext.status]}
                 </CardIcon>
                 <h4 className={classes.cardIconTitle}>
                   {" "}
-                  <b>{ext.Author.UserName}</b>
+                  <b>{ext.internalUser.userName}</b>
                 </h4>
-                
+
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
                 <Button
                   simple
                   color="info"
-                  onClick={() => setSelectedExternal(ext)}
+                  onClick={() => setConversation(ext.conversation)}
                 >
                   Discusion
                 </Button>
- 
+
               </CardBody>
             </Card>
           </GridItem>
@@ -274,16 +180,14 @@ export default function Providers({ currentElement, ...props }) {
     );
   };
 
-  return selectedExternal ? (
+  return conversation ? (
     <div>
-      <Button simple color="info" onClick={() => setSelectedExternal(null)}>
+      <Button simple color="info" onClick={() => setConversation(undefined)}>
         Volver
       </Button>
-      <Chat 
-        currentElement={currentConsultation} 
-        currentExternal={selectedExternal}
-        getEndpoint={apiService.getExternalConversation} 
-        postEndpoint={apiService.addExternalMessage}/>
+      <Chat conversation={conversation}/>
     </div>
-  ) : (authService.isInternal() ? renderInternalProvidersSection() : renderExternalChats())
+  ) : (uiStore.signedUser.isInternal ? renderInternalProvidersSection() : renderExternalChats())
 }
+
+export default observer(Providers);

@@ -32,14 +32,14 @@ export default function CustomTabs(props) {
   });
   return (
     <Card plain={plainTabs}>
-      <CardHeader color={headerColor} plain={plainTabs}>
+      <CardHeader color={headerColor} plain={plainTabs} style={{zIndex:0}}>
         {rightButtonHandler && (<Button
             disabled={rightButtonDisabled}
             onClick={rightButtonHandler}
             variant="outlined"
             className={classes.marginRight + " tab-button"}
           >
-            
+
             {!rightButtonDisabled && <Close
               className={classes.icons}
               style={{ marginTop: "-2px", marginRight: "2px" }}
@@ -50,6 +50,7 @@ export default function CustomTabs(props) {
         <Tabs
           value={value}
           onChange={handleChange}
+          style={{zIndex:"0 !important"}}
           classes={{
             root: classes.tabsRoot,
             indicator: classes.displayNone
@@ -76,7 +77,7 @@ export default function CustomTabs(props) {
             );
           })}
         </Tabs>
-        
+
       </CardHeader>
       <CardBody>
         {tabs.map((prop, key) => {

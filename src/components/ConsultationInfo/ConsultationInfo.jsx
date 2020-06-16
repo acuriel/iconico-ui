@@ -1,36 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import {apiService, authService} from "../../services";
+import React from 'react';
+import { observer } from "mobx-react";
 
 import Person from "@material-ui/icons/Person";
 import CalendarToday from "@material-ui/icons/CalendarToday";
-import AvatarGroup from '@material-ui/lab/AvatarGroup';
-import Avatar from '@material-ui/core/Avatar';
+import GridContainer from "../../components/Grid/GridContainer";
+import GridItem from "../../components/Grid/GridItem";
+import MembersAvatarGroup from "./MembersAvatarGroup";
 
-import { addDays, dateToString, getNameInitials, BGS } from "../../helpers/utils";
+import { dateToString } from "../../helpers/utils";
 
 
-export default function ConsultationInfo({currentConsultation, ...props}){
-  const [providers, setProviders] = useState([])
-
-  useEffect(() => {
-    apiService.getExternalMembers(currentConsultation._id).then(res => {
-      setProviders(res.data);
-    });
-  }, [])
-
-  
+function ConsultationInfo({currentConsultation, ...props}){
   return (
     <div style={{width:"100%"}}>
-      
-      <div>
-        <Person
+      <div className="member-list-section">
+        <GridContainer>
+          <GridItem sm={9} xs={12}>
+          <Person
           style={{
             fontSize: "1.5em",
             marginBottom: "-4px",
             marginRight: "5px"
           }}
         />
-        {currentConsultation.Author.UserName}
+        {currentConsultation.author.userName}
         <CalendarToday
           style={{
             fontSize: "1.5em",
@@ -39,36 +32,29 @@ export default function ConsultationInfo({currentConsultation, ...props}){
             marginLeft: "20px"
           }}
         />{" "}
-        {dateToString(new Date(currentConsultation.IssuedOn))} -{" "}
-        {dateToString(new Date(currentConsultation.ExpiresOn))}
-      </div>
-      <div className="member-list-section">
-        <h5>Miembros Internos</h5>
-        <AvatarGroup>
-          {currentConsultation.InternalMembers.map((m, k) => 
-          <Avatar 
-            key={k}
-            title={m.UserName} 
-            alt={m.UserName}
-            className={BGS[k % BGS.length]}
-          >{getNameInitials(m.UserName)}</Avatar>)}
-        </AvatarGroup>
-        <h5>Miembros Externos</h5>
-        <AvatarGroup>
-          {providers.map((m, k) => 
-          <Avatar 
-            key={k}
-            title={m.Receiver.UserName} 
-            alt={m.Receiver.UserName}
-            className={BGS[k % BGS.length]}
-          >{getNameInitials(m.Receiver.UserName)}</Avatar>)}
-        </AvatarGroup>
-      </div>
-      <div>
-        <h5>Descripción</h5>
+        {dateToString(currentConsultation.issuedOn)} -{" "}
+        {dateToString(currentConsultation.expiresOn)}
+        <p style={{ marginTop: "15px" }}><b>Descripción: </b></p>
+        {currentConsultation.description}
 
-        <p style={{ marginTop: "15px" }}>{currentConsultation.Description}</p>
+          </GridItem>
+          <GridItem sm={3} xs={12}>
+            <h5>Miembros Internos</h5>
+            <MembersAvatarGroup
+              users={currentConsultation.internalMembers}
+              statuses={currentConsultation.statuses}
+            />
+            <h5>Miembros Externos</h5>
+            {!currentConsultation.externalMembers.length || currentConsultation.externalMembers.length === 0
+            ? "Ninguno"
+            :<MembersAvatarGroup
+              users={currentConsultation.externalMembers}
+              statuses={currentConsultation.statuses}
+            />}
+          </GridItem>
+        </GridContainer>
       </div>
-      
     </div>)
 }
+
+export default observer(ConsultationInfo);

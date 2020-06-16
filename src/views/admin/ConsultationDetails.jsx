@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { withRouter } from "react-router";
+import StoreContext from "stores/RootStore";
+import { observer } from "mobx-react";
 import {apiService, authService} from "../../services";
 import Loading from "../../components/Loading/Loading.js";
 
@@ -9,109 +11,79 @@ import Assignment from "@material-ui/icons/Assignment";
 import PlaylistAddCheck from "@material-ui/icons/PlaylistAddCheck";
 import People from "@material-ui/icons/People";
 import Code from "@material-ui/icons/Code";
-import Person from "@material-ui/icons/Person";
-import CalendarToday from "@material-ui/icons/CalendarToday";
+import Done from "@material-ui/icons/Done";
+import QueryBuilder from "@material-ui/icons/QueryBuilder";
+import Warning from "@material-ui/icons/Warning";
 // core components
 import Tabs from "../../components/CustomTabs/CustomTabs";
 
-import { addDays, dateToString } from "../../helpers/utils";
 import Chat from "../../components/Chat/Chat";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
+import Highlights from "components/ConsultationInfo/Highlights";
+import Truth from "components/ConsultationInfo/Truth";
+import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 
-function ConsultationDetails(props) {
-  const [currentConsultation, setCurrentConsultation] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [reload, setReload] = useState(0)
+
+function ConsultationDetails({match}) {
+  const {consultationStore, uiStore} = useContext(StoreContext);
+
   useEffect(() => {
-    // eslint-disable-next-line react/prop-types
-    apiService.getConsultationById(props.match.params.id).then(res => {
-      let data = res.data;
-      setCurrentConsultation(data);
-      setLoading(false);
-    });
-  }, [reload]);
-  const details = () => {
-    let date = new Date(currentConsultation.IssuedOn);
-    return (
-      <div>
-        <div>
-          <Person
-            style={{
-              fontSize: "1.5em",
-              marginBottom: "-4px",
-              marginRight: "5px"
-            }}
-          />
-          {currentConsultation.Author.UserName}
-          <CalendarToday
-            style={{
-              fontSize: "1.5em",
-              marginBottom: "-4px",
-              marginRight: "5px",
-              marginLeft: "20px"
-            }}
-          />{" "}
-          {dateToString(date)} -{" "}
-          {dateToString(new Date(currentConsultation.ExpiresOn))}
-        </div>
-        <p style={{ marginTop: "15px", marginBottom: "50px" }}>
-          {currentConsultation.Description}
-        </p>
-      </div>
-    );
-  };
+    consultationStore.selectConsultation(match.params.id);
+  }, [])
 
-  return loading ? (
+  return !consultationStore.selectedConsultation ? (
     <Loading />
   ) : (
     <div>
       <div>
-        <h3>{currentConsultation.Tittle}</h3>
+        {consultationStore.selectedConsultation.finished || <CustomizedMenus options={[
+          {icon:Done, text:"Resuelto", handler: () => {}},
+          {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
+          {icon:Warning, text:"Sin solucion", handler: () => {}}
+        ]}/>}
+        <h3>{consultationStore.selectedConsultation.title}</h3>
       </div>
       <Tabs
         headerColor="info"
-        rightButtonHandler={() => apiService.endConsultation(currentConsultation).then(res => setReload(reload+1))}
-        rightButtonDisabled={currentConsultation.IsManuallyFinished}
+        rightButtonHandler={() => consultationStore.selectedConsultation.terminate()}
+        rightButtonDisabled={consultationStore.selectedConsultation.finished}
         tabs={[
           {
             tabName: "Detalles",
             tabIcon: Assignment,
-            // tabContent: details(),
-            tabContent: <ConsultationInfo currentConsultation={currentConsultation} />,
-            limited: false
+            tabContent: <ConsultationInfo currentConsultation={consultationStore.selectedConsultation} />,
+            visible: uiStore.signedUser.isInternal
           },
           {
             tabName: "Chat",
             tabIcon: Comment,
-            tabContent: <Chat currentElement={currentConsultation} 
-              getEndpoint={apiService.getConsultationConv} 
-              postEndpoint={apiService.addMessage}/>,
-            limited: true
+            tabContent: <Chat conversation={consultationStore.selectedConsultation.conversation}/>,
+            visible: uiStore.signedUser.isInternal
           },
           {
             tabName: "Proveedores",
             tabIcon: People,
-            tabContent: <Providers currentElement={currentConsultation} />,
-            limited: false
+            tabContent: <Providers currentConsultation={consultationStore.selectedConsultation} />,
+            visible: true
           },
           {
             tabName: "Highlights",
             tabIcon: Code,
-            tabContent: <p>Seccion en construccion</p>,
-            limited: true
+            tabContent: <Highlights currentConsultation={consultationStore.selectedConsultation}/>,
+            visible: true
           },
           {
             tabName: "Verdades",
             tabIcon: PlaylistAddCheck,
-            tabContent: <p>Seccion en construccion</p>,
-            limited: true
+            tabContent: <Truth truth={consultationStore.selectedConsultation.truth}/>,
+            visible: consultationStore.selectedConsultation.finished
           }
-        ].filter(tab => authService.isInternal() || !tab.limited)}
+        ].filter(tab => tab.visible)}
       />
     </div>
   );
 }
 
-export default withRouter(ConsultationDetails);
+export default withRouter(observer(ConsultationDetails));

@@ -39,7 +39,7 @@ export default function AdminNavbar(props) {
     brandBtn = (<Button href="#" className={classes.title} color="transparent"> {brandText} </Button>);
   }
   return (
-    <AppBar className={classes.appBar + appBarClasses}>
+    <AppBar className={classes.appBar + appBarClasses} style={{zIndex:5}}>
       <Toolbar className={classes.container}>
         <Hidden smDown implementation="css">
           <div className={sidebarMinimize}>

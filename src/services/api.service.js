@@ -45,9 +45,9 @@ const getAllInternalMembers = () => baseService.get(API_IMEM_URL);
 
 const getExternalMembers = consultationId =>
   baseService.get(
-    `${API_EMEM_URL}GetExternalConnections/${consultationId}`
+    `${API_CONS_URL}${consultationId}/ExternalConnections/`
   );
-  const getAllExternalConnections = () => baseService.get(`${API_EMEM_URL}GetExternalConnections/`);
+const getAllExternalConnections = () => baseService.get(`${API_EMEM_URL}GetExternalConnections/`);
 
 const getAllExternalMembers = () => baseService.get(API_AEXM_URL);
 
@@ -60,9 +60,9 @@ const getExternalConversation = (consultationId, authorId, receptorId) => {
 const addExternalMessage = msg => baseService.post(API_EXCM_URL, msg);
 
 const getAllFolders = () => baseService.get(API_FOLD_URL);
-const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/GetConsultas`);
+const getConsultationsInFolder = (folderId) => baseService.get(`${API_FOLD_URL}${folderId}/Consultas`);
 const addNewFolder = folder => baseService.post(API_FOLD_URL, folder);
-const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder._id}`, {...folder, isPinned:!folder.isPinned});
+const togglePinFolder = folder => baseService.put(`${API_FOLD_URL}${folder.id}`, {...folder, isPinned:!folder.isPinned});
 const addConsultationToFolder = (consultationId, folderId) => baseService.put(`${API_STAT_URL}${consultationId}/${folderId ? folderId : ""}`);
 
 export const apiService = {

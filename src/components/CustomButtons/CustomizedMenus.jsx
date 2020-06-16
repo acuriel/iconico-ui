@@ -31,6 +31,11 @@ export default function CustomizedMenus({options}) {
     setAnchorEl(event.currentTarget);
   };
 
+  const clickAndHide = (op) => {
+    op.handler();
+    setAnchorEl(null);
+  }
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -54,14 +59,14 @@ export default function CustomizedMenus({options}) {
       >
         {options.map((op, key) => {
           return (
-            <MenuItem onClick={op.handler} key={key}>
+            <MenuItem onClick={() => clickAndHide(op)} key={key}>
               <ListItemIcon>
                 <op.icon fontSize="small" />
               </ListItemIcon>
               <ListItemText primary={op.text} />
             </MenuItem>
           )
-          
+
         })}
       </StyledMenu>
     </div>

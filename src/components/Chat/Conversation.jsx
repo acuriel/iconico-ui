@@ -1,21 +1,23 @@
 import React from "react";
+import { observer } from "mobx-react";
 
 import ChatMessage from './ChatMessage'
 
 
-export default function Conversation({conv, setReplyMsg, ...props}) {
-  //ScrollToBottom
+function Conversation({messages, replyAction}) {
   return (
     <div>
-      <div className="chat-conversation" id="chat-conversation">
-        {conv.map((c, i) => (
+      <div className="chat-conversation" id="chat-conversation" autoFocus={true}>
+        {messages.map(msg => (
           <ChatMessage
-            key={i}
-            msg={c}
-            setReplyMsg={setReplyMsg}
+            key={msg.id}
+            msg={msg}
+            replyAction={() => replyAction(msg)}
           />
         ))}
       </div>
     </div>
   );
 };
+
+export default observer(Conversation);
