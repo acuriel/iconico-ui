@@ -2,19 +2,23 @@ import {observable, action, computed, runInAction, decorate, autorun} from 'mobx
 import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
-import Conversation from './Conversation';
+import ProviderConversation from './ProviderConversation';
 
 
 export default class ProviderStore extends BaseStore{
   id="";
   consultationId="";
+  consultation = undefined;
   internalUser=undefined;
   externalUser=undefined;
   status=0;
+  conversation = undefined;
 
-  constructor(externalConnection, rootStore){
-    super(rootStore);
+  constructor(externalConnection, consultation){
+    super();
+    this.consultation = consultation;
     this._loadProviderData(externalConnection);
+    this.conversation = new ProviderConversation(this, this.consultation);
   }
 
   _loadProviderData(externalConnection){
@@ -25,9 +29,9 @@ export default class ProviderStore extends BaseStore{
     this.status = externalConnection.status;
   }
 
-  get conversation(){
-    return new Conversation(this);
-  }
+  // get conversation(){
+  //   return new ProviderConversation(this, this.consultation);
+  // }
 
   updateStatus = async (newValue) => {
     try {
@@ -51,9 +55,10 @@ export default class ProviderStore extends BaseStore{
 decorate(ProviderStore, {
   id:observable,
   consultationId:observable,
+  consultation:observable,
   internalUser:observable,
   externalUser:observable,
   status:observable,
-  conversation: computed,
+  conversation: observable,
   updateStatus: action,
 })

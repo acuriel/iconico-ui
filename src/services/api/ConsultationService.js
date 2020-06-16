@@ -22,6 +22,20 @@ class ConsultationService extends AxiosApiService{
     })
   }
 
+  getExternalConnectionConversation(consultationId, externalId, date){
+    return this.baseService.get(
+      this._getUrl(
+        consultationId,
+        "ExternalConnections",
+        externalId,
+        "Conversation"
+      ),
+      date ? { params: {
+        fromDate: date
+      }}: {}
+    )
+  }
+
   getConversation(id, date){
     return this.baseService.get(
       this._getUrl(id, "Conversation"),
@@ -31,8 +45,6 @@ class ConsultationService extends AxiosApiService{
   }
 
   addMessage(id, msg){
-    console.log(id);
-    console.log(msg);
     return this.baseService.post(this._getUrl(id, "Conversation"), msg);
   }
 

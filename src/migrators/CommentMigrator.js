@@ -18,7 +18,6 @@ class CommentMigrator{
     }
   }
   saveForRequest(data) {
-    console.log(data);
     if(!data) return undefined;
     return {
       _id: data.id,
@@ -26,6 +25,7 @@ class CommentMigrator{
       CommentText: data.text,
       Author: data.author ? UserMigrator.saveForRequest(data.author) : undefined,
       ThisCommentAnswersTo: this.saveForRequest(data.replyTo),
+      Mentions: data.mentions.map(u => UserMigrator.saveForRequest(u))
     }
   }
   getEmptyElement(consultationId){

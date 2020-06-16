@@ -29,7 +29,6 @@ import Chat from "./Chat";
 import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 const useStyles = makeStyles(styles);
-const useefStyles = makeStyles(efstyles);
 
 
 const statusToColor = { 0: "danger", 1: "warning", 2: "success" };
@@ -40,9 +39,7 @@ function Providers({ currentConsultation }) {
 
   const {consultationStore, uiStore} = useContext(StoreContext);
 
-  const [selectedExternal, setSelectedExternal] = useState(null);
-
-  console.log(currentConsultation.externalMembers);
+  const [conversation, setConversation] = useState(undefined);
 
   const renderProvidersChats = (internalMember) => {
     return (
@@ -68,16 +65,14 @@ function Providers({ currentConsultation }) {
 
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
-                {true ? (
+                {ext.internalUser.userName === uiStore.signedUser.userName && (
                   <Button
                     simple
                     color="info"
-                    onClick={() => setSelectedExternal(ext)}
+                    onClick={() => setConversation(ext.conversation)}
                   >
                   Discusion
                 </Button>
-                ) : (
-                  "Sin acceso"
                 )}
               </CardBody>
             </Card>
@@ -87,9 +82,6 @@ function Providers({ currentConsultation }) {
     );
   };
 
-  useEffect(() => {
-    // loadMyExternals();
-  }, []);
 
   const renderInternalProvidersSection = () =>{
     return (
@@ -156,16 +148,18 @@ function Providers({ currentConsultation }) {
   const renderExternalChats = () => {
     return (
       <GridContainer>
-        {[].map((ext, key) => (
+        {currentConsultation.externalConnections
+          .filter(cnx => cnx.externalUser.userName === uiStore.signedUser.userName)
+          .map((ext, key) => (
           <GridItem xs={4} key={key}>
             <Card>
-              <CardHeader color={statusToColor[ext.Status]} icon>
-                <CardIcon color={statusToColor[ext.Status]}>
-                  {statusToIcon[ext.Status]}
+              <CardHeader color={statusToColor[ext.status]} icon>
+                <CardIcon color={statusToColor[ext.status]}>
+                  {statusToIcon[ext.status]}
                 </CardIcon>
                 <h4 className={classes.cardIconTitle}>
                   {" "}
-                  <b>{ext.Author.UserName}</b>
+                  <b>{ext.internalUser.userName}</b>
                 </h4>
 
               </CardHeader>
@@ -173,7 +167,7 @@ function Providers({ currentConsultation }) {
                 <Button
                   simple
                   color="info"
-                  onClick={() => setSelectedExternal(ext)}
+                  onClick={() => setConversation(ext.conversation)}
                 >
                   Discusion
                 </Button>
@@ -186,14 +180,12 @@ function Providers({ currentConsultation }) {
     );
   };
 
-  return selectedExternal ? (
+  return conversation ? (
     <div>
-      <Button simple color="info" onClick={() => setSelectedExternal(null)}>
+      <Button simple color="info" onClick={() => setConversation(undefined)}>
         Volver
       </Button>
-      <Chat
-        currentElement={currentConsultation}
-        currentExternal={selectedExternal}/>
+      <Chat conversation={conversation}/>
     </div>
   ) : (uiStore.signedUser.isInternal ? renderInternalProvidersSection() : renderExternalChats())
 }

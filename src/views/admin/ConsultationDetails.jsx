@@ -17,7 +17,7 @@ import Warning from "@material-ui/icons/Warning";
 // core components
 import Tabs from "../../components/CustomTabs/CustomTabs";
 
-import Chat from "../../components/Chat/ChatMobx";
+import Chat from "../../components/Chat/Chat";
 import Providers from "../../components/Chat/Providers";
 import ConsultationInfo from "components/ConsultationInfo/ConsultationInfo";
 import Highlights from "components/ConsultationInfo/Highlights";

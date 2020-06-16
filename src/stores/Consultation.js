@@ -7,7 +7,7 @@ import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import CommentMigrator from '../migrators/CommentMigrator';
 import UserStatusMigrator from '../migrators/UserStatusMigrator';
 import ExternalConnectionMigrator from '../migrators/ExternalConnectionMigrator';
-import Conversation from './Conversation';
+import InternalConversation from './InternalConversation';
 import Comment from './Comment';
 import Truth from './Truth';
 
@@ -51,7 +51,7 @@ export default class Consultation extends BaseStore{
   }
 
   get conversation(){
-    return new Conversation(this);
+    return new InternalConversation(this);
   }
 
   get externalMembers(){
@@ -74,7 +74,7 @@ export default class Consultation extends BaseStore{
       const result = await ConsultationService.getExternalConnections(this.id);
       runInAction(() => this.externalConnections.replace(
         result.data.map(
-          cnx => new ProviderStore(ExternalConnectionMigrator.loadFromResponse(cnx))
+          cnx => new ProviderStore(ExternalConnectionMigrator.loadFromResponse(cnx), this)
        ))
       );
     } catch (error) {

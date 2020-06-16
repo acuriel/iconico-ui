@@ -1,6 +1,5 @@
-import { observable, action, decorate, runInAction, computed } from 'mobx';
+import { observable, action, decorate, runInAction } from 'mobx';
 import { toast } from 'react-toastify';
-import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import CommentMigrator from 'migrators/CommentMigrator';
 import Comment from './Comment';
@@ -13,16 +12,22 @@ export default class Conversation extends BaseStore {
   galeryVisibility = observable.box(false);
   galeryActiveIndex = 0;
 
-  constructor(consultation) {
+  constructor(consultation){
     super();
     this.consultation = consultation;
-    this.newMessage = new Comment(CommentMigrator.getEmptyElement(consultation.id));
-    // this._reload();
+  }
+
+  resetEmptyMessage(){
+    throw new Error("Not Implemented")
+  }
+
+  retrieve(force){
+    throw new Error("Not Implemented")
   }
 
   _reload = async (force = false) => {
     try {
-      const res = await ConsultationService.getConversation(this.consultation.id, this.comments.slice().length > 0 && !force ? this.comments[this.comments.length - 1].postedOn : undefined);
+      const res = await this.retrieve(force);
       if(force){
         runInAction(() => this.comments.replace(res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this))));
       } else if (res.data.length > 0) {
@@ -66,7 +71,7 @@ export default class Conversation extends BaseStore {
   }
 }
 
-decorate(Comment, {
+decorate(Conversation, {
   consultation: observable,
   newMessage: observable,
   galeryActiveIndex: observable,
@@ -74,6 +79,6 @@ decorate(Comment, {
   _reload: action,
   setReply: action,
   setGaleryVisibility: action,
-  setGaleryActiveIndex: action
-  // allImagesSrc: computed,
+  setGaleryActiveIndex: action,
+  resetEmptyMessage: action
 })
