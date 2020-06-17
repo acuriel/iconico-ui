@@ -1,10 +1,12 @@
 class UserMigrator{
   loadFromResponse(data) {
+    // console.log(data);
+    const email = data.UserName || data.userName;
     return {
       id: data._id,
-      userName: data.UserName,
-      email: data.UserEmail,
-      isInternal: data.UserName.endsWith("iconico.es")
+      userName: email,
+      email: email,
+      isInternal: email.endsWith("iconico.es")
     }
   }
   saveForRequest(data) {
@@ -16,19 +18,13 @@ class UserMigrator{
   }
 
   loadFromToken(data){
-    var parsedUser = null;
-    try{
-      parsedUser = JSON.parse(data);
-    }
-    catch(e){
-      return null;
-    }
+    const user = typeof data === "string" ? JSON.parse(data) : data;
     return {
       id:'',
-      userName: parsedUser.userName,
-      email: parsedUser.userName,
-      token: parsedUser.access_token,
-      isInternal: parsedUser.userName.endsWith("iconico.es")
+      userName: user.userName,
+      email: user.userName,
+      token: user.access_token,
+      isInternal: user.userName.endsWith("iconico.es")
     }
   }
 }

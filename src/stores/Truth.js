@@ -20,8 +20,8 @@ export default class Truth extends BaseStore{
   created = observable.box(false);
 
 
-  constructor(consultation, truth=undefined){
-    super();
+  constructor(consultation, truth=undefined, rootStore){
+    super(rootStore);
     if(truth){
       this._update(truth)
     }else{

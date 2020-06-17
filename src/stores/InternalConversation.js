@@ -7,8 +7,8 @@ import Comment from './Comment';
 export default class InternalConversation extends Conversation {
   consultation = undefined;
 
-  constructor(consultation) {
-    super();
+  constructor(consultation, rootStore) {
+    super(rootStore);
     this.consultation = consultation;
     this.resetEmptyMessage();
   }
@@ -22,7 +22,7 @@ export default class InternalConversation extends Conversation {
   }
 
   resetEmptyMessage(){
-    this.newMessage = new Comment(CommentMigrator.getEmptyElement(this.consultation.id));
+    this.newMessage = new Comment(CommentMigrator.getEmptyElement(this.consultation.id),this, this.rootStore);
   }
 
 }

@@ -27,8 +27,8 @@ export default class Consultation extends BaseStore{
   truth = undefined;
 
 
-  constructor(consultation){
-    super();
+  constructor(consultation, rootStore){
+    super(rootStore);
     if(consultation){
       this._update(consultation);
     }
@@ -51,7 +51,7 @@ export default class Consultation extends BaseStore{
   }
 
   get conversation(){
-    return new InternalConversation(this);
+    return new InternalConversation(this, this.rootStore);
   }
 
   get externalMembers(){
@@ -62,7 +62,7 @@ export default class Consultation extends BaseStore{
     try {
       const res = await ConsultationService.getHighlights(this.id);
       runInAction(() => {
-        this.highlights.replace(res.data.map(h => new Comment(CommentMigrator.loadFromResponse(h))))
+        this.highlights.replace(res.data.map(h => new Comment(CommentMigrator.loadFromResponse(h), undefined, this.rootStore)))
       })
     } catch (error) {
       console.log(error);
@@ -74,7 +74,7 @@ export default class Consultation extends BaseStore{
       const result = await ConsultationService.getExternalConnections(this.id);
       runInAction(() => this.externalConnections.replace(
         result.data.map(
-          cnx => new ProviderStore(ExternalConnectionMigrator.loadFromResponse(cnx), this)
+          cnx => new ProviderStore(ExternalConnectionMigrator.loadFromResponse(cnx), this, this.rootStore)
        ))
       );
     } catch (error) {

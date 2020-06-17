@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { observer } from "mobx-react";
 
-import { authService } from "../../services";
+import StoreContext from "stores/RootStore";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,19 +26,22 @@ import styles from "assets/jss/material-dashboard-pro-react/views/loginPageStyle
 
 const useStyles = makeStyles(styles);
 
-export default function LoginPage(props) {
+function LoginPage(props) {
+  const { authStore } = useContext(StoreContext);
+
+
   const [cardAnimaton, setCardAnimation] = useState("cardHidden");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+
+  }, [])
   const login = () => {
-    authService
-      .login(email, password)
-      .then(res => {
-        props.history.push("/admin");
-      })
-      .catch(err => console.log(err));
+    authStore.login(email, password, () => {
+      props.history.push("/admin")
+    });
   };
-  setTimeout(function() {
+  setTimeout(function () {
     setCardAnimation("");
   }, 700);
   const classes = useStyles();
@@ -78,7 +82,7 @@ export default function LoginPage(props) {
                   inputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <VpnKey className={classes.inputAdornmentIcon}/>
+                        <VpnKey className={classes.inputAdornmentIcon} />
                       </InputAdornment>
                     ),
                     type: "password",
@@ -107,3 +111,5 @@ export default function LoginPage(props) {
     </div>
   );
 }
+
+export default observer(LoginPage);

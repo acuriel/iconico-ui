@@ -42,7 +42,7 @@ function CounsultationListAccordion({consultations, ...props}) {
 
 function ConsultationList() {
   const classes = useStyles();
-  const {consultationStore, uiStore} = useContext(StoreContext)
+  const {consultationStore, authStore} = useContext(StoreContext)
 
   useEffect(() => {
     consultationStore.getAllConsultations();
@@ -50,7 +50,7 @@ function ConsultationList() {
 
   return (
     <div>
-      {uiStore.signedUser.isInternal
+      {authStore.signedUser.isInternal
         ? (<Button
           href={"/admin/consultas/nueva"}
           color="primary"

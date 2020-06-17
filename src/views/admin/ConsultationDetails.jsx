@@ -1,8 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { withRouter } from "react-router";
 import StoreContext from "stores/RootStore";
 import { observer } from "mobx-react";
-import {apiService, authService} from "../../services";
 import Loading from "../../components/Loading/Loading.js";
 
 // @material-ui/icons
@@ -27,7 +26,7 @@ import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 
 function ConsultationDetails({match}) {
-  const {consultationStore, uiStore} = useContext(StoreContext);
+  const {consultationStore, authStore} = useContext(StoreContext);
 
   useEffect(() => {
     consultationStore.selectConsultation(match.params.id);
@@ -54,13 +53,13 @@ function ConsultationDetails({match}) {
             tabName: "Detalles",
             tabIcon: Assignment,
             tabContent: <ConsultationInfo currentConsultation={consultationStore.selectedConsultation} />,
-            visible: uiStore.signedUser.isInternal
+            visible: authStore.signedUser.isInternal
           },
           {
             tabName: "Chat",
             tabIcon: Comment,
             tabContent: <Chat conversation={consultationStore.selectedConsultation.conversation}/>,
-            visible: uiStore.signedUser.isInternal
+            visible: authStore.signedUser.isInternal
           },
           {
             tabName: "Proveedores",

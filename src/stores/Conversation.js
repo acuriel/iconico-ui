@@ -12,8 +12,8 @@ export default class Conversation extends BaseStore {
   galeryVisibility = observable.box(false);
   galeryActiveIndex = 0;
 
-  constructor(consultation){
-    super();
+  constructor(consultation, rootStore){
+    super(rootStore);
     this.consultation = consultation;
   }
 
@@ -29,9 +29,9 @@ export default class Conversation extends BaseStore {
     try {
       const res = await this.retrieve(force);
       if(force){
-        runInAction(() => this.comments.replace(res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this))));
+        runInAction(() => this.comments.replace(res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this, this.rootStore))));
       } else if (res.data.length > 0) {
-        runInAction(() => this.comments.push(...res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this))));
+        runInAction(() => this.comments.push(...res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this, this.rootStore))));
       }
     } catch (error) {
       console.log(error);
@@ -63,7 +63,7 @@ export default class Conversation extends BaseStore {
     try {
       await this.newMessage.save()
       this.newMessage.text = "";
-      runInAction(() => this.newMessage = new Comment(CommentMigrator.getEmptyElement(this.consultation.id), this));
+      runInAction(() => this.newMessage = new Comment(CommentMigrator.getEmptyElement(this.consultation.id), this, this.rootStore));
     } catch (error) {
       console.log(error);
       toast.error("Hubo un problema enviando el mensaje: " + error);

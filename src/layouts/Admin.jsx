@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useEffect, useContext} from "react";
 import cx from "classnames";
-import { Switch, Route, Redirect } from "react-router-dom";
-
-import {authService} from "../services";
+import { Switch, Redirect, Route } from "react-router-dom";
+import { observer } from "mobx-react";
+import StoreContext from "stores/RootStore";
 
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -18,14 +18,16 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import { dashboardRoutes } from "helpers/routes";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
-import { PrivateRoute } from "../components/Routes/PrivateRoute";
+import PrivateRoute from "../components/Routes/PrivateRoute";
 
 var ps;
 
 const useStyles = makeStyles(styles);
 
-export default function Dashboard(props) {
+function Dashboard(props) {
   const { ...rest } = props;
+  const { authStore } = useContext(StoreContext);
+
   // states and functions
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [miniActive, setMiniActive] = React.useState(false);
@@ -34,7 +36,6 @@ export default function Dashboard(props) {
   const bgColor = "black";
   // const [hasImage, setHasImage] = React.useState(true);
   const [logo, setLogo] = React.useState(require("../assets/img/logo-white.svg"));
-  const [currentUser, setCurrentUser] = React.useState(undefined)
   // styles
   const classes = useStyles();
   const mainPanelClasses =
@@ -48,8 +49,7 @@ export default function Dashboard(props) {
   // ref for main panel div
   const mainPanel = React.createRef();
   // effect instead of componentDidMount, componentDidUpdate and componentWillUnmount
-  React.useEffect(() => {
-    const subscription = authService.currentUser.subscribe(setCurrentUser);
+  useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
@@ -65,9 +65,8 @@ export default function Dashboard(props) {
         ps.destroy();
       }
       window.removeEventListener("resize", resizeFunction);
-      subscription.unsubscribe();
     };
-  }, [currentUser, mainPanel]);
+  }, [mainPanel]);
   // functions for changeing the states from components
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -99,6 +98,11 @@ export default function Dashboard(props) {
           component={prop.component}
           key={key}
         />
+        // <Route
+        //   path={prop.layout + prop.path}
+        //   render={prop.component}
+        //   key={key}
+        // />
       );
     });
   };
@@ -123,7 +127,7 @@ export default function Dashboard(props) {
         color={color}
         bgColor={bgColor}
         miniActive={miniActive}
-        currentUser={currentUser}
+        currentUser={authStore.signedUser}
         {...rest}
       />
       <div className={mainPanelClasses} ref={mainPanel}>
@@ -136,7 +140,7 @@ export default function Dashboard(props) {
         />
         <div className={classes.content}>
             <div className={classes.container}>
-              {authService.currentUserValue ? (
+              {authStore.authenticated ? (
                 <Switch>
                   {getRoutes(dashboardRoutes)}
                   <Redirect from="/admin" to="/admin/dashboard" />
@@ -150,3 +154,5 @@ export default function Dashboard(props) {
     </div>
   );
 }
+
+export default  observer(Dashboard);

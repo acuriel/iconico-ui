@@ -11,12 +11,13 @@ baseService.interceptors.request.use(
       const token = JSON.parse(savedToken.toString())
       config.headers['Authorization'] = 'Bearer ' + token.access_token
     }
-    else {
+    else if(config.url !== "token") {
       Promise.reject({response:{status:401}});
     }
     return config;
   },
   error => {
+    console.log(error);
     Promise.reject(error);
   }
 );
@@ -24,7 +25,8 @@ baseService.interceptors.request.use(
 baseService.interceptors.response.use(
   res => res,
   error => {
-    if(error.response.status === 401){
+    console.log(error);
+    if(error.response?.status === 401){
       history.push('/auth/login');
     }else{
       history.push('/auth/error');

@@ -23,7 +23,7 @@ import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle
 const useStyles = makeStyles(styles);
 
 function Dashboard() {
-  const {consultationStore, uiStore} = useContext(StoreContext);
+  const {consultationStore, authStore} = useContext(StoreContext);
 
   useEffect(() => {
     consultationStore.getAllConsultations();
@@ -93,7 +93,7 @@ function Dashboard() {
             getStartDate={ c => c.issuedOn}
             getEndDate={ c => c.expiresOn}
             getManuallyFinishedDate={c => c.finished ? c.finishedOn : undefined}
-            currentUser={uiStore.signedUser}
+            currentUser={authStore.signedUser}
             getAuthorUser={c => c.author.userName}
            />
         </GridItem>

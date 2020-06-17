@@ -10,8 +10,8 @@ export default class UserFolder extends BaseStore{
   isPinned=false;
 
 
-  constructor(userFolder){
-    super();
+  constructor(userFolder, rootStore){
+    super(rootStore);
     if(userFolder){
       this.id = userFolder.id;
       this.name = userFolder.name;

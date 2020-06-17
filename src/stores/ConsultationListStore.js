@@ -50,7 +50,7 @@ export default class ConsultationListStore extends BaseStore{
     try {
       const result = await ConsultationService.getItem(id);
       runInAction(()=> {
-        this.selectedConsultation = new Consultation(ConsultationMigrator.loadFromResponse(result.data))
+        this.selectedConsultation = new Consultation(ConsultationMigrator.loadFromResponse(result.data), this.rootStore)
       });
     } catch (e) {
       toast.error("No se pudo obtener la consulta", {toastId:"consultation-unreachable"});
@@ -95,7 +95,7 @@ export default class ConsultationListStore extends BaseStore{
       runInAction(() => {
         this.consultations.replace(
           result.data.map(
-            c => new Consultation(ConsultationMigrator.loadFromResponse(c))
+            c => new Consultation(ConsultationMigrator.loadFromResponse(c), this.rootStore)
           )
         );
       });

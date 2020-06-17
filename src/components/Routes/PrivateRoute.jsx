@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { observer } from "mobx-react";
+import StoreContext from "stores/RootStore";
 
-import { authService } from 'services';
 
-export const PrivateRoute = ({ component: Component, ...rest }) => (
+const PrivateRoute = ({ component: Component, ...rest }) => {
+    const { authStore } = useContext(StoreContext);
+
+    return (
     <Route {...rest} render={props => {
-        const currentUser = authService.currentUserValue;
-        if (!currentUser) {
+        if (!authStore.authenticated) {
             // not logged in so redirect to login page with the return url
             return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
         }
@@ -14,4 +17,6 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
         // authorised so return component
         return <Component {...props} />
     }} />
-)
+)}
+
+export default observer(PrivateRoute);

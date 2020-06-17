@@ -22,8 +22,8 @@ export default class Comment extends BaseStore{
   attachedFile = undefined;
 
 
-  constructor(comment, conversation=undefined){
-    super();
+  constructor(comment, conversation, rootStore){
+    super(rootStore);
     this.conversation = conversation;
     if(comment){
       this._update(comment);
@@ -79,7 +79,7 @@ export default class Comment extends BaseStore{
   }
 
   get highlightedByMe(){
-    return this.highLightedBy.some(u => u.userName === AuthService.currentUserValue.userName);
+    return this.highLightedBy.some(u => u.userName === this.rootStore.authStore.signedUser.userName);
   }
 
 }

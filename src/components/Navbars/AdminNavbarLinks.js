@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // import { Manager, Target, Popper } from "react-popper";
@@ -12,6 +12,8 @@ import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 import Hidden from "@material-ui/core/Hidden";
 import Popper from "@material-ui/core/Popper";
+import { observer } from "mobx-react";
+import StoreContext from "stores/RootStore";
 
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
@@ -24,11 +26,12 @@ import CustomInput from "components/CustomInput/CustomInput";
 import Button from "components/CustomButtons/Button";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
-import { authService } from "../../services";
 
 const useStyles = makeStyles(styles);
 
-export default function HeaderLinks(props) {
+function HeaderLinks(props) {
+  const {authStore} = useContext(StoreContext);
+
   const [openNotification, setOpenNotification] = React.useState(null);
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
@@ -48,13 +51,15 @@ export default function HeaderLinks(props) {
       setOpenProfile(event.currentTarget);
     }
   };
-  
+
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
   const logout = () => {
     handleCloseProfile();
-    authService.logout();
+    authStore.logout();
+    console.log(props)
+    props.history.push("/auth/login");
   }
   const classes = useStyles();
   const { rtlActive } = props;
@@ -272,6 +277,8 @@ export default function HeaderLinks(props) {
     </div>
   );
 }
+
+export default observer(HeaderLinks);
 
 HeaderLinks.propTypes = {
   rtlActive: PropTypes.bool

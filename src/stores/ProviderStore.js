@@ -14,11 +14,11 @@ export default class ProviderStore extends BaseStore{
   status=0;
   conversation = undefined;
 
-  constructor(externalConnection, consultation){
-    super();
+  constructor(externalConnection, consultation, rootStore){
+    super(rootStore);
     this.consultation = consultation;
     this._loadProviderData(externalConnection);
-    this.conversation = new ProviderConversation(this, this.consultation);
+    this.conversation = new ProviderConversation(this, this.consultation, this.rootStore);
   }
 
   _loadProviderData(externalConnection){

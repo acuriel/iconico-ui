@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { observer } from "mobx-react";
 import { addDays, dateToStringShort, getWidth } from "../../helpers/utils";
 import { Link } from "react-router-dom";
 import { NavigateBefore, NavigateNext, Done, WatchLaterOutlined } from "@material-ui/icons";
@@ -8,7 +9,6 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
@@ -43,7 +43,7 @@ const getColorState = (startDate, endDate, manuallyFinishedDate, focusDay=undefi
 
 }
 
-const GanttItem = ({element, title, startDate, endDate, manuallyFinishedDate, isCurrentUser,intervalStart, rowDays}) => {
+const GanttItem = observer(({element, title, startDate, endDate, manuallyFinishedDate, isCurrentUser,intervalStart, rowDays}) => {
   return (
     <tr className={isCurrentUser ? "active" : undefined}>
       <td key={0} title={title} >
@@ -64,9 +64,9 @@ const GanttItem = ({element, title, startDate, endDate, manuallyFinishedDate, is
         )})}
     </tr>
   )
-}
+})
 
-export default function GanttChart({elements, getElementTitle, getStartDate, getEndDate, getManuallyFinishedDate, currentUser, getAuthorUser}) {
+function GanttChart({elements, getElementTitle, getStartDate, getEndDate, getManuallyFinishedDate, currentUser, getAuthorUser}) {
   const [rowDays, setRowDays] = useState(31);
   const [focusDate, setFocusDate] = useState(Date.now())
 
@@ -83,7 +83,7 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
     }
   }, [])
 
-  return (
+  return currentUser && (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="center" spacing={2} className="grantt-header">
@@ -146,3 +146,5 @@ export default function GanttChart({elements, getElementTitle, getStartDate, get
     </div>
   )
 }
+
+export default observer(GanttChart)

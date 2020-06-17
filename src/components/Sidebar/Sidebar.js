@@ -2,7 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {authService} from '../../services';
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 import { NavLink } from "react-router-dom";
@@ -454,7 +453,7 @@ class Sidebar extends React.Component {
             <SidebarWrapper
               className={sidebarWrapper}
               user={user}
-              headerLinks={<AdminNavbarLinks rtlActive={rtlActive} />}
+              headerLinks={<AdminNavbarLinks rtlActive={rtlActive} history={this.props.history} />}
               links={links}
             />
             {image !== undefined ? (

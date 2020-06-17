@@ -1,21 +1,12 @@
 import {observable, action, computed, runInAction, decorate} from 'mobx';
+import { toast } from 'react-toastify';
 import BaseStore from './BaseStore';
 import AuthService from 'services/api/AuthService';
+import UserMigrator from 'migrators/UserMigrator';
 
 export default class UIStore extends BaseStore{
-  signedUser = {userName:''};
   loadingState = false;
   sweetAlertState = null;
-
-  constructor(rootStore){
-    super(rootStore);
-    this.signedUser = AuthService.currentUserValue;
-  }
-
-  logout(){
-    this.signedUser = undefined;
-    AuthService.logout();
-  }
 
   setLoading(value=true){
     this.loadingState = value;
@@ -23,7 +14,6 @@ export default class UIStore extends BaseStore{
 }
 
 decorate(UIStore, {
-  signedUser: observable,
   loadingState: observable,
   sweetAlertState: observable,
   setLoading: action,

@@ -1,4 +1,4 @@
-import {observable, action, computed, runInAction, decorate} from 'mobx';
+import {observable, action, runInAction, decorate} from 'mobx';
 import TruthService from '../services/api/TruthService';
 import BaseStore from './BaseStore';
 import Truth from './Truth';
@@ -20,7 +20,7 @@ export default class HistoryStore extends BaseStore{
         this.truthes.replace(res.data.map(t => {
           const truth = TruthMigrator.loadFromResponse(t);
           this.allTags.push(...truth.tags.filter(truthTag => this.allTags.indexOf(truthTag) < 0))
-          return new Truth(undefined, truth);
+          return new Truth(undefined, truth, this.rootStore);
         }));
       });
     } catch (error) {

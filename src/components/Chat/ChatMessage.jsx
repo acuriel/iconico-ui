@@ -10,7 +10,7 @@ import { observer } from "mobx-react";
 
 
 function ChatMessage({ msg, replyAction, ...props }){
-  const {uiStore} = useContext(StoreContext)
+  const {authStore} = useContext(StoreContext)
 
 
   const showImage = () => {
@@ -40,8 +40,8 @@ function ChatMessage({ msg, replyAction, ...props }){
   };
   return (
     <div>
-      <ChatBubble msg={msg} pushRight={uiStore.signedUser.userName === msg.author.userName}>
-        {uiStore.signedUser.userName === msg.author.userName || <Reply className="reply-btn" onClick={() => replyAction(msg)}/>}
+      <ChatBubble msg={msg} pushRight={authStore.signedUser.userName === msg.author.userName}>
+        {authStore.signedUser.userName === msg.author.userName || <Reply className="reply-btn" onClick={() => replyAction(msg)}/>}
         {showImage()}
         <span>{msg.author.userName}</span>
         {msg.replyTo && <ChatBubble msg={msg.replyTo}><span>{msg.replyTo.author.userName}</span> </ChatBubble>}

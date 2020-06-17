@@ -37,7 +37,7 @@ const statusToIcon = { 0: <Warning/>, 1: <QueryBuilder/>, 2: <Done/> };
 function Providers({ currentConsultation }) {
   const classes = useStyles();
 
-  const {consultationStore, uiStore} = useContext(StoreContext);
+  const {consultationStore, authStore} = useContext(StoreContext);
 
   const [conversation, setConversation] = useState(undefined);
 
@@ -65,7 +65,7 @@ function Providers({ currentConsultation }) {
 
               </CardHeader>
               <CardBody style={{ textAlign: "right" }}>
-                {ext.internalUser.userName === uiStore.signedUser.userName && (
+                {ext.internalUser.userName === authStore.signedUser.userName && (
                   <Button
                     simple
                     color="info"
@@ -138,7 +138,7 @@ function Providers({ currentConsultation }) {
               };
             })
             .sort((a, _) =>
-              a.user === uiStore.signedUser.userName ? 1 : -1
+              a.user === authStore.signedUser.userName ? 1 : -1
             )}
         />
       </div>
@@ -149,7 +149,7 @@ function Providers({ currentConsultation }) {
     return (
       <GridContainer>
         {currentConsultation.externalConnections
-          .filter(cnx => cnx.externalUser.userName === uiStore.signedUser.userName)
+          .filter(cnx => cnx.externalUser.userName === authStore.signedUser.userName)
           .map((ext, key) => (
           <GridItem xs={4} key={key}>
             <Card>
@@ -187,7 +187,7 @@ function Providers({ currentConsultation }) {
       </Button>
       <Chat conversation={conversation}/>
     </div>
-  ) : (uiStore.signedUser.isInternal ? renderInternalProvidersSection() : renderExternalChats())
+  ) : (authStore.signedUser.isInternal ? renderInternalProvidersSection() : renderExternalChats())
 }
 
 export default observer(Providers);
