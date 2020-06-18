@@ -63,7 +63,7 @@ export default class Conversation extends BaseStore {
     try {
       await this.newMessage.save()
       this.newMessage.text = "";
-      runInAction(() => this.newMessage = new Comment(CommentMigrator.getEmptyElement(this.consultation.id), this, this.rootStore));
+      this.resetEmptyMessage();
     } catch (error) {
       console.log(error);
       toast.error("Hubo un problema enviando el mensaje: " + error);

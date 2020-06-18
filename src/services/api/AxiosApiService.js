@@ -44,7 +44,7 @@ export default class AxiosApiService {
   _getUrl(...urls){
     var paths = []
     urls.forEach(url => {
-      paths = paths.concat(url.split('/'))
+      paths = paths.concat(url.toString().split('/'))
     });
     return this.modelUrl + paths.join('/');
   }

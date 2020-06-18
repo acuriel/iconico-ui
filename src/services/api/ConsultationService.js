@@ -70,8 +70,8 @@ class ConsultationService extends AxiosApiService{
   getMemberStatus(consultationId, userId){
     return this.baseService.get(this._getUrl(consultationId, "Statuses", userId));
   }
-  updateMemberStatus(consultationId, userId, statusCode){
-    return this.baseService.put(this._getUrl(consultationId, "Statuses", userId, statusCode));
+  updateMemberStatus(consultationId, statusCode){
+    return this.baseService.put(this._getUrl(consultationId, "Statuses", "Update", statusCode));
   }
 
   terminate(id){

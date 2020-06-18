@@ -27,56 +27,56 @@ import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 
 function ConsultationDetails({match}) {
   const {consultationStore, authStore} = useContext(StoreContext);
-
+  const consultation = consultationStore.selectedConsultation
   useEffect(() => {
     consultationStore.selectConsultation(match.params.id);
   }, [])
 
-  return !consultationStore.selectedConsultation ? (
+  return !consultation ? (
     <Loading />
   ) : (
     <div>
       <div>
-        {consultationStore.selectedConsultation.finished || <CustomizedMenus options={[
-          {icon:Done, text:"Resuelto", handler: () => {}},
-          {icon:QueryBuilder, text:"En Proceso", handler: () => {}},
-          {icon:Warning, text:"Sin solucion", handler: () => {}}
+        {consultation.finished || <CustomizedMenus options={[
+          {icon:Done, text:"Resuelto", handler: () => consultation.changeMyStatus(2)},
+          {icon:QueryBuilder, text:"En Proceso", handler: () => consultation.changeMyStatus(1)},
+          {icon:Warning, text:"Sin solucion", handler: () => consultation.changeMyStatus(0)}
         ]}/>}
-        <h3>{consultationStore.selectedConsultation.title}</h3>
+        <h3>{consultation.title}</h3>
       </div>
       <Tabs
         headerColor="info"
-        rightButtonHandler={() => consultationStore.selectedConsultation.terminate()}
-        rightButtonDisabled={consultationStore.selectedConsultation.finished}
+        rightButtonHandler={() => consultation.terminate()}
+        rightButtonDisabled={consultation.finished}
         tabs={[
           {
             tabName: "Detalles",
             tabIcon: Assignment,
-            tabContent: <ConsultationInfo currentConsultation={consultationStore.selectedConsultation} />,
+            tabContent: <ConsultationInfo currentConsultation={consultation} />,
             visible: authStore.signedUser.isInternal
           },
           {
             tabName: "Chat",
             tabIcon: Comment,
-            tabContent: <Chat conversation={consultationStore.selectedConsultation.conversation}/>,
+            tabContent: <Chat conversation={consultation.conversation}/>,
             visible: authStore.signedUser.isInternal
           },
           {
             tabName: "Proveedores",
             tabIcon: People,
-            tabContent: <Providers currentConsultation={consultationStore.selectedConsultation} />,
+            tabContent: <Providers currentConsultation={consultation} />,
             visible: true
           },
           {
             tabName: "Highlights",
             tabIcon: Code,
-            tabContent: <Highlights currentConsultation={consultationStore.selectedConsultation}/>,
+            tabContent: <Highlights currentConsultation={consultation}/>,
             visible: true
           },
           {
             tabName: "Verdades",
             tabIcon: PlaylistAddCheck,
-            tabContent: <Truth truth={consultationStore.selectedConsultation.truth}/>,
+            tabContent: <Truth truth={consultation.truth}/>,
             visible: consultationStore.selectedConsultation.finished
           }
         ].filter(tab => tab.visible)}

@@ -125,15 +125,24 @@ export default class Consultation extends BaseStore{
     }
   }
 
+  changeMyStatus = async (status) => {
+    try {
+      await ConsultationService.updateMemberStatus(this.id, status);
+      toast.success(`Estado actualizado`, {toastId:"status-updated"});
+      this._loadMembersStatuses();
+    } catch (error) {
+      toast.error("Hubo un error: " + error, {toastId:"finished-consultation"});
+    }
+  }
+
   terminate = async (callback) => {
     try {
       const res = await ConsultationService.terminate(this.id)
       this._update(ConsultationMigrator.loadFromResponse(res.data));
-      if(callback) callback();
       toast.success(`Consulta Finalizada`, {toastId:"finished-consultation"});
+      if(callback) callback();
     } catch (error) {
       toast.error("Hubo un error: " + error, {toastId:"finished-consultation"});
-      console.log(error);
     }
   }
 
@@ -158,4 +167,5 @@ decorate(Consultation, {
   externalMembers: computed,
   _update:action,
   loadHighlights:action,
+  changeMyStatus:action,
 })
