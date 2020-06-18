@@ -2,7 +2,6 @@ import {observable, action, decorate, computed} from 'mobx';
 import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import FileService from '../services/api/FileService';
-import AuthService from '../services/api/AuthService';
 import BaseStore from './BaseStore';
 import CommentMigrator from 'migrators/CommentMigrator';
 

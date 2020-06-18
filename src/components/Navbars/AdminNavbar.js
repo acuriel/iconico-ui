@@ -69,7 +69,7 @@ export default function AdminNavbar(props) {
           {brandBtn}
         </div>
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks rtlActive={rtlActive} />
+          <AdminNavbarLinks rtlActive={rtlActive}  history={props.history} />
         </Hidden>
         <Hidden mdUp implementation="css">
           <Button

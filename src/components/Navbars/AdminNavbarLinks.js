@@ -31,7 +31,7 @@ const useStyles = makeStyles(styles);
 
 function HeaderLinks(props) {
   const {authStore} = useContext(StoreContext);
-
+  console.log(props.history);
   const [openNotification, setOpenNotification] = React.useState(null);
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
