@@ -60,7 +60,7 @@ function Feeds() {
                   className={classesForm.icons}
                   style={{ marginTop: "-2px", marginRight: "2px" }}
                 />
-                Nueva Comunicado
+                Nuevo Comunicado
               </Button>
           }
         </div>
