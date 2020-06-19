@@ -21,6 +21,7 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import Home from "@material-ui/icons/Home";
 import Search from "@material-ui/icons/Search";
 import HistoryIcon from '@material-ui/icons/History';
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 // core components/views for Admin layout
 import DashboardPage from "views/admin/Dashboard";
 import ConsultationList from "views/admin/ConsultationList";
@@ -28,6 +29,7 @@ import ConsultationCreate from 'views/admin/ConsultationCreate'
 import ConsultationDetails from 'views/admin/ConsultationDetails'
 import AdvancedSearch from 'views/admin/AdvancedSearch'
 import History from 'views/admin/History'
+import Feeds from 'views/admin/Feeds'
 //auth layout
 import LoginPage from "views/auth/LoginPage";
 //error views
@@ -66,8 +68,8 @@ export const dashboardRoutes = [
   {
     path: "/anuncios",
     name: "Anuncios",
-    icon: Home,
-    component: DashboardPage,
+    icon: RecordVoiceOverIcon,
+    component: Feeds,
     layout: "/admin"
   },
   {

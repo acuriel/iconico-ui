@@ -4,12 +4,15 @@ import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';
 import Consultation from './Consultation';
 import UserFolder from './UserFolder';
+import Feed from './Feed';
 import ConsultationMigrator from '../migrators/ConsultationMigrator';
 import InternalMemberService from 'services/api/InternalMemberService';
 import UserFolderService from 'services/api/UserFolderService';
 import UserMigrator from 'migrators/UserMigrator';
+import FeedMigrator from 'migrators/FeedMigrator';
 import UserFolderMigrator from 'migrators/UserFolderMigrator';
 import ExternalMemberService from 'services/api/ExternalMemberService';
+import FeedService from 'services/api/FeedService';
 
 export default class ConsultationListStore extends BaseStore{
   consultations = [];
@@ -20,6 +23,8 @@ export default class ConsultationListStore extends BaseStore{
   selectedFolder = undefined;
   newFolder = new UserFolder();
   myFolders = [];
+  feeds = []
+  newFeed = new Feed();
 
   constructor(rootStore){
     super(rootStore);
@@ -27,6 +32,7 @@ export default class ConsultationListStore extends BaseStore{
     this.getAllInternalMembers();
     this.getAllExternalMembers();
     this.fetchMyFolders();
+    this.getFeeds();
   }
 
   getAllConsultations = () => {
@@ -159,6 +165,30 @@ export default class ConsultationListStore extends BaseStore{
       expiresOn:new Date(Date.now()),
     }
   }
+
+  getFeeds = async () => {
+    try {
+      const result = await FeedService.getAll();
+      runInAction(() => {
+        this.feeds.replace(result.data.map(feed => FeedMigrator.loadFromResponse(feed)))
+      })
+    } catch (error) {
+      toast.error("No se pudieron obtener Comunicados", {toastId:"fetch-feeds"});
+    }
+  }
+
+  sendFeed = async () => {
+    try {
+      await FeedService.create(FeedMigrator.saveForRequest(this.newFeed));
+      toast.success("Comunicado enviado", {toastId:"save-feed"});
+      runInAction(() => {
+        this.newFeed = new Feed();
+      })
+      this.getFeeds();
+    } catch (error) {
+      toast.error("No se pudo enviar el comunicado", {toastId:"save-feed"});
+    }
+  }
 }
 
 decorate(ConsultationListStore, {
@@ -169,6 +199,7 @@ decorate(ConsultationListStore, {
   allExternalMembers: observable,
   selectedConsultation: observable,
   editingConsultation: observable,
+  feeds: observable,
   getAllConsultations: action,
   fetchConsultationsInFolder: action,
   fetchMyFolders: action,
@@ -180,5 +211,7 @@ decorate(ConsultationListStore, {
   newFolder: observable,
   getAllMembers: computed,
   selectedFolder: observable,
-  saveNewConsultation: action
+  saveNewConsultation: action,
+  getFeeds: action,
+  sendFeed: action,
 })
