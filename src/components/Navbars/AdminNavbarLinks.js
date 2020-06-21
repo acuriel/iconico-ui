@@ -45,7 +45,6 @@ const usePopperStyles = makeStyles((theme) => ({
 
 function HeaderLinks(props) {
   const {consultationStore, authStore} = useContext(StoreContext);
-  console.log(props.history);
   const [openNotification, setOpenNotification] = React.useState(null);
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
@@ -110,7 +109,7 @@ function HeaderLinks(props) {
           }
         }}
       />
-      <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom-end" transition
+      <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom-end" style={{zIndex:500}} transition
         modifiers={{
           flip: {
             enabled: true,
@@ -131,7 +130,10 @@ function HeaderLinks(props) {
                 return (
                   <ListItem button>
                     <ListItemText primary={
-                      <Link to={"/admin/consulta/" + cons.id} > {cons.title}</Link>
+                      <Link onClick={() => {
+                        console.log("heree")
+                        props.history.push("/admin/consulta/" + cons.id)
+                      }}> {cons.title}</Link>
 
                     } />
                   </ListItem>

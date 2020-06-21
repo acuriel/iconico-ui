@@ -28,10 +28,12 @@ import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
 function ConsultationDetails({match}) {
   const {consultationStore, authStore} = useContext(StoreContext);
   const consultation = consultationStore.selectedConsultation
+  console.log(match.params.id)
+  console.log("Heyyyy")
   useEffect(() => {
-    console.log(match.params.id)
+  console.log("Render!")
     consultationStore.selectConsultation(match.params.id);
-  }, [])
+  }, [match.params.id])
 
   return !consultation ? (
     <Loading />
