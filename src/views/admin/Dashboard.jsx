@@ -29,7 +29,7 @@ function Dashboard() {
 
   useEffect(() => {
     consultationStore.getAllConsultations();
-  }, [])
+  }, [consultationStore])
 
   const classes = useStyles();
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -17,7 +17,6 @@ import error from "../assets/img/clint-mckoy.jpg";
 const useStyles = makeStyles(styles);
 
 export default function Pages(props) {
-  const { ...rest } = props;
   // ref for the wrapper div
   const wrapper = React.createRef();
   // styles

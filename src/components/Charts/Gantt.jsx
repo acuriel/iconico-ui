@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react";
 import { addDays, dateToStringShort, getWidth } from "../../helpers/utils";
 import { Link } from "react-router-dom";
-import { NavigateBefore, NavigateNext, Done, WatchLaterOutlined } from "@material-ui/icons";
+import { NavigateBefore, NavigateNext, Done } from "@material-ui/icons";
 import IconButton from '@material-ui/core/IconButton';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';

@@ -23,16 +23,10 @@ function Feeds() {
   const {consultationStore} = useContext(StoreContext)
   const classesForm = useFormStyles();
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      visibility: adding ? "visible" : "collapse"
-    },
-  }));
 
-  const classes = useStyles();
   useEffect(() => {
     consultationStore.getFeeds();
-  }, [])
+  }, [consultationStore])
 
   return  (
     <div>

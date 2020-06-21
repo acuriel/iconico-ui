@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-// import "react-chat-elements/dist/main.css";
+import React, { useState, useEffect } from "react";
 
 import Conversation from './Conversation'
 

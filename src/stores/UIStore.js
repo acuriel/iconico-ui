@@ -1,8 +1,5 @@
-import {observable, action, computed, runInAction, decorate} from 'mobx';
-import { toast } from 'react-toastify';
+import {observable, action, decorate} from 'mobx';
 import BaseStore from './BaseStore';
-import AuthService from 'services/api/AuthService';
-import UserMigrator from 'migrators/UserMigrator';
 
 export default class UIStore extends BaseStore{
   loadingState = false;

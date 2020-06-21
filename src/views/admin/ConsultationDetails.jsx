@@ -30,7 +30,7 @@ function ConsultationDetails({match}) {
   const consultation = consultationStore.selectedConsultation
   useEffect(() => {
     consultationStore.selectConsultation(match.params.id);
-  }, [match.params.id])
+  }, [match.params.id, consultationStore])
 
   return !consultation ? (
     <Loading />

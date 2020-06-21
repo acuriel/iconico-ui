@@ -1,6 +1,6 @@
 import React, {useEffect, useContext} from "react";
 import cx from "classnames";
-import { Switch, Redirect, Route } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import { observer } from "mobx-react";
 import StoreContext from "stores/RootStore";
 
@@ -35,7 +35,7 @@ function Dashboard(props) {
   const color = "blue";
   const bgColor = "black";
   // const [hasImage, setHasImage] = React.useState(true);
-  const [logo, setLogo] = React.useState(require("../assets/img/logo-white.svg"));
+  const [logo, _] = React.useState(require("../assets/img/logo-white.svg"));
   // styles
   const classes = useStyles();
   const mainPanelClasses =

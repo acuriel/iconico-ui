@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import BounceLoader from "react-spinners/BounceLoader";
 
 export default function Loading() {

@@ -18,7 +18,7 @@ function Highlights({currentConsultation}){
 
   useEffect(() => {
     currentConsultation.loadHighlights();
-  }, [])
+  }, [currentConsultation])
   return (
     <div className="highlights">
       {currentConsultation.highlights.length > 0 ?

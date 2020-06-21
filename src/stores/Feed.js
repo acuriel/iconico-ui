@@ -1,9 +1,6 @@
-import {observable, action, decorate, runInAction} from 'mobx';
+import {observable, action, decorate} from 'mobx';
 import { toast } from 'react-toastify';
-import TruthService from '../services/api/TruthService';
 import BaseStore from './BaseStore';
-import TruthMigrator from 'migrators/TruthMigrator';
-import ConsultationService from '../services/api/ConsultationService';
 
 export default class Feed extends BaseStore{
   id=undefined;

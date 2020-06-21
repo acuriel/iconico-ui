@@ -1,4 +1,4 @@
-import {observable, action, computed, runInAction, decorate, autorun} from 'mobx';
+import {observable, action, computed, runInAction, decorate} from 'mobx';
 import { toast } from 'react-toastify';
 import ConsultationService from '../services/api/ConsultationService';
 import BaseStore from './BaseStore';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {useEffect, useContext } from "react";
 import { observer } from "mobx-react";
 import StoreContext from "stores/RootStore";
 
@@ -46,7 +46,7 @@ function ConsultationList() {
 
   useEffect(() => {
     consultationStore.getAllConsultations();
-  }, [])
+  }, [consultationStore])
 
   return (
     <div>

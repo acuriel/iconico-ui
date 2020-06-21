@@ -15,8 +15,6 @@ import Hidden from "@material-ui/core/Hidden";
 import Popper from "@material-ui/core/Popper";
 import { observer } from "mobx-react";
 import StoreContext from "stores/RootStore";
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import Fade from '@material-ui/core/Fade';
 import { secuencialStringSearch } from "../../helpers/utils";
 // @material-ui/icons
@@ -33,29 +31,11 @@ import Button from "components/CustomButtons/Button";
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
 
 const useStyles = makeStyles(styles);
-const usePopperStyles = makeStyles((theme) => ({
-  root: {
-    width: 500,
-  },
-  typography: {
-    padding: theme.spacing(2),
-  },
-}));
 
 
 function HeaderLinks(props) {
   const {consultationStore, authStore} = useContext(StoreContext);
-  const [openNotification, setOpenNotification] = React.useState(null);
-  const handleClickNotification = event => {
-    if (openNotification && openNotification.contains(event.target)) {
-      setOpenNotification(null);
-    } else {
-      setOpenNotification(event.currentTarget);
-    }
-  };
-  const handleCloseNotification = () => {
-    setOpenNotification(null);
-  };
+
   const [openProfile, setOpenProfile] = React.useState(null);
   const handleClickProfile = event => {
     if (openProfile && openProfile.contains(event.target)) {

@@ -31,7 +31,7 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
 
   useEffect(() => {
     consultationStore.fetchMyFolders();
-  }, [])
+  }, [consultationStore])
 
 
   const addFolder = async () => {

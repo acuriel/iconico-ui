@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 import { dateToString, secuencialStringSearch } from "../../helpers/utils";
 import StoreContext from "stores/RootStore";
 import HistoryStore from "stores/HistoryStore";

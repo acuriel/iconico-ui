@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { observer } from "mobx-react";
 
 import StoreContext from "stores/RootStore";
@@ -22,7 +22,6 @@ import QueryBuilder from "@material-ui/icons/QueryBuilder";
 import Warning from "@material-ui/icons/Warning";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
-import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle";
 
 import CardBody from "components/Card/CardBody";
 import Chat from "./Chat";

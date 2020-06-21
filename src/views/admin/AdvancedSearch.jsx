@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 import { dateToString, secuencialStringSearch } from "../../helpers/utils";
 import StoreContext from "stores/RootStore";
 
@@ -23,8 +22,6 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.js";
-const useefStyles = makeStyles(efstyles);
 
 function AdvancedSearch() {
   const {consultationStore} = useContext(StoreContext);
@@ -34,10 +31,6 @@ function AdvancedSearch() {
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
 
-  const [allMembers, setAllMembers] = useState([]);
-  const [allConnections, setAllConnections] = useState([]);
-
-  const efClasses = useefStyles();
 
   const getState = (cons) => {
     if(cons.finished) return "done";

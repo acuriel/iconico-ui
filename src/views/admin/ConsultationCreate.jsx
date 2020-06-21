@@ -45,7 +45,6 @@ function ConsultationCreate(props) {
 
   const classes = useStyles();
   const saClases = useSWStyles();
-  const [alert, setAlert] = React.useState(null);
   const [titleInputState, setTitleInputState] = useState("");
   const [detailsInputState, setDetailsInputState] = useState("");
 
@@ -59,9 +58,6 @@ function ConsultationCreate(props) {
 
   const verifyLength = (value, length = 1) => value.length >= length;
 
-  const hideAlert = () => {
-    setAlert(null);
-  };
   const getAlert = () => {
     var result = "";
     if(uiStore.sweetAlertState === "success"){
@@ -71,7 +67,7 @@ function ConsultationCreate(props) {
           style={{ display: "block" }}
           title="Consulta creada!"
           onConfirm={() => props.history.push("/admin/consultas")}
-          onCancel={() => hideAlert()}
+          onCancel={() => {}}
           confirmBtnCssClass={saClases.button + " " + saClases.success} >
             Ha gregado una nueva consulta
         </SweetAlert>)
@@ -86,7 +82,7 @@ function ConsultationCreate(props) {
             uiStore.sweetAlertState = null;
             props.history.push("/admin/consultas")}
           }
-          onCancel={() => hideAlert()}
+          onCancel={() => {}}
           confirmBtnCssClass={saClases.button + " " + saClases.success}
         >
           Ha gregado una nueva consulta
