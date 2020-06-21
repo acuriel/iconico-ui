@@ -36,7 +36,7 @@ function Chat({ conversation }) {
         clearInterval(interval);
       }
     }
-  }, [])
+  }, [conversation])
 
   const sendMessage = () => {
     conversation.sendMessage();
