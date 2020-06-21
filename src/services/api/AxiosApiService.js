@@ -17,7 +17,6 @@ baseService.interceptors.request.use(
     return config;
   },
   error => {
-    console.log(error);
     Promise.reject(error);
   }
 );
@@ -25,7 +24,6 @@ baseService.interceptors.request.use(
 baseService.interceptors.response.use(
   res => res,
   error => {
-    console.log(error);
     if(error.response?.status === 401){
       history.push('/auth/login');
     }else{

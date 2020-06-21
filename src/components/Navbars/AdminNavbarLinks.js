@@ -131,7 +131,7 @@ function HeaderLinks(props) {
                   <ListItem button>
                     <ListItemText primary={
                       <Link onClick={() => {
-                        console.log("heree")
+                        ("heree")
                         props.history.push("/admin/consulta/" + cons.id)
                       }}> {cons.title}</Link>
 

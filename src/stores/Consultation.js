@@ -101,6 +101,7 @@ export default class Consultation extends BaseStore{
       this._loadExternalMembers();
     } catch (error) {
       console.log(error);
+      toast.error("No se pudo agregar al proveedor: " + error, {toastId:"add-provider"});
     }
   }
 
@@ -121,6 +122,7 @@ export default class Consultation extends BaseStore{
       await action(ConsultationMigrator.saveForRequest(this.editingConsultation));
       if(callback) callback();
     } catch (error) {
+      toast.error("Hubo un error: " + error, {toastId:"fetch-statuses"});
       console.log(error);
     }
   }

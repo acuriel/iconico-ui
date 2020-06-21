@@ -34,7 +34,6 @@ export default class Conversation extends BaseStore {
         runInAction(() => this.comments.push(...res.data.map(c => new Comment(CommentMigrator.loadFromResponse(c), this, this.rootStore))));
       }
     } catch (error) {
-      console.log(error);
       toast.error("No se pudo actualizar la conversacion" + error, { toastId: "conversation-unreachable" });
     }
   }
@@ -56,7 +55,6 @@ export default class Conversation extends BaseStore {
 
   setGaleryVisibility(value){
     this.galeryVisibility.set(value);
-    console.log("Hide")
   }
 
   sendMessage = async () => {
@@ -65,7 +63,6 @@ export default class Conversation extends BaseStore {
       this.newMessage.text = "";
       this.resetEmptyMessage();
     } catch (error) {
-      console.log(error);
       toast.error("Hubo un problema enviando el mensaje: " + error);
     }
   }

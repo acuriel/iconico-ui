@@ -219,7 +219,6 @@ function History() {
             <TableRow key={truth.id}>
               <TableCell component="th" scope="row">
                 <Link onClick={() => {
-                  console.log(truth);
                   setSelectedTruth(truth);
                   setShowModal(true)
                   }}> {truth.title}</Link>

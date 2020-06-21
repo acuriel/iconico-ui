@@ -115,14 +115,11 @@ function Providers({ currentConsultation }) {
           )}
           onChange={(event, newValue, reason) => {
             if(reason === "select-option"){
-              console.log(currentConsultation.externalMembers)
               const temp = newValue.filter(
                 v => !currentConsultation.externalMembers.some(
                   m => m.userName === v.userName
               ));
-              console.log(temp);
               if(temp.length > 0){
-                console.log(temp[0]);
                 currentConsultation.connectWithProvider(temp[0].id);
               }
             }

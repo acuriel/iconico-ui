@@ -1,4 +1,5 @@
 import {observable, action, runInAction, decorate} from 'mobx';
+import { toast } from 'react-toastify';
 import TruthService from '../services/api/TruthService';
 import BaseStore from './BaseStore';
 import Truth from './Truth';
@@ -24,7 +25,8 @@ export default class HistoryStore extends BaseStore{
         }));
       });
     } catch (error) {
-      console.log(error);
+      toast.error("No se pudieron obtener las Verdades", {toastId:"fetch-truths"});
+
     }
   }
 

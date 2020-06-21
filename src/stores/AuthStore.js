@@ -40,7 +40,6 @@ export default class AuthStore extends BaseStore{
       })
     }catch(error){
       toast.error("No se pudo autenticar. Revise sus credenciales");
-      console.log(error)
     }
   }
 }

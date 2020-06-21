@@ -1,6 +1,5 @@
 class UserMigrator{
   loadFromResponse(data) {
-    // console.log(data);
     const email = data.UserName || data.userName;
     return {
       id: data._id,

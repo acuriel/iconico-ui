@@ -79,8 +79,6 @@ export default class ConsultationListStore extends BaseStore{
       })
     }
     catch(error){
-      console.log('Here');
-      console.log(error);
       if(error === '401'){
         toast.warn("Su sesión ha vencido", {toastId:"unauthorized"});
       }
@@ -107,7 +105,6 @@ export default class ConsultationListStore extends BaseStore{
       });
     }
     catch(error){
-      console.log(error);
       toast.error(error, {toastId:"server-unreachable"});
     }
   }
@@ -120,7 +117,6 @@ export default class ConsultationListStore extends BaseStore{
       this.fetchMyFolders();
       this.newFolder = new UserFolder();
     } catch (error) {
-      console.log(error);
       toast.error("No se pudo guardar la carpeta", {toastId:"save-folfer"});
 
     }

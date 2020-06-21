@@ -29,10 +29,6 @@ export default class ProviderStore extends BaseStore{
     this.status = externalConnection.status;
   }
 
-  // get conversation(){
-  //   return new ProviderConversation(this, this.consultation);
-  // }
-
   updateStatus = async (newValue) => {
     try {
       await ConsultationService.updateExternalConnectionStatus(
@@ -46,7 +42,7 @@ export default class ProviderStore extends BaseStore{
       toast.success(`Estado actualizado`, {toastId:"cnx-status-update"});
     } catch (error) {
       toast.error("Hubo un error actualizando el estado: " + error, {toastId:"cnx-status-update"})
-      console.log(error);
+      (error);
     }
   }
 
