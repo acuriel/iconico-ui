@@ -20,12 +20,6 @@ const getNameInitials = name => {
   return words.length > 1 ? `${words[0][0]}${words[1][0]}`:`${words[0][0]}`
 }
 
-const BGS = [ 'bg-danger','bg-warning', 'bg-success'];
-
-const getRandomBackground = () => BGS[Math.floor(Math.random() * 10) % BGS.length ];
-
-const getUniformBackground = count => [...Array(count).keys()].map(i => BGS[i % BGS.length ]);
-
 const secuencialStringSearch = (pattern, text) => {
   pattern = pattern.toLowerCase().replace(/\s/g, '');
   text = text.toLowerCase();
@@ -46,9 +40,6 @@ module.exports = {
   dateToStringShort,
   getWidth,
   getNameInitials,
-  getRandomBackground,
-  getUniformBackground,
-  BGS,
   sameDay,
-  secuencialStringSearch
+  secuencialStringSearch,
 };

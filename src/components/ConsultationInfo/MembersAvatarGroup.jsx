@@ -7,7 +7,9 @@ import Avatar from '@material-ui/core/Avatar';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import { getNameInitials, BGS } from "../../helpers/utils";
+import { getNameInitials } from "../../helpers/utils";
+
+const BGS = [ 'bg-danger','bg-warning', 'bg-success'];
 
 function MembersAvatarGroup({users, statuses}){
   const [maxAvatars, setMaxAvatars] = useState(4);
