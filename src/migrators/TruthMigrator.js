@@ -7,7 +7,7 @@ class TruthMigrator{
       title: data.Title,
       summary: data.Summary,
       author: UserMigrator.loadFromResponse(data.Author),
-      createdOn: data.CreatedOn,
+      createdOn: new Date(data.CreatedOn),
       consultationId: data._idConsulta,
       consultationTitle: data.ConsultationTitle,
       consultationStart: data.ConsultationStart,

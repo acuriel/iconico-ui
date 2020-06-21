@@ -14,13 +14,15 @@ import Hidden from "@material-ui/core/Hidden";
 import Popper from "@material-ui/core/Popper";
 import { observer } from "mobx-react";
 import StoreContext from "stores/RootStore";
-
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import Fade from '@material-ui/core/Fade';
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
-
+import Typography from '@material-ui/core/Typography';
 // core components
 import CustomInput from "components/CustomInput/CustomInput";
 import Button from "components/CustomButtons/Button";
@@ -28,9 +30,18 @@ import Button from "components/CustomButtons/Button";
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
 
 const useStyles = makeStyles(styles);
+const usePopperStyles = makeStyles((theme) => ({
+  root: {
+    width: 500,
+  },
+  typography: {
+    padding: theme.spacing(2),
+  },
+}));
+
 
 function HeaderLinks(props) {
-  const {authStore} = useContext(StoreContext);
+  const {consultationStore, authStore} = useContext(StoreContext);
   console.log(props.history);
   const [openNotification, setOpenNotification] = React.useState(null);
   const handleClickNotification = event => {
@@ -62,6 +73,7 @@ function HeaderLinks(props) {
     props.history.push("/auth/login");
   }
   const classes = useStyles();
+  const classesPopper = usePopperStyles()
   const { rtlActive } = props;
   const searchButton =
     classes.top +
@@ -80,6 +92,13 @@ function HeaderLinks(props) {
   const managerClasses = classNames({
     [classes.managerClasses]: true
   });
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleFocus = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+
   return (
     <div className={wrapper}>
       <CustomInput
@@ -87,13 +106,23 @@ function HeaderLinks(props) {
           className: classes.top + " " + classes.search
         }}
         inputProps={{
-          placeholder: rtlActive ? "بحث" : "Search",
+          placeholder: "Search",
           inputProps: {
-            "aria-label": rtlActive ? "بحث" : "Search",
-            className: classes.searchInput
+            "aria-label":  "Search",
+            className: classes.searchInput,
+            onFocus: (e) => handleFocus(e)
           }
         }}
       />
+      <Popper open={true} anchorEl={anchorEl} placement="bottom-end" transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+            <Typography className={classesPopper.typography}>The content of the Popper.</Typography>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
       <Button
         color="white"
         aria-label="edit"
@@ -103,120 +132,6 @@ function HeaderLinks(props) {
       >
         <Search className={classes.headerLinksSvg + " " + classes.searchIcon} />
       </Button>
-      <Button
-        color="transparent"
-        simple
-        aria-label="Dashboard"
-        justIcon
-        className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
-        muiClasses={{
-          label: rtlActive ? classes.labelRTL : ""
-        }}
-      >
-        <Dashboard
-          className={
-            classes.headerLinksSvg +
-            " " +
-            (rtlActive ? classes.links + " " + classes.linksRTL : classes.links)
-          }
-        />
-        <Hidden mdUp implementation="css">
-          <span className={classes.linkText}>
-            {rtlActive ? "لوحة القيادة" : "Dashboard"}
-          </span>
-        </Hidden>
-      </Button>
-      <div className={managerClasses}>
-        <Button
-          color="transparent"
-          justIcon
-          aria-label="Notifications"
-          aria-owns={openNotification ? "notification-menu-list" : null}
-          aria-haspopup="true"
-          onClick={handleClickNotification}
-          className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
-          muiClasses={{
-            label: rtlActive ? classes.labelRTL : ""
-          }}
-        >
-          <Notifications
-            className={
-              classes.headerLinksSvg +
-              " " +
-              (rtlActive
-                ? classes.links + " " + classes.linksRTL
-                : classes.links)
-            }
-          />
-          <span className={classes.notifications}>5</span>
-          <Hidden mdUp implementation="css">
-            <span
-              onClick={handleClickNotification}
-              className={classes.linkText}
-            >
-              {rtlActive ? "إعلام" : "Notification"}
-            </span>
-          </Hidden>
-        </Button>
-        <Popper
-          open={Boolean(openNotification)}
-          anchorEl={openNotification}
-          transition
-          disablePortal
-          placement="bottom"
-          className={classNames({
-            [classes.popperClose]: !openNotification,
-            [classes.popperResponsive]: true,
-            [classes.popperNav]: true
-          })}
-        >
-          {({ TransitionProps }) => (
-            <Grow
-              {...TransitionProps}
-              id="notification-menu-list"
-              style={{ transformOrigin: "0 0 0" }}
-            >
-              <Paper className={classes.dropdown}>
-                <ClickAwayListener onClickAway={handleCloseNotification}>
-                  <MenuList role="menu">
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={dropdownItem}
-                    >
-                      {"Mike John responded to your email"}
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={dropdownItem}
-                    >
-                      {"You have 5 new tasks"}
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={dropdownItem}
-                    >
-                      {"You're now friend with Andrew"}
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={dropdownItem}
-                    >
-                      {"Another Notification"}
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={dropdownItem}
-                    >
-                      {"Another One"}
-                    </MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
-
       <div className={managerClasses}>
         <Button
           color="transparent"

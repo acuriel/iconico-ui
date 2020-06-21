@@ -9,11 +9,14 @@ const dateToString = date => `${date.getDate()} ${MONTHS[date.getMonth()]} ${dat
 
 const dateToStringShort = date =>  `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 
+const sameDay = (date1, date2) => date1.getDay() === date2.getDay() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
+
 const getWidth = () => window.innerWidth
   || document.documentElement.clientWidth
   || document.body.clientWidth;
 
 const getNameInitials = name => {
+  console.log(name);
   const words = name.toUpperCase().split(' ');
   return words.length > 1 ? `${words[0][0]}${words[1][0]}`:`${words[0][0]}`
 }
@@ -32,5 +35,6 @@ module.exports = {
   getNameInitials,
   getRandomBackground,
   getUniformBackground,
-  BGS
+  BGS,
+  sameDay
 };

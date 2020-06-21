@@ -18,7 +18,6 @@
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
-import Home from "@material-ui/icons/Home";
 import Search from "@material-ui/icons/Search";
 import HistoryIcon from '@material-ui/icons/History';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';

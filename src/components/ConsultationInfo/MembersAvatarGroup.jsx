@@ -12,17 +12,19 @@ import { getNameInitials, BGS } from "../../helpers/utils";
 function MembersAvatarGroup({users, statuses}){
   const [maxAvatars, setMaxAvatars] = useState(4);
   const [expanded, setExpanded] = useState(false);
-
   const expand = () =>  [...new Array(Math.ceil(users.length / maxAvatars)).keys()]
     .map((_,k) => (
       <AvatarGroup key={k} >
         {users.slice(k*maxAvatars, (k + 1) * maxAvatars).map(u =>
           <Avatar
-            key={u.id}
-            title={u.userName}
+            key={typeof u === "string" ? u : u.id}
+            title={typeof u === "string" ? u : u.userName}
             alt={u.userName}
-            className={BGS[statuses.get(u.id)]}
-          >{getNameInitials(u.userName)}</Avatar>)
+            className={BGS[statuses ? statuses.get(u.id) : 0]}
+          >
+            {getNameInitials(typeof u === "string" ? u : u.userName)}
+          </Avatar>
+          )
         }
       </AvatarGroup>
     ));
@@ -35,12 +37,15 @@ function MembersAvatarGroup({users, statuses}){
         </div>
         :<AvatarGroup max={maxAvatars}>
             {users.map(u =>
-            <Avatar
-              key={u.id}
-              title={u.userName}
-              alt={u.userName}
-              className={BGS[statuses.get(u.id)]}
-            >{getNameInitials(u.userName)}</Avatar>)}
+              <Avatar
+                key={typeof u === "string" ? u : u.id}
+                title={typeof u === "string" ? u : u.userName}
+                alt={u.userName}
+                className={BGS[statuses ? statuses.get(u.id) : 0]}
+              >
+                {getNameInitials(typeof u === "string" ? u : u.userName)}
+              </Avatar>)
+            }
           </AvatarGroup>
       }
 

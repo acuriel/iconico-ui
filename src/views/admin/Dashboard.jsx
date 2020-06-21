@@ -5,10 +5,11 @@ import { observer } from "mobx-react";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
-import NotificationImportant from "@material-ui/icons/NotificationImportant";
 import Info from "@material-ui/icons/Info";
 import Assignment from "@material-ui/icons/Assignment";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 // core components
 import GridItem from "components/Grid/GridItem";
 import GridContainer from "components/Grid/GridContainer";
@@ -17,6 +18,8 @@ import CardHeader from "components/Card/CardHeader";
 import CardIcon from "components/Card/CardIcon";
 import CardFooter from "components/Card/CardFooter";
 import GanttChart from "../../components/Charts/Gantt";
+
+import {sameDay} from "helpers/utils";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
 
@@ -37,15 +40,15 @@ function Dashboard() {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <NotificationImportant />
+                <RecordVoiceOverIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Últimos Comunicados</p>
-              <h3 className={classes.cardTitle}> 6 </h3>
+              <h3 className={classes.cardTitle}>{consultationStore.feeds.filter(f => sameDay(f.createdAt, new Date(Date.now()))).length}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <Info />
-                Lo que te has perdido
+                Lo que ha pasado hoy
               </div>
             </CardFooter>
           </Card>
@@ -71,15 +74,15 @@ function Dashboard() {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <LibraryBooks />
+                <AssignmentTurnedInIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Proyectos Activos</p>
-              <h3 className={classes.cardTitle}>0</h3>
+              <p className={classes.cardCategory}>Consultas Terminadas</p>
+              <h3 className={classes.cardTitle}>{consultationStore.consultations.filter(c => c.finished).length}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <Info />
-                Proyectos pendientes
+                Tus logros hasta el momento
               </div>
             </CardFooter>
           </Card>

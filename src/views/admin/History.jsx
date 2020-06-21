@@ -17,12 +17,25 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import Card from "components/Card/Card";
+import CardHeader from "components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
+import CardIcon from "../../components/Card/CardIcon";
+import Assignment from "@material-ui/icons/Assignment";
+import Person from "@material-ui/icons/Person";
+import CalendarToday from "@material-ui/icons/CalendarToday";
+import MembersAvatarGroup from "components/ConsultationInfo/MembersAvatarGroup";
+
 
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+
 
 const secuencialStringSearch = (pattern, text) => {
   pattern = pattern.toLowerCase().replace(/\s/g, '');
@@ -46,7 +59,8 @@ function History() {
   const [member, setMember] = useState("");
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
-
+  const [showModal, setShowModal] = useState(false)
+  const [selectedTruth, setSelectedTruth] = useState(undefined)
   const {consultationStore} = useContext(StoreContext);
 
   const filterData = (truths)=>{
@@ -64,6 +78,62 @@ function History() {
   return  (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <div>
+      <Modal
+        className="truth-modal"
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={showModal}>
+          <Card className="modal-content">
+
+              <CardHeader color="info" icon>
+                <CardIcon color="info">
+                  <Assignment />
+                </CardIcon>
+                <h3 style={{color:"black"}}>{selectedTruth?.title}</h3>
+              </CardHeader>
+              <CardBody>
+                <div className="member-list-section">
+                  <GridContainer>
+                    <GridItem sm={9} xs={12}>
+                    <Person
+                    style={{
+                      fontSize: "1.5em",
+                      marginBottom: "-4px",
+                      marginRight: "5px"
+                    }}
+                  />
+                  {selectedTruth?.author.userName}
+                  <CalendarToday
+                    style={{
+                      fontSize: "1.5em",
+                      marginBottom: "-4px",
+                      marginRight: "5px",
+                      marginLeft: "20px"
+                    }}
+                  />{" "}
+                  {selectedTruth && selectedTruth.createdOn && dateToString(selectedTruth.createdOn)}
+                  <p style={{ marginTop: "15px" }}><b>Descripción: </b></p>
+                  {selectedTruth?.summary}
+
+                    </GridItem>
+                    <GridItem sm={3} xs={12}>
+                      <h5>Miembros</h5>
+                      {selectedTruth && <MembersAvatarGroup users={selectedTruth.members}/>}
+                    </GridItem>
+                  </GridContainer>
+                </div>
+              </CardBody>
+            </Card>
+        </Fade>
+      </Modal>
       <GridContainer style={{marginBottom:"20px"}}>
         <GridItem xs={12} sm={6} md={4}>
           <TextField
@@ -162,7 +232,11 @@ function History() {
           {filterData(historyStore.truthes).map((truth) =>  (
             <TableRow key={truth.id}>
               <TableCell component="th" scope="row">
-                <Link> {truth.title}</Link>
+                <Link onClick={() => {
+                  console.log(truth);
+                  setSelectedTruth(truth);
+                  setShowModal(true)
+                  }}> {truth.title}</Link>
               </TableCell>
               <TableCell align="right">{dateToString(new Date(truth.consultationStart))} - {dateToString(new Date(truth.consultationEnd))}</TableCell>
             </TableRow>
