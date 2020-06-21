@@ -40,14 +40,16 @@ export const dashboardRoutes = [
     name: "Inicio",
     icon: Dashboard,
     component: DashboardPage,
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: true
   },
   {
     path: "/consultas/nueva",
     name: "Consultas",
     component: ConsultationCreate,
     section:'consultations',
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: true
   },
   {
     path: "/consultas",
@@ -55,35 +57,40 @@ export const dashboardRoutes = [
     icon: LibraryBooks,
     component: ConsultationList,
     section:'consultations',
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: true
   },
   {
     path: "/consulta/:id",
     name: "Consultas",
     component: ConsultationDetails,
     section:'consultations',
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: true
   },
   {
     path: "/anuncios",
     name: "Anuncios",
     icon: RecordVoiceOverIcon,
     component: Feeds,
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: false
   },
   {
     path: "/buscar",
     name: "Buscar",
     icon: Search,
     component: AdvancedSearch,
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: true
   },
   {
     path: "/historial",
     name: "Historial",
     icon: HistoryIcon,
     component: History,
-    layout: "/admin"
+    layout: "/admin",
+    externalVisibilty: false
   },
 ];
 

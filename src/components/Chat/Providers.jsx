@@ -142,10 +142,13 @@ function Providers({ currentConsultation }) {
   }
 
   const renderExternalChats = () => {
+    console.log(currentConsultation.externalConnections);
     return (
       <GridContainer>
         {currentConsultation.externalConnections
-          .filter(cnx => cnx.externalUser.userName === authStore.signedUser.userName)
+          .filter(cnx => {
+            console.log(cnx)
+            return cnx.externalUser.userName === authStore.signedUser.userName})
           .map((ext, key) => (
           <GridItem xs={4} key={key}>
             <Card>

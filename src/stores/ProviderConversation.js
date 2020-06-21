@@ -15,7 +15,7 @@ export default class ProviderConversation extends Conversation {
   retrieve(force){
     return ConsultationService.getExternalConnectionConversation(
       this.externalConnection.consultationId,
-      this.externalConnection.externalUser.id,
+      this.rootStore.authStore.signedUser.isInternal ? this.externalConnection.externalUser.id : this.externalConnection.internalUser.id,
       this.comments.slice().length > 0 && !force
         ? this.comments[this.comments.length - 1].postedOn
         : undefined);

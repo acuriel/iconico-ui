@@ -118,7 +118,7 @@ function Dashboard(props) {
   return (
     <div className={classes.wrapper}>
       <Sidebar
-        routes={dashboardRoutes.filter(r => r.hasOwnProperty('icon'))}
+        routes={dashboardRoutes.filter(r => r.hasOwnProperty('icon') && (authStore.signedUser.isInternal || r.externalVisibilty))}
         logoText={"Iconico"}
         logo={logo}
         image={image}

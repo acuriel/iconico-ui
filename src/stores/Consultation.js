@@ -46,8 +46,10 @@ export default class Consultation extends BaseStore{
     this.finishedOn = consultation.finishedOn;
     this.truth = new Truth(consultation);
     this._loadExternalMembers();
-    this.loadHighlights();
     this._loadMembersStatuses();
+    if(this.rootStore.authStore.signedUser.isInteral){
+      this.loadHighlights();
+    }
   }
 
   get conversation(){

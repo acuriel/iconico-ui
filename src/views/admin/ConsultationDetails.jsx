@@ -37,7 +37,7 @@ function ConsultationDetails({match}) {
   ) : (
     <div>
       <div>
-        {consultation.finished || <CustomizedMenus options={[
+        {consultation.finished || !authStore.signedUser.isInternal || <CustomizedMenus options={[
           {icon:Done, text:"Resuelto", handler: () => consultation.changeMyStatus(2)},
           {icon:QueryBuilder, text:"En Proceso", handler: () => consultation.changeMyStatus(1)},
           {icon:Warning, text:"Sin solucion", handler: () => consultation.changeMyStatus(0)}
@@ -71,7 +71,7 @@ function ConsultationDetails({match}) {
             tabName: "Highlights",
             tabIcon: Code,
             tabContent: <Highlights currentConsultation={consultation}/>,
-            visible: true
+            visible: authStore.signedUser.isInternal
           },
           {
             tabName: "Verdades",

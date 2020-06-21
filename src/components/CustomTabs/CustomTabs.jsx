@@ -1,4 +1,6 @@
-import React from "react";
+import React, {useContext} from "react";
+import { observer } from "mobx-react";
+import StoreContext from "stores/RootStore";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -20,7 +22,9 @@ import styles from "assets/jss/material-dashboard-pro-react/components/customTab
 
 const useStyles = makeStyles(styles);
 
-export default function CustomTabs(props) {
+function CustomTabs(props) {
+  const {authStore} = useContext(StoreContext);
+
   const [value, setValue] = React.useState(0);
   const handleChange = (event, value) => {
     setValue(value);
@@ -30,10 +34,11 @@ export default function CustomTabs(props) {
   const cardTitle = classNames({
     [classes.cardTitle]: true,
   });
+
   return (
     <Card plain={plainTabs}>
       <CardHeader color={headerColor} plain={plainTabs} style={{zIndex:0}}>
-        {rightButtonHandler && (<Button
+        {rightButtonHandler && authStore.signedUser.isInternal && (<Button
             disabled={rightButtonDisabled}
             onClick={rightButtonHandler}
             variant="outlined"
@@ -111,3 +116,5 @@ CustomTabs.propTypes = {
   rtlActive: PropTypes.bool,
   plainTabs: PropTypes.bool
 };
+
+export default observer(CustomTabs);

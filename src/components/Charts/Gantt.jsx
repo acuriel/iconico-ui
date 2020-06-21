@@ -39,7 +39,7 @@ const getColorState = (startDate, endDate, manuallyFinishedDate, focusDay=undefi
   // if(focusDay < startDate) return 'todo';
   // else if(focusDay <= endDate) return 'in-progress'
   // else return 'bg-danger'
-  return 'bg-danger';
+  return 'bg-info';
 
 }
 

@@ -42,7 +42,11 @@ function Dashboard() {
                 <RecordVoiceOverIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Últimos Comunicados</p>
-              <h3 className={classes.cardTitle}>{consultationStore.feeds.filter(f => sameDay(f.createdAt, new Date(Date.now()))).length}</h3>
+              <h3 className={classes.cardTitle}>
+                {authStore.signedUser.isInternal
+                  ? consultationStore.feeds.filter(f => sameDay(f.createdAt, new Date(Date.now()))).length
+                : 0
+                }</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>

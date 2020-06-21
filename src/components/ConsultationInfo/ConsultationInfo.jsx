@@ -37,24 +37,27 @@ function ConsultationInfo({currentConsultation, ...props}){
         />{" "}
         {dateToString(currentConsultation.issuedOn)} -{" "}
         {dateToString(currentConsultation.expiresOn)}
-        <p style={{ marginTop: "15px" }}><b>Descripción: </b></p>
-        {currentConsultation.description}
+        {authStore.signedUser.isInternal
+        && <div><p style={{ marginTop: "15px" }}><b>Descripción: </b></p> {currentConsultation.description}</div>}
 
           </GridItem>
-          <GridItem sm={3} xs={12}>
-            <h5>Miembros Internos</h5>
-            <MembersAvatarGroup
-              users={currentConsultation.internalMembers.sort((a,_) => a.userName === authStore.signedUser.userName ? -1 : 1)}
-              statuses={currentConsultation.statuses}
-            />
-            <h5>Miembros Externos</h5>
-            {!currentConsultation.externalMembers.length || currentConsultation.externalMembers.length === 0
-            ? "Ninguno"
-            :<MembersAvatarGroup
-              users={currentConsultation.externalMembers.sort((a,_) => a.userName === authStore.signedUser.userName ? -1 : 1)}
-              statuses={currentConsultation.statuses}
-            />}
-          </GridItem>
+          {authStore.signedUser.isInternal && (
+            <GridItem sm={3} xs={12}>
+              <h5>Miembros Internos</h5>
+              <MembersAvatarGroup
+                users={currentConsultation.internalMembers.sort((a,_) => a.userName === authStore.signedUser.userName ? -1 : 1)}
+                statuses={currentConsultation.statuses}
+              />
+              <h5>Miembros Externos</h5>
+              {!currentConsultation.externalMembers.length || currentConsultation.externalMembers.length === 0
+              ? "Ninguno"
+              :<MembersAvatarGroup
+                users={currentConsultation.externalMembers.sort((a,_) => a.userName === authStore.signedUser.userName ? -1 : 1)}
+                statuses={currentConsultation.statuses}
+              />}
+            </GridItem>
+          )}
+
         </GridContainer>
       </div>
     </div>)
