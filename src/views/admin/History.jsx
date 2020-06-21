@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { dateToString } from "../../helpers/utils";
+import { dateToString, secuencialStringSearch } from "../../helpers/utils";
 import StoreContext from "stores/RootStore";
 import HistoryStore from "stores/HistoryStore";
 
@@ -35,20 +35,6 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-
-
-const secuencialStringSearch = (pattern, text) => {
-  pattern = pattern.toLowerCase().replace(/\s/g, '');
-  text = text.toLowerCase();
-  let i=0, j=0;
-  while(i < pattern.length){
-    while(j < text.length && pattern[i] !== text[j]) j++;
-    if(j === text.length) return false;
-    i++;
-    j++;
-  }
-  return true;
-}
 
 
 function History() {

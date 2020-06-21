@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { dateToString } from "../../helpers/utils";
+import { dateToString, secuencialStringSearch } from "../../helpers/utils";
 import StoreContext from "stores/RootStore";
 
 import GridItem from "components/Grid/GridItem";
@@ -25,20 +25,6 @@ import {
 
 import efstyles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.js";
 const useefStyles = makeStyles(efstyles);
-
-const secuencialStringSearch = (pattern, text) => {
-  pattern = pattern.toLowerCase().replace(/\s/g, '');
-  text = text.toLowerCase();
-  let i=0, j=0;
-  while(i < pattern.length){
-    while(j < text.length && pattern[i] !== text[j]) j++;
-    if(j === text.length) return false;
-    i++;
-    j++;
-  }
-  return true;
-}
-
 
 function AdvancedSearch() {
   const {consultationStore} = useContext(StoreContext);

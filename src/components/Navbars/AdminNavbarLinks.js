@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 // import { Manager, Target, Popper } from "react-popper";
 
 // @material-ui/core components
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
@@ -17,12 +18,14 @@ import StoreContext from "stores/RootStore";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Fade from '@material-ui/core/Fade';
+import { secuencialStringSearch } from "../../helpers/utils";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
-import Notifications from "@material-ui/icons/Notifications";
-import Dashboard from "@material-ui/icons/Dashboard";
 import Search from "@material-ui/icons/Search";
-import Typography from '@material-ui/core/Typography';
+import Close from "@material-ui/icons/Close";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 // core components
 import CustomInput from "components/CustomInput/CustomInput";
 import Button from "components/CustomButtons/Button";
@@ -69,34 +72,25 @@ function HeaderLinks(props) {
   const logout = () => {
     handleCloseProfile();
     authStore.logout();
-    console.log(props)
     props.history.push("/auth/login");
   }
   const classes = useStyles();
-  const classesPopper = usePopperStyles()
-  const { rtlActive } = props;
   const searchButton =
     classes.top +
     " " +
     classes.searchButton +
-    " " +
-    classNames({
-      [classes.searchRTL]: rtlActive
-    });
-  const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover, {
-    [classes.dropdownItemRTL]: rtlActive
-  });
-  const wrapper = classNames({
-    [classes.wrapperRTL]: rtlActive
-  });
+    " ";
+  const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover);
+  const wrapper = classNames();
   const managerClasses = classNames({
     [classes.managerClasses]: true
   });
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [pattern, setPattern] = React.useState("");
 
-  const handleFocus = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleFocus = (elem) => {
+    setAnchorEl(elem);
   }
 
   return (
@@ -109,16 +103,41 @@ function HeaderLinks(props) {
           placeholder: "Search",
           inputProps: {
             "aria-label":  "Search",
+            value: pattern,
             className: classes.searchInput,
-            onFocus: (e) => handleFocus(e)
+            onFocus: (e) => handleFocus(e.currentTarget),
+            onChange: e => setPattern(e.target.value)
           }
         }}
       />
-      <Popper open={true} anchorEl={anchorEl} placement="bottom-end" transition>
+      <Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom-end" transition
+        modifiers={{
+          flip: {
+            enabled: true,
+          },
+          preventOverflow: {
+            enabled: true,
+            boundariesElement: 'scrollParent',
+          },
+        }
+        }>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
             <Paper>
-            <Typography className={classesPopper.typography}>The content of the Popper.</Typography>
+            <List component="nav" aria-label="main mailbox folders">
+              {consultationStore.consultations
+              .filter(cons => !pattern || pattern.length === 0 || secuencialStringSearch(pattern, cons.title))
+              .map(cons => {
+                return (
+                  <ListItem button>
+                    <ListItemText primary={
+                      <Link to={"/admin/consulta/" + cons.id} > {cons.title}</Link>
+
+                    } />
+                  </ListItem>
+                )
+              })}
+            </List>
             </Paper>
           </Fade>
         )}
@@ -128,9 +147,11 @@ function HeaderLinks(props) {
         aria-label="edit"
         justIcon
         round
+        onClick={() => handleFocus(undefined)}
         className={searchButton}
       >
-        <Search className={classes.headerLinksSvg + " " + classes.searchIcon} />
+        {anchorEl ? <Close className={classes.headerLinksSvg + " " + classes.searchIcon} /> :
+        <Search className={classes.headerLinksSvg + " " + classes.searchIcon} />}
       </Button>
       <div className={managerClasses}>
         <Button
@@ -140,23 +161,21 @@ function HeaderLinks(props) {
           aria-owns={openProfile ? "profile-menu-list" : null}
           aria-haspopup="true"
           onClick={handleClickProfile}
-          className={rtlActive ? classes.buttonLinkRTL : classes.buttonLink}
+          className={classes.buttonLink}
           muiClasses={{
-            label: rtlActive ? classes.labelRTL : ""
+            label: ""
           }}
         >
           <Person
             className={
               classes.headerLinksSvg +
               " " +
-              (rtlActive
-                ? classes.links + " " + classes.linksRTL
-                : classes.links)
+              (classes.links)
             }
           />
           <Hidden mdUp implementation="css">
             <span onClick={handleClickProfile} className={classes.linkText}>
-              {rtlActive ? "الملف الشخصي" : "Profile"}
+              {"Profile"}
             </span>
           </Hidden>
         </Button>

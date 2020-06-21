@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
 import Info from "@material-ui/icons/Info";
 import Assignment from "@material-ui/icons/Assignment";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 // core components

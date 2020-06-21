@@ -29,6 +29,7 @@ function ConsultationDetails({match}) {
   const {consultationStore, authStore} = useContext(StoreContext);
   const consultation = consultationStore.selectedConsultation
   useEffect(() => {
+    console.log(match.params.id)
     consultationStore.selectConsultation(match.params.id);
   }, [])
 

@@ -16,7 +16,6 @@ const getWidth = () => window.innerWidth
   || document.body.clientWidth;
 
 const getNameInitials = name => {
-  console.log(name);
   const words = name.toUpperCase().split(' ');
   return words.length > 1 ? `${words[0][0]}${words[1][0]}`:`${words[0][0]}`
 }
@@ -27,6 +26,20 @@ const getRandomBackground = () => BGS[Math.floor(Math.random() * 10) % BGS.lengt
 
 const getUniformBackground = count => [...Array(count).keys()].map(i => BGS[i % BGS.length ]);
 
+const secuencialStringSearch = (pattern, text) => {
+  pattern = pattern.toLowerCase().replace(/\s/g, '');
+  text = text.toLowerCase();
+  let i=0, j=0;
+  while(i < pattern.length){
+    while(j < text.length && pattern[i] !== text[j]) j++;
+    if(j === text.length) return false;
+    i++;
+    j++;
+  }
+  return true;
+}
+
+
 module.exports = {
   addDays,
   dateToString,
@@ -36,5 +49,6 @@ module.exports = {
   getRandomBackground,
   getUniformBackground,
   BGS,
-  sameDay
+  sameDay,
+  secuencialStringSearch
 };
