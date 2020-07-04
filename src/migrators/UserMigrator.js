@@ -1,6 +1,6 @@
 class UserMigrator{
   loadFromResponse(data) {
-    const email = data.UserName || data.userName;
+    const email = data.userName || data.userName;
     return {
       id: data._id,
       userName: email,

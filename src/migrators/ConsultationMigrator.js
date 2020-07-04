@@ -4,27 +4,27 @@ class ConsultationMigrator{
   loadFromResponse(data) {
     return {
       id: data._id,
-      title: data.Tittle,
-      description:data.Description,
-      author: UserMigrator.loadFromResponse(data.Author),
-      internalMembers:data.InternalMembers.map(m => UserMigrator.loadFromResponse(m)),
-      issuedOn: new Date(data.IssuedOn),
-      expiresOn: new Date(data.ExpiresOn),
-      finished:data.IsManuallyFinished,
-      finishedOn: new Date(data.ManuallyFinishedOn),
+      title: data.tittle,
+      description:data.description,
+      author: UserMigrator.loadFromResponse(data.author),
+      internalMembers:data.internalMembers.map(m => UserMigrator.loadFromResponse(m)),
+      issuedOn: new Date(data.issuedOn),
+      expiresOn: new Date(data.expiresOn),
+      finished:data.isManuallyFinished,
+      finishedOn: new Date(data.manuallyFinishedOn),
     }
   }
   saveForRequest(data) {
     return {
       _id: data.id,
-      Tittle: data.title,
-      Description:data.description,
-      Author: data.author ? UserMigrator.saveForRequest(data.author) : undefined,
-      InternalMembers:data.internalMembers.map(m => UserMigrator.saveForRequest(m)),
-      IssuedOn:data.issuedOn,
-      ExpiresOn:data.expiresOn,
-      IsManuallyFinished:data.finished,
-      ManuallyFinishedOn:data.finishedOn,
+      tittle: data.title,
+      description:data.description,
+      author: data.author ? UserMigrator.saveForRequest(data.author) : undefined,
+      internalMembers:data.internalMembers.map(m => UserMigrator.saveForRequest(m)),
+      issuedOn:data.issuedOn,
+      expiresOn:data.expiresOn,
+      isManuallyFinished:data.finished,
+      manuallyFinishedOn:data.finishedOn,
     }
   }
 }

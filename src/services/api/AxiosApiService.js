@@ -1,8 +1,10 @@
 import axios from "axios";
 import {history} from '../../App';
 
+const BASE_URL = "https://localhost:5001/";
 
-export const baseService = axios.create({baseURL: "https://localhost:44335/"})
+
+export const baseService = axios.create({baseURL: BASE_URL})
 
 baseService.interceptors.request.use(
   config => {
@@ -24,18 +26,20 @@ baseService.interceptors.request.use(
 baseService.interceptors.response.use(
   res => res,
   error => {
-    if(error.response?.status === 401){
-      history.push('/auth/login');
-    }else{
-      history.push('/auth/error');
-    }
+    console.log(error);
+    history.push('/auth/login');
+    // if(error.response?.status === 401){
+    //   history.push('/auth/login');
+    // }else{
+    //   history.push('/auth/error');
+    // }
   }
 )
 
 export default class AxiosApiService {
-  BASE_URL = "https://localhost:44335/";
+  // BASE_URL = "https://localhost:5001/";
   constructor(modelUrl, baseService) {
-    this.modelUrl = this.BASE_URL + modelUrl;
+    this.modelUrl = BASE_URL + modelUrl;
     this.baseService = baseService;
   }
 

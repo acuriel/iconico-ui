@@ -61,6 +61,8 @@ class ConsultationService extends AxiosApiService{
   }
 
   toggleHighlight(consultationId, commentId){
+    console.log(consultationId)
+    console.log(commentId)
     return this.baseService.put(this._getUrl(consultationId, "Conversation", commentId, "ToggleHighlight"))
   }
 

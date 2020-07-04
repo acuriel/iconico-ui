@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { observer } from "mobx-react";
 
 import StoreContext from "stores/RootStore";
@@ -40,6 +40,11 @@ function Providers({ currentConsultation }) {
 
   const [conversation, setConversation] = useState(undefined);
 
+  useEffect(() => {
+    currentConsultation._loadExternalMembers();
+
+  }, [])
+
   const renderProvidersChats = (internalMember) => {
     return (
       <GridContainer>
@@ -49,11 +54,11 @@ function Providers({ currentConsultation }) {
           <GridItem sm={6} xs={12} key={key}>
             <Card>
               <CardHeader color={statusToColor[ext.status]} icon>
-                <CustomizedMenus options={[
+                {ext.internalUser.userName === authStore.signedUser.userName && <CustomizedMenus options={[
                   {icon:Done, text:"Resuelto", handler: () => ext.updateStatus(2)},
                   {icon:QueryBuilder, text:"En Proceso", handler: () => ext.updateStatus(1)},
                   {icon:Warning, text:"Sin solucion", handler: () => ext.updateStatus(0)}
-                ]}/>
+                ]}/>}
                 <CardIcon color={statusToColor[ext.status]}>
                   {statusToIcon[ext.status]}
                 </CardIcon>

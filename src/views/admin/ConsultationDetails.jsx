@@ -77,7 +77,7 @@ function ConsultationDetails({match}) {
             tabName: "Verdades",
             tabIcon: PlaylistAddCheck,
             tabContent: <Truth truth={consultation.truth}/>,
-            visible: consultationStore.selectedConsultation.finished
+            visible: authStore.signedUser.isInternal && consultationStore.selectedConsultation.finished
           }
         ].filter(tab => tab.visible)}
       />

@@ -4,24 +4,26 @@ class TruthMigrator{
   loadFromResponse(data) {
     return {
       id: data._id,
-      title: data.Title,
-      summary: data.Summary,
-      author: UserMigrator.loadFromResponse(data.Author),
-      createdOn: new Date(data.CreatedOn),
+      title: data.title,
+      summary: data.summary,
+      author: UserMigrator.loadFromResponse(data.author),
+      createdOn: new Date(data.createdOn),
       consultationId: data._idConsulta,
-      consultationTitle: data.ConsultationTitle,
-      consultationStart: data.ConsultationStart,
-      consultationEnd: data.ConsultationEnd,
-      tags:data.Tags || [],
-      members: data.Members,
+      consultationTitle: data.consultationTitle,
+      consultationStart: data.consultationStart,
+      consultationEnd: data.consultationEnd,
+      imageData: data.imageData,
+      imageMimeType: data.imageMimeType,
+      tags:data.tags || [],
+      members: data.members,
     }
   }
   saveForRequest(data) {
     return {
       _id: data.id,
-      Title: data.title,
-      Summary: data.summary,
-      Tags: data.tags,
+      title: data.title,
+      summary: data.summary,
+      tags: data.tags,
       _idConsulta: data.consultationId,
     }
   }

@@ -4,21 +4,21 @@ class UserFolderMigrator{
   loadFromResponse(data) {
     return {
       id: data._id,
-      name: data.FolderName,
-      author: UserMigrator.loadFromResponse(data.Author),
+      name: data.folderName,
+      author: UserMigrator.loadFromResponse(data.author),
       isPinned: data.isPinned,
     }
   }
   saveForRequest(data) {
     return {
       _id: data.id,
-      FolderName: data.name,
+      folderName: data.name,
       isPinned: data.isPinned,
     }
   }
   getNewFolder(name){
     return {
-      FolderName:name
+      folderName:name
     }
   }
 }

@@ -13,6 +13,7 @@ import FeedMigrator from 'migrators/FeedMigrator';
 import UserFolderMigrator from 'migrators/UserFolderMigrator';
 import ExternalMemberService from 'services/api/ExternalMemberService';
 import FeedService from 'services/api/FeedService';
+import FileService from 'services/api/FileService';
 
 export default class ConsultationListStore extends BaseStore{
   consultations = [];
@@ -169,12 +170,16 @@ export default class ConsultationListStore extends BaseStore{
         this.feeds.replace(result.data.map(feed => FeedMigrator.loadFromResponse(feed)))
       })
     } catch (error) {
+      console.log(error);
       toast.error("No se pudieron obtener Comunicados", {toastId:"fetch-feeds"});
     }
   }
 
   sendFeed = async () => {
     try {
+      if(this.newFeed.attachedFile){
+        await FileService.uploadImage(this.newFeed.attachedFile);
+      }
       await FeedService.create(FeedMigrator.saveForRequest(this.newFeed));
       toast.success("Comunicado enviado", {toastId:"save-feed"});
       runInAction(() => {

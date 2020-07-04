@@ -15,6 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Chip from "@material-ui/core/Chip";
 import Paper from '@material-ui/core/Paper';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -112,6 +113,9 @@ function History() {
                     <GridItem sm={3} xs={12}>
                       <h5>Miembros</h5>
                       {selectedTruth && <MembersAvatarGroup users={selectedTruth.members}/>}
+                    </GridItem>
+                    <GridItem sm={12} xs={12}>
+                      {selectedTruth && <img src={`data:${selectedTruth.imageMimeType};base64,${selectedTruth.imageData}`} alt="" style={{maxHeight:"300px"}}/>}
                     </GridItem>
                   </GridContainer>
                 </div>
@@ -221,6 +225,9 @@ function History() {
                   setSelectedTruth(truth);
                   setShowModal(true)
                   }}> {truth.title}</Link>
+              </TableCell>
+              <TableCell align="left">
+                {truth.tags.map(tag => <Chip label={tag} />)}
               </TableCell>
               <TableCell align="right">{dateToString(new Date(truth.consultationStart))} - {dateToString(new Date(truth.consultationEnd))}</TableCell>
             </TableRow>

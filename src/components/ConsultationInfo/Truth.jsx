@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import CloseIcon from '@material-ui/icons/Close';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import ImageUpload from "components/CustomUpload/ImageUpload";
 
 function Truth({truth}){
   const [editing, setEditing] = useState(!truth.id);
@@ -61,6 +62,7 @@ function Truth({truth}){
             truth.summary = e.target.value
           }}
         />
+        <ImageUpload handleChange={f => truth.attachedFile = f} />
         <Button
           style={{float:"right", marginTop:"20px"}}
           color="success"
@@ -78,6 +80,7 @@ function Truth({truth}){
     <div className="truth-details">
       <div className="tags">{truth.tags.map(tag => <Chip size="small" label={tag} icon={<LocalOfferIcon/>}/>)}</div>
       <p>{truth.summary}</p>
+      <img src={`data:${truth.imageMimeType};base64,${truth.imageData}`} alt="" style={{maxHeight:"300px"}}/>
     </div>
   )
 

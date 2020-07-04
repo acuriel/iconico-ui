@@ -85,6 +85,7 @@ export default function FeedBox({feed}) {
           <Typography paragraph>
             {feed.summary}
           </Typography>
+          <img src={`data:${feed.imageMimeType};base64,${feed.imageData}`} alt="" style={{maxHeight:"300px"}}/>
         </CardContent>
       </Collapse>
     </Card>

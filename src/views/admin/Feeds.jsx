@@ -9,6 +9,7 @@ import CardIcon from "../../components/Card/CardIcon";
 import CardBody from "../../components/Card/CardBody";
 import StoreContext from "stores/RootStore";
 import FeedBox from "components/Feeds/FeedBox";
+import ImageUpload from "components/CustomUpload/ImageUpload";
 import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsStyle";
 import Add from "@material-ui/icons/Add";
 import Close from '@material-ui/icons/Close';
@@ -95,6 +96,7 @@ function Feeds() {
                       value={consultationStore.newFeed.summary}
                       onChange= {e => consultationStore.newFeed.summary = e.target.value}
                     />
+                <ImageUpload handleChange={f => consultationStore.newFeed.attachedFile = f} />
                 <Button
                   style={{marginTop: "15px"}}
                   color="success"

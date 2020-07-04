@@ -4,6 +4,7 @@ import { createBrowserHistory } from "history";
 import { toast } from 'react-toastify';
 import AdminLayout from './layouts/Admin'
 import AuthLayout from './layouts/Auth'
+import {Box} from '@material-ui/core';
 
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
@@ -20,17 +21,19 @@ toast.configure({
 
 function App() {
   return (
-    <StoreContext.Provider value={RootStore}>
-      <DndProvider backend={Backend}>
-        <Router history={history}>
-          <Switch>
-            <Route path="/auth" component={AuthLayout}/>
-            <Route path="/admin" component={AdminLayout}/>
-            <Redirect from="/" to="/admin/dashboard" />
-          </Switch>
-        </Router>
-      </DndProvider>
-    </StoreContext.Provider>
+    <Box>
+      <StoreContext.Provider value={RootStore}>
+        <DndProvider backend={Backend}>
+          <Router history={history}>
+            <Switch>
+              <Route path="/auth" component={AuthLayout}/>
+              <Route path="/admin" component={AdminLayout}/>
+              <Redirect from="/" to="/admin/dashboard" />
+            </Switch>
+          </Router>
+        </DndProvider>
+      </StoreContext.Provider>
+    </Box>
   );
 }
 

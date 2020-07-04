@@ -4,6 +4,7 @@ import TruthService from '../services/api/TruthService';
 import BaseStore from './BaseStore';
 import TruthMigrator from 'migrators/TruthMigrator';
 import ConsultationService from '../services/api/ConsultationService';
+import FileService from '../services/api/FileService';
 
 export default class Truth extends BaseStore{
   id=undefined;
@@ -18,6 +19,9 @@ export default class Truth extends BaseStore{
   members=[];
   tags=[];
   created = observable.box(false);
+  imageData= undefined;
+  imageMimeType= "image/jpeg";
+  attachedFile=undefined;
 
 
   constructor(consultation, truth=undefined, rootStore){
@@ -30,6 +34,7 @@ export default class Truth extends BaseStore{
   }
 
   _update(truth){
+    console.log(truth)
     this.id=truth.id;
     this.title=truth.title || "";
     this.summary=truth.summary || "";
@@ -39,6 +44,8 @@ export default class Truth extends BaseStore{
     this.consultationTitle=truth.consultationTitle;
     this.consultationStart=truth.consultationStart;
     this.consultationEnd=truth.consultationEnd;
+    this.imageData = truth.imageData;
+    this.imageMimeType = truth.imageMimeType;
     this.created.set(!!truth.id);
 
     if(truth.tags){
@@ -52,6 +59,7 @@ export default class Truth extends BaseStore{
   _loadTruth = async (consultationId) => {
     try {
       const res = await ConsultationService.getTruth(consultationId);
+      console.log(res.data);
       const truth = res.data ? TruthMigrator.loadFromResponse(res.data) : TruthMigrator.getEmpty(consultationId)
       runInAction(() => {
         this._update(truth)
@@ -63,11 +71,15 @@ export default class Truth extends BaseStore{
 
   save = async () => {
     try {
+      if(this.attachedFile){
+        await FileService.uploadImage(this.attachedFile);
+      }
       const truth = TruthMigrator.saveForRequest(this);
       await this.created.get() ?  TruthService.update(this.consultationId, truth) : TruthService.create(truth);
       runInAction(()=>{
         this.created.set(true);
-      })
+      });
+      this._loadTruth(this.consultationId);
       toast.success("Verdad guardada");
     } catch (error) {
       toast.error("Hubo un problema guardando la Verdad: " + error);
@@ -88,6 +100,8 @@ decorate(Truth, {
   created:observable,
   members: observable,
   tags:observable,
+  imageData: observable,
+  imageMimeType: observable,
   _loadTruth:action,
   _update:action,
 })

@@ -6,15 +6,15 @@ class CommentMigrator{
     return {
       id: data._id,
       consultationId: data._idConsulta,
-      text: data.CommentText,
-      postedOn: new Date(data.PostedOn),
-      author: UserMigrator.loadFromResponse(data.Author),
-      mentions: data.Mentions?.map(u => UserMigrator.loadFromResponse(u)),
-      highlighted: data.HighLighted,
-      highLightedBy: data.HighLightedBy?.map(u => UserMigrator.loadFromResponse(u)),
-      replyTo: this.loadFromResponse(data.ThisCommentAnswersTo),
-      imageData: data.ImageData,
-      imageMimeType: data.ImageMimeType,
+      text: data.commentText,
+      postedOn: new Date(data.postedOn),
+      author: UserMigrator.loadFromResponse(data.author),
+      mentions: data.mentions?.map(u => UserMigrator.loadFromResponse(u)),
+      highlighted: data.highLighted,
+      highLightedBy: data.highLightedBy?.map(u => UserMigrator.loadFromResponse(u)),
+      replyTo: this.loadFromResponse(data.thisCommentAnswersTo),
+      imageData: data.imageData,
+      imageMimeType: data.imageMimeType,
     }
   }
   saveForRequest(data) {
@@ -22,10 +22,10 @@ class CommentMigrator{
     return {
       _id: data.id,
       _idConsulta: data.consultationId,
-      CommentText: data.text,
-      Author: data.author ? UserMigrator.saveForRequest(data.author) : undefined,
-      ThisCommentAnswersTo: this.saveForRequest(data.replyTo),
-      Mentions: data.mentions.map(u => UserMigrator.saveForRequest(u))
+      commentText: data.text,
+      author: data.author ? UserMigrator.saveForRequest(data.author) : undefined,
+      thisCommentAnswersTo: this.saveForRequest(data.replyTo),
+      mentions: data.mentions.map(u => UserMigrator.saveForRequest(u))
     }
   }
   getEmptyElement(consultationId){

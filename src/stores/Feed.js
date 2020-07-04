@@ -8,7 +8,9 @@ export default class Feed extends BaseStore{
   summary="";
   author=undefined;
   createdOn=undefined;
-
+  imageData= undefined;
+  imageMimeType= "image/jpeg";
+  attachedFile=undefined;
 
 
   constructor(feed, rootStore){
@@ -24,6 +26,8 @@ export default class Feed extends BaseStore{
     this.summary=feed.summary || "";
     this.author = feed.author;
     this.createdOn=feed.createdOn;
+    this.imageData= feed.imageData;
+    this.imageMimeType= feed.imageMimeType;
   }
 
   save = async () => {
@@ -41,5 +45,8 @@ decorate(Feed, {
   summary: observable,
   author: observable,
   createdOn: observable,
+  attachedFile: observable,
+  imageData: observable,
+  imageMimeType: observable,
   _update:action,
 })

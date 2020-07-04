@@ -28,6 +28,7 @@ function Dashboard() {
   const {consultationStore, authStore} = useContext(StoreContext);
 
   useEffect(() => {
+    console.log("Loaded")
     consultationStore.getAllConsultations();
   }, [consultationStore])
 

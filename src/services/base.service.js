@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const DEV = "dev", PROD = "prod";
-const ENV = PROD; // DEV or PROD
-const API_BASE_URL = ENV === DEV ? "http://localhost:3000/" : "https://localhost:44335/";
+const API_BASE_URL = "https://localhost:5001/";
 
 export default axios.create({ baseURL: API_BASE_URL });

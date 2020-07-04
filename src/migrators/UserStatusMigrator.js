@@ -2,10 +2,10 @@ class UserStatusMigrator{
   loadFromResponse(data) {
     return {
       id: data._id,
-      userId: data.Author._id,
+      userId: data.author._id,
       consultationId: data._idConsulta,
       folderId: data.idFolderToBelong,
-      status: data.Status
+      status: data.status
     }
   }
   saveForRequest(data) {
@@ -13,7 +13,7 @@ class UserStatusMigrator{
       _id: data._id,
       _idConsulta: data.consultationId,
       idFolderToBelong: data.folderId,
-      Status: data.status
+      status: data.status
     }
   }
 

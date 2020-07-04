@@ -5,9 +5,9 @@ class ExternalConnectionMigrator{
     return {
       id:data._id,
       consultationId:data._idConsulta,
-      internalUser: UserMigrator.loadFromResponse(data.Author),
-      externalUser: UserMigrator.loadFromResponse(data.Receiver),
-      status: data.Status,
+      internalUser: UserMigrator.loadFromResponse(data.author),
+      externalUser: UserMigrator.loadFromResponse(data.receiver),
+      status: data.status,
     }
   }
   saveForRequest(data) {

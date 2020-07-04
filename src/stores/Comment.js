@@ -54,6 +54,7 @@ export default class Comment extends BaseStore{
 
   toggleHighlight = async (callback) => {
     try {
+      console.log("Highlight")
       await ConsultationService.toggleHighlight(this.consultationId, this.id);
       if(callback) callback();
       if(this.conversation) this.conversation._reload(true);
