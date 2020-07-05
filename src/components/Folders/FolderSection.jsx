@@ -93,11 +93,19 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
       <div className='folder-controls'>
         <div className='flex-fav'>
           <h4 style={{marginRight:15}}>Favoritas</h4>
-          <FolderElement key={0} title="Todas" handler={() => consultationStore.setFolder(undefined)} noFolder={true} updateEvent={updateEvent} color={consultationStore.selectedFolder ? "default" : "primary"} />
+          <FolderElement key={0} title="Todas"
+            handler={() => {
+              consultationStore.setFolder(undefined);
+            }}
+            noFolder={true}
+            updateEvent={updateEvent}
+            color={consultationStore.selectedFolder ? "default" : "primary"} />
           {consultationStore.myFolders.filter(f => f.isPinned).map((f, i) =>
             <FolderElement key={i + 1}
               folder={f}
-              handler={() => consultationStore.setFolder(f)}
+              handler={() => {
+                consultationStore.setFolder(f)
+              }}
               updateEvent={updateEvent}
               title={f.name}
               color={consultationStore.selectedFolder?.id === f.id ? "primary" : "default"}/>)}
@@ -117,7 +125,9 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
             .slice(pagePosition, pagePosition + pageSize)
               .map((f, i)  => <FolderElement key={i + 1}
                 folder={f}
-                handler={() => consultationStore.setFolder(f)}
+                handler={() => {
+                  consultationStore.setFolder(f);
+                }}
                 updateEvent={updateEvent}
                 title={f.name}
                 color={consultationStore.selectedFolder?.id === f.id ? "primary" : "default"}/>)}

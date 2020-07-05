@@ -76,6 +76,10 @@ class ConsultationService extends AxiosApiService{
     return this.baseService.put(this._getUrl(consultationId, "Statuses", "Update", statusCode));
   }
 
+  moveConsultationToFolder(consultationId, folderId){
+    return this.baseService.put(this._getUrl(consultationId, "Folder", folderId));
+  }
+
   terminate(id){
     return this.baseService.put(this._getUrl(id, "Terminate"))
   }

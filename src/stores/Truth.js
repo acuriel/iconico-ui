@@ -34,7 +34,6 @@ export default class Truth extends BaseStore{
   }
 
   _update(truth){
-    console.log(truth)
     this.id=truth.id;
     this.title=truth.title || "";
     this.summary=truth.summary || "";

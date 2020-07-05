@@ -8,7 +8,7 @@ import { ItemTypes } from '../../helpers/itemTypes'
 
 export default function ConsultationDragableItem({consultation}){
   const [_, drag] = useDrag({
-    item: { type: ItemTypes.CONSULTATION, elementId: consultation.id},
+    item: { type: ItemTypes.CONSULTATION, element: consultation},
     collect: monitor => ({ isDragging: !!monitor.isDragging()}),
   });
 

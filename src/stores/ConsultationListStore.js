@@ -87,7 +87,7 @@ export default class ConsultationListStore extends BaseStore{
   }
 
   setFolder = (folder) => {
-    this.selectedFolder = folder ? folder : undefined;
+    this.selectedFolder = folder || undefined;
     this.fetchConsultationsInFolder();
   }
 
@@ -97,6 +97,7 @@ export default class ConsultationListStore extends BaseStore{
         ? ConsultationService.getAll()
         : UserFolderService.getConsultations(this.selectedFolder)
       );
+      console.log(result.data)
       runInAction(() => {
         this.consultations.replace(
           result.data.map(

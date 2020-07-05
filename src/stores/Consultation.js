@@ -135,7 +135,17 @@ export default class Consultation extends BaseStore{
       toast.success(`Estado actualizado`, {toastId:"status-updated"});
       this._loadMembersStatuses();
     } catch (error) {
-      toast.error("Hubo un error: " + error, {toastId:"finished-consultation"});
+      toast.error("Hubo un error: " + error, {toastId:"status-updated"});
+    }
+  }
+
+  moveToFolder = async (folderId) => {
+    try {
+      await ConsultationService.moveConsultationToFolder(this.id, folderId);
+      toast.success(`Consulta movida`, {toastId:"consultation-moved"});
+      this._loadMembersStatuses();
+    } catch (error) {
+      toast.error("Hubo un error: " + error, {toastId:"consultation-moved"});
     }
   }
 
