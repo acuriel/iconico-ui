@@ -26,6 +26,7 @@ import styles from "assets/jss/material-dashboard-pro-react/views/regularFormsSt
 import CardBody from "components/Card/CardBody";
 import Chat from "./Chat";
 import CustomizedMenus from "components/CustomButtons/CustomizedMenus";
+import Consultation from "stores/Consultation";
 
 const useStyles = makeStyles(styles);
 
@@ -91,6 +92,7 @@ function Providers({ currentConsultation }) {
     return (
       <div>
         <Autocomplete
+          disabled={currentConsultation.finished}
           multiple
           options={consultationStore.allExternalMembers.filter(
             v => !currentConsultation.externalMembers.some(
