@@ -1,5 +1,6 @@
 import React, {useEffect, useContext } from "react";
 import { observer } from "mobx-react";
+import { useHistory } from "react-router-dom";
 import StoreContext from "stores/RootStore";
 
 // @material-ui/core components
@@ -43,6 +44,7 @@ function CounsultationListAccordion({consultations, ...props}) {
 function ConsultationList() {
   const classes = useStyles();
   const {consultationStore, authStore} = useContext(StoreContext)
+  const history = useHistory()
 
   useEffect(() => {
     consultationStore.getAllConsultations();
@@ -52,9 +54,9 @@ function ConsultationList() {
     <div>
       {authStore.signedUser.isInternal
         ? (<Button
-          href={"/admin/consultas/nueva"}
-          color="primary"
-          className={classes.marginRight}
+            color="primary"
+            className={classes.marginRight}
+            onClick={()=> history.push("/admin/consultas/nueva")}
         >
           <Add
             className={classes.icons}
