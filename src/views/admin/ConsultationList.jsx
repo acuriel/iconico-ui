@@ -65,7 +65,7 @@ function ConsultationList() {
             style={{ marginTop: "-2px", marginRight: "2px" }}
           />
           Nueva Consulta
-        </Button> /* comment until here */ )  : ""
+        </Button> )  : ""
       }
       <FolderSection/>
       <div>
