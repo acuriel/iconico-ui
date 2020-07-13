@@ -1,6 +1,6 @@
 import React, {useEffect, useContext } from "react";
 import { observer } from "mobx-react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import StoreContext from "stores/RootStore";
 
 // @material-ui/core components
@@ -53,7 +53,9 @@ function ConsultationList() {
   return (
     <div>
       {authStore.signedUser.isInternal
-        ? (<Button
+        ? (
+          // <Link to="/admin/consultas/nueva">Nueva Consulta</Link>
+          <Button
             color="primary"
             className={classes.marginRight}
             onClick={()=> history.push("/admin/consultas/nueva")}
@@ -63,7 +65,7 @@ function ConsultationList() {
             style={{ marginTop: "-2px", marginRight: "2px" }}
           />
           Nueva Consulta
-        </Button>) : ""
+        </Button> /* comment until here */ )  : ""
       }
       <FolderSection/>
       <div>
