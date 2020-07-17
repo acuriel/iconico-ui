@@ -10,7 +10,10 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 // @material-ui/icons
 // import Face from "@material-ui/icons/Face";
 import Email from "@material-ui/icons/Email";
-import VpnKey from "@material-ui/icons/VpnKey";
+import Input from '@material-ui/core/Input';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconButton from '@material-ui/core/IconButton';
 
 // core components
 import GridContainer from "components/Grid/GridContainer";
@@ -33,9 +36,15 @@ function LoginPage(props) {
   const [cardAnimaton, setCardAnimation] = useState("cardHidden");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
   useEffect(() => {
 
   }, [])
+  const handleKeyPress = (event) => {
+    if(event.key === 'Enter'){
+     login();
+    }
+  }
   const login = () => {
     authStore.login(email, password, () => {
       props.history.push("/admin")
@@ -59,35 +68,43 @@ function LoginPage(props) {
               </CardHeader>
               <CardBody>
                 <CustomInput
-                  labelText="Email"
-                  id="email"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
+                    labelText="Email"
+                    id="email"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      onChange:e => setEmail(e.target.value),
+                      onKeyPress:(e) => handleKeyPress(e),
+                      endAdornment: (
                         <Email className={classes.inputAdornmentIcon} />
-                      </InputAdornment>
-                    ),
-                    onChange: e => setEmail(e.target.value)
-                  }}
-                />
+                      ),
+                      type: "email",
+                      autoComplete: "off",
+                    }}
+                  />
+
                 <CustomInput
                   labelText="Password"
                   id="password"
                   formControlProps={{
-                    fullWidth: true
+                    fullWidth: true,
                   }}
+
                   inputProps={{
+                    onChange:e => setPassword(e.target.value),
+                    onKeyPress:(e) => handleKeyPress(e),
                     endAdornment: (
-                      <InputAdornment position="end">
-                        <VpnKey className={classes.inputAdornmentIcon} />
-                      </InputAdornment>
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setPasswordVisibility(!passwordVisibility)}
+                        onMouseDown={event => event.preventDefault()}
+                      >
+                        {passwordVisibility ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                     ),
-                    type: "password",
+                    type: passwordVisibility ? "text" : "password",
                     autoComplete: "off",
-                    onChange: e => setPassword(e.target.value)
                   }}
                 />
               </CardBody>

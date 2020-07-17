@@ -26,7 +26,7 @@ function CounsultationListAccordion({consultations, ...props}) {
     :(
       <Accordion
         style={{backgroundColor:"transparent !important"}}
-        active={0}
+        // active={0}
         collapses={consultations.map(c => {
           return {
             title: (
@@ -54,7 +54,6 @@ function ConsultationList() {
     <div>
       {authStore.signedUser.isInternal
         ? (
-          // <Link to="/admin/consultas/nueva">Nueva Consulta</Link>
           <Button
             color="primary"
             className={classes.marginRight}
@@ -68,7 +67,7 @@ function ConsultationList() {
         </Button> )  : ""
       }
       <FolderSection/>
-      <div>
+      <div style={{marginTop:"20px"}}>
         <CounsultationListAccordion consultations={consultationStore.activeConsultations}/>
       </div>
     </div>

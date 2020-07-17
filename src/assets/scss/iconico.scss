@@ -172,6 +172,9 @@ table.iconico-gantt{
      td.time-mark{
         border-left: 1px solid #000;
     }
+    td.today-mark{
+        border-left: 3px solid rgb(247, 63, 63);
+    }
 
     td{
         border: none;

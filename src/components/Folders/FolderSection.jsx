@@ -17,6 +17,7 @@ import Close from '@material-ui/icons/Close';
 import Check from '@material-ui/icons/Check';
 import Folder from '@material-ui/icons/Folder';
 import Star from '@material-ui/icons/Star';
+import Delete from '@material-ui/icons/Delete';
 import StarBorder from '@material-ui/icons/StarBorder';
 
 function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
@@ -153,6 +154,16 @@ function FolderSection({folderSelectedHandler, updateEvent, ...props }) {
           onClick={() => consultationStore.selectedFolder.togglePinned()}
           disabled={!consultationStore.selectedFolder} >
           {!consultationStore.selectedFolder || consultationStore.selectedFolder.isPinned ? <Star/> : <StarBorder/>}
+        </IconButton>
+        <IconButton color="secondary" title="Eliminar Carpeta"
+          onClick={() => {
+            consultationStore.selectedFolder.remove().then(() => {
+              consultationStore.fetchMyFolders();
+              consultationStore.setFolder(undefined)
+            });
+          }}
+          disabled={!consultationStore.selectedFolder} >
+          <Delete/>
         </IconButton>
         <h3><Folder/> {consultationStore.selectedFolder? consultationStore.selectedFolder.name : "Todas"}</h3>
       </div>

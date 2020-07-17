@@ -26,7 +26,16 @@ export default class UserFolder extends BaseStore{
     try {
       await UserFolderService.create(UserFolderMigrator.saveForRequest(this));
     } catch (error) {
-      throw error;
+      console.log(error)
+    }
+  }
+
+  remove = async () => {
+    try {
+      await UserFolderService.delete(this.id);
+      toast.success("Carpeta eliminada", {toastId:"remove-folder"});
+    } catch (error) {
+      toast.error("No se pudo eliminar la carpeta", {toastId:"remove-folder"});
     }
   }
 

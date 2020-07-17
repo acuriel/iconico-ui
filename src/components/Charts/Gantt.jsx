@@ -37,7 +37,7 @@ const getColorState = (startDate, endDate, manuallyFinishedDate, focusDay=undefi
     return 'bg-danger-lite';
   }
   // if(focusDay < startDate) return 'todo';
-  // else if(focusDay <= endDate) return 'in-progress'
+  if(endDate < Date.now()) return 'in-progress'
   // else return 'bg-danger'
   return 'bg-info';
 
@@ -51,7 +51,7 @@ const GanttItem = observer(({element, title, startDate, endDate, manuallyFinishe
       </td>
       {[...Array(rowDays).keys()].map(d => {
         return (
-          <td  className={dayMarker(d) ? ' time-mark':''}
+          <td  className={(dayMarker(d) ? 'time-mark ':'') + (new Date(Date.now()).getDate() === addDays(intervalStart, d).getDate() ? " today-mark" : "") }
             key={d + 1}
             title={dateToStringShort(addDays(intervalStart, d))}>
               <div className={(

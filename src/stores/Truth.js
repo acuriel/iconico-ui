@@ -58,7 +58,6 @@ export default class Truth extends BaseStore{
   _loadTruth = async (consultationId) => {
     try {
       const res = await ConsultationService.getTruth(consultationId);
-      console.log(res.data);
       const truth = res.data ? TruthMigrator.loadFromResponse(res.data) : TruthMigrator.getEmpty(consultationId)
       runInAction(() => {
         this._update(truth)

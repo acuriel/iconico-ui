@@ -97,7 +97,6 @@ export default class ConsultationListStore extends BaseStore{
         ? ConsultationService.getAll()
         : UserFolderService.getConsultations(this.selectedFolder)
       );
-      console.log(result.data)
       runInAction(() => {
         this.consultations.replace(
           result.data.map(

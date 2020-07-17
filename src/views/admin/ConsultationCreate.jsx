@@ -66,8 +66,11 @@ function ConsultationCreate(props) {
           success
           style={{ display: "block" }}
           title="Consulta creada!"
-          onConfirm={() => props.history.push("/admin/consultas")}
-          onCancel={() => {}}
+          onConfirm={() => {
+            props.history.push("/admin/consultas");
+            uiStore.sweetAlertState = null;
+          }}
+          onCancel={() => uiStore.sweetAlertState = null}
           confirmBtnCssClass={saClases.button + " " + saClases.success} >
             Ha gregado una nueva consulta
         </SweetAlert>)
@@ -82,7 +85,7 @@ function ConsultationCreate(props) {
             uiStore.sweetAlertState = null;
             props.history.push("/admin/consultas")}
           }
-          onCancel={() => {}}
+          onCancel={() => uiStore.sweetAlertState = null}
           confirmBtnCssClass={saClases.button + " " + saClases.success}
         >
           Ha gregado una nueva consulta
@@ -137,6 +140,7 @@ function ConsultationCreate(props) {
                   margin="normal"
                   id="date-picker-inline"
                   label="Fecha de expiración *"
+                  disablePast
                   value={consultationStore.editingConsultation.expiresOn}
                   onChange={(date) => {
                     consultationStore.editingConsultation.expiresOn = date;
